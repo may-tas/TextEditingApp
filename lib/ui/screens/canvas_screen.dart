@@ -16,89 +16,107 @@ class CanvasScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0.5,
         title: const Text(
-          'Text Canvas Editor',
+          'Text Editor',
           style: TextStyle(
-            color: Colors.black87,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
             fontSize: 20,
-            fontWeight: FontWeight.w500,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
+          tooltip: "Clear Canvas",
           icon: const Icon(Icons.delete, color: Colors.black54),
           onPressed: () => context.read<CanvasCubit>().clearCanvas(),
         ),
         actions: [
           IconButton(
+            tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
             onPressed: () => context.read<CanvasCubit>().undo(),
           ),
           IconButton(
+            tooltip: "Redo",
             icon: const Icon(Icons.redo, color: Colors.black54),
             onPressed: () => context.read<CanvasCubit>().redo(),
           ),
         ],
       ),
-      body: BlocBuilder<CanvasCubit, CanvasState>(
-        builder: (context, state) {
-          return Stack(
-            children: [
-              ...state.textItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final textItem = entry.value;
-                return Positioned(
-                  left: textItem.x,
-                  top: textItem.y,
-                  child: GestureDetector(
-                    onPanUpdate: (details) {
-                      context.read<CanvasCubit>().moveText(
-                            index,
-                            textItem.x + details.delta.dx,
-                            textItem.y + details.delta.dy,
-                          );
-                    },
-                    child: EditableTextWidget(index: index, textItem: textItem),
-                  ),
-                );
-              }),
-            ],
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
+      body: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: const SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: FontControls(),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF1A1A1A),
+              const Color(0xFF1A1A1A).withOpacity(0.95),
+            ],
           ),
+        ),
+        child: BlocBuilder<CanvasCubit, CanvasState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                ...state.textItems.asMap().entries.map(
+                  (entry) {
+                    final index = entry.key;
+                    final textItem = entry.value;
+                    return Positioned(
+                      left: textItem.x,
+                      top: textItem.y,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          const speedFactor = 2.0;
+                          context.read<CanvasCubit>().moveText(
+                                index,
+                                textItem.x + details.delta.dx * speedFactor,
+                                textItem.y + details.delta.dy * speedFactor,
+                              );
+                        },
+                        child: EditableTextWidget(
+                            index: index, textItem: textItem),
+                      ),
+                    );
+                  },
+                ),
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, -5),
+                        ),
+                      ],
+                    ),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: FontControls(),
+                    ),
+                  ),
+                )
+              ],
+            );
+          },
         ),
       ),
       floatingActionButton: Container(
+        padding: const EdgeInsets.only(bottom: 100),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.purple.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: FloatingActionButton(
-          backgroundColor: Colors.purple[100],
-          elevation: 0,
+          backgroundColor: Colors.blueGrey[100],
+          elevation: 0.5,
           onPressed: () => context.read<CanvasCubit>().addText('New Text'),
-          child: const Icon(Icons.add, color: Colors.deepPurple),
+          child: const Icon(Icons.add, color: Colors.black),
         ),
       ),
     );

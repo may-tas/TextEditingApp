@@ -1,7 +1,6 @@
 import 'package:celebrare_assignment/models/text_item_model.dart';
-import 'package:equatable/equatable.dart';
 
-class CanvasState extends Equatable {
+class CanvasState {
   final List<TextItem> textItems;
   final List<CanvasState> history;
   final List<CanvasState> future;
@@ -27,7 +26,4 @@ class CanvasState extends Equatable {
       future: future ?? this.future,
     );
   }
-
-  @override
-  List<Object> get props => [textItems, history, future];
 }

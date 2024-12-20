@@ -28,9 +28,11 @@ class EditableTextWidget extends StatelessWidget {
       child: Text(
         textItem.text,
         style: TextStyle(
+          fontStyle: textItem.fontStyle,
+          fontWeight: textItem.fontWeight,
           fontSize: textItem.fontSize,
           fontFamily: textItem.fontFamily,
-          color: Colors.black87,
+          color: textItem.color,
         ),
       ),
     );

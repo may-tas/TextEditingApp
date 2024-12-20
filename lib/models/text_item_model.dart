@@ -1,16 +1,24 @@
+import 'dart:ui';
+
 class TextItem {
   final String text;
   final double x;
   final double y;
   final double fontSize;
+  final FontStyle fontStyle;
+  final FontWeight fontWeight;
   final String fontFamily;
+  final Color color;
 
   TextItem({
     required this.text,
     required this.x,
     required this.y,
     required this.fontSize,
+    required this.fontStyle,
+    required this.fontWeight,
     required this.fontFamily,
+    required this.color,
   });
 
   TextItem copyWith({
@@ -18,36 +26,20 @@ class TextItem {
     double? x,
     double? y,
     double? fontSize,
+    FontStyle? fontStyle,
+    FontWeight? fontWeight,
     String? fontFamily,
+    Color? color,
   }) {
     return TextItem(
       text: text ?? this.text,
       x: x ?? this.x,
       y: y ?? this.y,
       fontSize: fontSize ?? this.fontSize,
+      fontStyle: fontStyle ?? this.fontStyle,
+      fontWeight: fontWeight ?? this.fontWeight,
       fontFamily: fontFamily ?? this.fontFamily,
-    );
-  }
-
-  // Convert TextItem to a JSON map
-  Map<String, dynamic> toJson() {
-    return {
-      'text': text,
-      'x': x,
-      'y': y,
-      'fontSize': fontSize,
-      'fontFamily': fontFamily,
-    };
-  }
-
-  // Create TextItem from a JSON map
-  factory TextItem.fromJson(Map<String, dynamic> json) {
-    return TextItem(
-      text: json['text'] as String,
-      x: (json['x'] as num).toDouble(),
-      y: (json['y'] as num).toDouble(),
-      fontSize: (json['fontSize'] as num).toDouble(),
-      fontFamily: json['fontFamily'] as String,
+      color: color ?? this.color,
     );
   }
 }

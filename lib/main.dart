@@ -13,8 +13,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Text Canvas Editor',
+      title: 'Text Editor',
       theme: ThemeData(primarySwatch: Colors.blue),
+      debugShowCheckedModeBanner: false,
       home: BlocProvider(
         create: (context) => CanvasCubit(),
         child: const CanvasScreen(),
