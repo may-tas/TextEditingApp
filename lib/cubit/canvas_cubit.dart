@@ -44,7 +44,11 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.history.isNotEmpty) {
       final previousState = state.history.last;
       final newHistory = List<CanvasState>.from(state.history)..removeLast();
-      emit(previousState.copyWith(history: newHistory));
+
+      emit(previousState.copyWith(
+        history: newHistory,
+        future: [state, ...state.future],
+      ));
     }
   }
 
@@ -52,16 +56,28 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.future.isNotEmpty) {
       final nextState = state.future.first;
       final newFuture = List<CanvasState>.from(state.future)..removeAt(0);
-      emit(nextState
-          .copyWith(future: newFuture, history: [...state.history, state]));
+
+      emit(nextState.copyWith(
+        future: newFuture,
+        history: [...state.history, state],
+      ));
     }
+  }
+
+  void deleteText(int index) {
+    final updatedItems = List<TextItem>.from(state.textItems)..removeAt(index);
+    _updateState(textItems: updatedItems);
+  }
+
+  void clearCanvas() {
+    _updateState(textItems: []);
   }
 
   void _updateState({required List<TextItem> textItems}) {
     final newState = state.copyWith(
       textItems: textItems,
       history: [...state.history, state],
-      future: [],
+      future: [], // Clear the redo stack when making new changes
     );
     emit(newState);
   }
