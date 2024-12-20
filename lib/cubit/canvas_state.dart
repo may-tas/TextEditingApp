@@ -7,10 +7,14 @@ class CanvasState extends Equatable {
   final List<CanvasState> future;
 
   const CanvasState({
-    this.textItems = const [],
-    this.history = const [],
-    this.future = const [],
+    required this.textItems,
+    required this.history,
+    required this.future,
   });
+
+  factory CanvasState.initial() {
+    return const CanvasState(textItems: [], history: [], future: []);
+  }
 
   CanvasState copyWith({
     List<TextItem>? textItems,
@@ -25,5 +29,5 @@ class CanvasState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [textItems, history, future];
+  List<Object> get props => [textItems, history, future];
 }
