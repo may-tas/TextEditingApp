@@ -1,4 +1,4 @@
-# Font Controls for Flutter Canvas App
+# Text Editing App
 
 This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.
 
@@ -103,9 +103,13 @@ lib/
 
 ## Demo Video
 
+https://github.com/user-attachments/assets/518765d8-d2f0-4491-9385-69f1281c051c
+
 ### Font Controls UI
 
-![Font Controls](screenshot-font-controls.png)
+<img src="https://github.com/user-attachments/assets/abaca11c-81b8-4931-ba63-2b9ee7212c82" alt="Screenshot" width="200" height="400">
+
+<img src="https://github.com/user-attachments/assets/08072113-6459-4874-980c-e9cf61fd9ea1" alt="Screenshot" width="200" height="400">
 
 ## Contributing
 
