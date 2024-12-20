@@ -140,4 +140,4 @@ For questions or suggestions, feel free to contact:
 
 - **Author:** Satyam Jha
 - **Email:** satyamj210@gmail.com
-- **GitHub:** [Maytas](https://github.com/maytas)
+- **GitHub:** [Maytas](https://github.com/may-tas)
