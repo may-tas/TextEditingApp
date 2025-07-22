@@ -18,7 +18,7 @@ This project provides an interactive user interface to control font properties s
 ## Technologies Used
 
 - **Flutter:** Framework for UI development.
-- **Bloc:** State management for dynamic changes.
+- **Cubit:** State management for dynamic changes.
 - **Dart:** Programming language.
 - **Material Design:** For sleek and intuitive UI components.
 
