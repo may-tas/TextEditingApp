@@ -1,17 +1,4 @@
 <!--
-This section can be deleted after reading.
-
-We employ the following branching strategy to simplify the development process and to ensure that only stable code is pushed to the `main` branch:
-
-- `develop`: For unstable code: New features and bug fixes.
-- `main`: Where the stable production-ready code lies. Only security-related bugs.
-
-NOTE!!!
-
-ONLY SUBMIT PRS AGAINST OUR `DEVELOP` BRANCH. THE DEFAULT IS `MAIN`, SO YOU WILL HAVE TO MODIFY THIS BEFORE SUBMITTING YOUR PR FOR REVIEW. PRS MADE AGAINST `MAIN` WILL BE CLOSED.
--->
-
-<!--
 Thanks for submitting a pull request! Please provide enough information so that others can review your pull request.
 -->
 
