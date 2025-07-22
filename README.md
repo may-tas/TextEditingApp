@@ -130,6 +130,11 @@ Contributions are welcome! Please follow these steps:
    ```
 5. Open a pull request.
 
+## Support
+
+🌟 If you find this project helpful, please consider giving it a star! \
+It helps others discover the project and motivates us to keep improving. Your support means a lot! 🙌 
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
