@@ -245,6 +245,7 @@ class FontControls extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey[300]!),
           ),
+
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: colors.map((color) {
@@ -265,6 +266,42 @@ class FontControls extends StatelessWidget {
                           ? Colors.blue // Highlight selected color
                           : Colors.grey.withOpacity(0.3),
                       width: isSelectedColor ? 2 : 1,
+
+          child: BlocBuilder<CanvasCubit, CanvasState>(
+            builder: (context, state) {
+              final selectedColor = state.textItems.isNotEmpty
+                  ? state.textItems.last.color
+                  : Colors.black;
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: colors.map((color) {
+                  final isSelected = selectedColor == color;
+                  return GestureDetector(
+                    onTap: () {
+                      final selectedIndex = state.textItems.length - 1;
+                      if (selectedIndex >= 0) {
+                        context.read<CanvasCubit>().changeTextColor(
+                          selectedIndex,
+                          color,
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isSelected
+                              ? Colors.blue
+                              : Colors.grey.withOpacity(0.3),
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+
                     ),
                   ),
                 ),
@@ -336,6 +373,12 @@ class FontControls extends StatelessWidget {
                 // Highlight button if selected item is italic
                 isActive: isItemSelected && selectedTextItem!.fontStyle == FontStyle.italic,
               ),
+              const SizedBox(width: 8),
+              _buildStyleButton(
+                context: context,
+                icon: Icons.format_clear,
+                onPressed: () => _resetFontStyle(context),
+              ),
             ],
           ),
         ),
@@ -369,6 +412,57 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  // --- Removed all _changeX methods ---
+
+ 
   // The logic is now inline within the onPressed callbacks in _buildXControls methods
+
+  void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      context.read<CanvasCubit>().changeFontStyle(selectedIndex, fontStyle);
+    }
+  }
+
+  void _changeFontWeight(BuildContext context, FontWeight fontWeight) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      context.read<CanvasCubit>().changeFontWeight(selectedIndex, fontWeight);
+    }
+  }
+
+  void _resetFontStyle(BuildContext context) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      context.read<CanvasCubit>().changeFontWeight(selectedIndex, FontWeight.normal);
+      context.read<CanvasCubit>().changeFontStyle(selectedIndex, FontStyle.normal);
+    }
+  }
+
+  void _changeFontSize(BuildContext context, {required bool decrease}) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      final currentSize =
+          context.read<CanvasCubit>().state.textItems[selectedIndex].fontSize;
+      final newSize = decrease ? currentSize - 2 : currentSize + 2;
+      context.read<CanvasCubit>().changeFontSize(
+        selectedIndex,
+        newSize,
+      );
+    }
+  }
+
+  void _changeFontFamily(BuildContext context, String? fontFamily) {
+    if (fontFamily != null) {
+      final selectedIndex =
+          context.read<CanvasCubit>().state.textItems.length - 1;
+      if (selectedIndex >= 0) {
+        context.read<CanvasCubit>().changeFontFamily(selectedIndex, fontFamily);
+      }
+    }
+  }
+
 }
