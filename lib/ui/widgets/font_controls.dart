@@ -209,9 +209,9 @@ class FontControls extends StatelessWidget {
                       final selectedIndex = state.textItems.length - 1;
                       if (selectedIndex >= 0) {
                         context.read<CanvasCubit>().changeTextColor(
-                              selectedIndex,
-                              color,
-                            );
+                          selectedIndex,
+                          color,
+                        );
                       }
                     },
                     child: Container(
@@ -272,6 +272,12 @@ class FontControls extends StatelessWidget {
                 icon: Icons.format_italic,
                 onPressed: () => _changeFontStyle(context, FontStyle.italic),
               ),
+              const SizedBox(width: 8),
+              _buildStyleButton(
+                context: context,
+                icon: Icons.format_clear,
+                onPressed: () => _resetFontStyle(context),
+              ),
             ],
           ),
         ),
@@ -317,6 +323,15 @@ class FontControls extends StatelessWidget {
     }
   }
 
+  void _resetFontStyle(BuildContext context) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      context.read<CanvasCubit>().changeFontWeight(selectedIndex, FontWeight.normal);
+      context.read<CanvasCubit>().changeFontStyle(selectedIndex, FontStyle.normal);
+    }
+  }
+
   void _changeFontSize(BuildContext context, {required bool decrease}) {
     final selectedIndex =
         context.read<CanvasCubit>().state.textItems.length - 1;
@@ -325,9 +340,9 @@ class FontControls extends StatelessWidget {
           context.read<CanvasCubit>().state.textItems[selectedIndex].fontSize;
       final newSize = decrease ? currentSize - 2 : currentSize + 2;
       context.read<CanvasCubit>().changeFontSize(
-            selectedIndex,
-            newSize,
-          );
+        selectedIndex,
+        newSize,
+      );
     }
   }
 
