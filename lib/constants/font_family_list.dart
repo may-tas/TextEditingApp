@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
+// lib/constants/font_family_list.dart
+import 'package:flutter/material.dart'; // Keep this import if you still use Text widget here for any reason,
+                                      // though for a simple list of strings, it's not strictly needed.
 
-const items = [
-  DropdownMenuItem(value: 'Arial', child: Text('Arial')),
-  DropdownMenuItem(value: 'Courier', child: Text('Courier')),
-  DropdownMenuItem(value: 'Times New Roman', child: Text('Times New Roman')),
-  DropdownMenuItem(value: 'Roboto', child: Text('Roboto')),
-  DropdownMenuItem(value: 'Helvetica', child: Text('Helvetica')),
+const List<String> fontFamilyList = [ // <--- Changed to List<String>
+  'Arial',
+  'Courier',
+  'Times New Roman',
+  'Roboto',
+  'Helvetica',
 ];
