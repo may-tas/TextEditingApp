@@ -3,6 +3,7 @@ import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
 import 'package:celebrare_assignment/cubit/canvas_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
@@ -36,6 +37,74 @@ class FontControls extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildColorControls(BuildContext context) {
+    final canvasCubit = context.read<CanvasCubit>();
+
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      builder: (context, state) {
+        final selectedIndex = state.textItems.length - 1;
+        final selectedColor = selectedIndex >= 0
+            ? state.textItems[selectedIndex].color
+            : Colors.black;
+
+        return GestureDetector(
+          onTap: () {
+            if (selectedIndex < 0) return;
+
+            Color pickerColor = selectedColor;
+
+            showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                  title: const Text('Select a color'),
+                  content: SingleChildScrollView(
+                    child: HueRingPicker(
+                      pickerColor: pickerColor,
+                      onColorChanged: (Color color) {
+                        pickerColor = color;
+                      },
+                      enableAlpha: false,
+                      displayThumbColor: true,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Done'),
+                      onPressed: () {
+                        canvasCubit.changeTextColor(selectedIndex, pickerColor);
+                        Navigator.of(dialogContext).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: selectedColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey.withOpacity(0.5),
+                    width: 2,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_drop_down, color: Colors.black54),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -165,80 +234,6 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  Widget _buildColorControls(BuildContext context) {
-    final colors = [
-      Colors.black,
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.purple,
-      Colors.orange,
-      Colors.pink,
-    ];
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Color',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final selectedColor = state.textItems.isNotEmpty
-                  ? state.textItems.last.color
-                  : Colors.black;
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: colors.map((color) {
-                  final isSelected = selectedColor == color;
-                  return GestureDetector(
-                    onTap: () {
-                      final selectedIndex = state.textItems.length - 1;
-                      if (selectedIndex >= 0) {
-                        context.read<CanvasCubit>().changeTextColor(
-                          selectedIndex,
-                          color,
-                        );
-                      }
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.blue
-                              : Colors.grey.withOpacity(0.3),
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildFontStyleControls(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -327,8 +322,12 @@ class FontControls extends StatelessWidget {
     final selectedIndex =
         context.read<CanvasCubit>().state.textItems.length - 1;
     if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontWeight(selectedIndex, FontWeight.normal);
-      context.read<CanvasCubit>().changeFontStyle(selectedIndex, FontStyle.normal);
+      context
+          .read<CanvasCubit>()
+          .changeFontWeight(selectedIndex, FontWeight.normal);
+      context
+          .read<CanvasCubit>()
+          .changeFontStyle(selectedIndex, FontStyle.normal);
     }
   }
 
@@ -351,7 +350,9 @@ class FontControls extends StatelessWidget {
       final selectedIndex =
           context.read<CanvasCubit>().state.textItems.length - 1;
       if (selectedIndex >= 0) {
-        context.read<CanvasCubit>().changeFontFamily(selectedIndex, fontFamily);
+        context
+            .read<CanvasCubit>()
+            .changeFontFamily(selectedIndex, fontFamily);
       }
     }
   }
