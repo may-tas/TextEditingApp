@@ -1,0 +1,1 @@
+E:\GSSoC\TextEditingApp\build\app\intermediates\cxx\Debug\2f114714\obj\armeabi-v7a

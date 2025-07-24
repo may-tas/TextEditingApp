@@ -17,12 +17,15 @@ class EditableTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final newText = await showDialog<String>(
+        final result = await showDialog<String>(
           context: context,
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
-        if (newText != null) {
-          context.read<CanvasCubit>().editText(index, newText);
+
+        if (result == 'delete') {
+          context.read<CanvasCubit>().deleteText(index);
+        } else if (result != null) {
+          context.read<CanvasCubit>().editText(index, result);
         }
       },
       child: Text(
@@ -84,15 +87,30 @@ class EditTextDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context, "delete"),
                   child: Text(
-                    'Cancel',
+                    'Remove',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context, controller.text),
+                  onPressed: () {
+                    final trimmedText = controller.text.trim();
+
+                    if (trimmedText.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Text field cannot be empty'),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.fixed,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    } else {
+                      Navigator.pop(context, trimmedText);
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple[100],
                     foregroundColor: Colors.deepPurple,
