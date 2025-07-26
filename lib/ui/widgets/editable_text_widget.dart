@@ -28,7 +28,7 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-<<<<<<< HEAD
+
       child: Text(
         textItem.text,
         style: TextStyle(
@@ -37,7 +37,7 @@ class EditableTextWidget extends StatelessWidget {
           fontSize: textItem.fontSize,
           fontFamily: textItem.fontFamily,
           color: textItem.color,
-=======
+
       child: Container(
        
         decoration: BoxDecoration(
@@ -55,7 +55,7 @@ class EditableTextWidget extends StatelessWidget {
             fontFamily: widget.textItem.fontFamily,
             color: widget.textItem.color,
           ),
->>>>>>> b06f4c7 (Text Size Change Applied to Newest Text Instead of Selected One)
+
         ),
       ),
     );
