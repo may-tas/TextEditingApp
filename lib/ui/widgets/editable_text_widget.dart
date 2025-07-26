@@ -23,6 +23,7 @@ class EditableTextWidget extends StatelessWidget {
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
 
+        if(!context.mounted) return;
         if (result == '_delete_') {
           context.read<CanvasCubit>().deleteText(index);
         } else if (result != null) {
