@@ -80,41 +80,33 @@ class CanvasScreen extends StatelessWidget {
                     );
                   },
                 ),
-                Positioned(
-                  bottom: 16,
-                  left: 16,
-                  right: 16,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, -5),
-                        ),
-                      ],
-                    ),
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: FontControls(),
-                    ),
-                  ),
-                )
               ],
             );
           },
         ),
       ),
+      extendBody: true,
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: const FontControls(),
+      ),
       floatingActionButton: Container(
-        padding: const EdgeInsets.only(bottom: 100),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
         ),
         child: FloatingActionButton(
-          backgroundColor: Colors.blueGrey[100],
+          backgroundColor: Colors.white,
           elevation: 0.5,
           onPressed: () => context.read<CanvasCubit>().addText('New Text'),
           child: const Icon(Icons.add, color: Colors.black),
