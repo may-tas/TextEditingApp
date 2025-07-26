@@ -6,7 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
 
+<<<<<<< HEAD
   // method to add the text
+=======
+  
+  void selectTextItem(int? index) {
+    emit(state.copyWith(selectedItemIndex: index));
+  }
+
+
+>>>>>>> b06f4c7 (Text Size Change Applied to Newest Text Instead of Selected One)
   void addText(String text) {
     final newTextItem = TextItem(
       text: text,
@@ -16,9 +25,26 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Arial',
-      color: Colors.white, // My Default color for the text
+      color: Colors.white, 
     );
+<<<<<<< HEAD
     _updateState(textItems: [...state.textItems, newTextItem]);
+=======
+    final newTextItems = [...state.textItems, newTextItem];
+    _updateState(
+      textItems: newTextItems,
+      
+      selectedItemIndex: newTextItems.length - 1,
+    );
+  }
+
+
+  int? _getIndexForUpdate(int? explicitIndex) {
+    if (explicitIndex != null) {
+      return explicitIndex;
+    }
+    return state.selectedItemIndex;
+>>>>>>> b06f4c7 (Text Size Change Applied to Newest Text Instead of Selected One)
   }
 
   // method to change and emit new TextColor
@@ -107,6 +133,10 @@ class CanvasCubit extends Cubit<CanvasState> {
       textItems: textItems,
       history: [...state.history, state],
       future: [],
+<<<<<<< HEAD
+=======
+      selectedItemIndex: selectedItemIndex ?? (textItems.isEmpty ? null : state.selectedItemIndex),
+>>>>>>> b06f4c7 (Text Size Change Applied to Newest Text Instead of Selected One)
     );
     emit(newState);
   }
