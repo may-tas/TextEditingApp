@@ -1,3 +1,5 @@
+// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
+// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
 import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
 import 'package:celebrare_assignment/models/text_item_model.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +30,6 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-
       child: Text(
         textItem.text,
         style: TextStyle(
@@ -37,25 +38,6 @@ class EditableTextWidget extends StatelessWidget {
           fontSize: textItem.fontSize,
           fontFamily: textItem.fontFamily,
           color: textItem.color,
-
-      child: Container(
-       
-        decoration: BoxDecoration(
-          border: widget.isSelected
-              ? Border.all(color: Colors.blueAccent, width: 2.0) 
-              : Border.all(color: Colors.transparent, width: 2.0), 
-        ),
-        padding: const EdgeInsets.all(4.0), 
-        child: Text(
-          widget.textItem.text,
-          style: TextStyle(
-            fontStyle: widget.textItem.fontStyle,
-            fontWeight: widget.textItem.fontWeight,
-            fontSize: widget.textItem.fontSize,
-            fontFamily: widget.textItem.fontFamily,
-            color: widget.textItem.color,
-          ),
-
         ),
       ),
     );
