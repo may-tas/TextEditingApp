@@ -50,7 +50,7 @@ class CanvasScreen extends StatelessWidget {
             end: Alignment.bottomCenter,
             colors: [
               const Color(0xFF1A1A1A),
-              const Color(0xFF1A1A1A).withAlpha(240),
+              const Color(0xFF1A1A1A).withAlpha((0.95 * 255).toInt()),
             ],
           ),
         ),
@@ -93,7 +93,7 @@ class CanvasScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(25),
+              color: Colors.black.withAlpha((0.05 * 255).toInt()),
               blurRadius: 10,
               offset: const Offset(0, -5),
             ),
