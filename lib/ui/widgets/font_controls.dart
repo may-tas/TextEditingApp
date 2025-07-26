@@ -9,7 +9,7 @@ class FontControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
+
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -20,7 +20,7 @@ class FontControls extends StatelessWidget {
             color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
-=======
+
     return BlocBuilder<CanvasCubit, CanvasState>(
       builder: (context, state) {
         final bool isItemSelected = state.selectedItemIndex != null &&
@@ -43,7 +43,7 @@ class FontControls extends StatelessWidget {
                 offset: const Offset(0, -2),
               ),
             ],
->>>>>>> b06f4c7 (Text Size Change Applied to Newest Text Instead of Selected One)
+
           ),
         ],
       ),
