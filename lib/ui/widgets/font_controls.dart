@@ -17,7 +17,7 @@ class FontControls extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(25),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -225,7 +225,7 @@ class FontControls extends StatelessWidget {
                         border: Border.all(
                           color: isSelected
                               ? Colors.blue
-                              : Colors.grey.withOpacity(0.3),
+                              : Colors.grey.withAlpha(25),
                           width: isSelected ? 2 : 1,
                         ),
                       ),
