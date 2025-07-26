@@ -23,9 +23,7 @@ class EditableTextWidget extends StatelessWidget {
         final isSelected = state.selectedIndex == index;
 
         return GestureDetector(
-          // Handle both tap (for selection/edit) and pan (for movement) here
           onTap: () async {
-            // CRITICAL: Select this text item when tapped
             context.read<CanvasCubit>().selectTextItem(index);
 
             // Existing logic for editing/deleting text
@@ -42,9 +40,6 @@ class EditableTextWidget extends StatelessWidget {
             }
           },
           onPanUpdate: (details) {
-            // <--- MOVED HERE from CanvasScreen
-            // CRITICAL: Select the item when it starts being dragged
-            // This ensures that if you drag an unselected item, it becomes selected first.
             context.read<CanvasCubit>().selectTextItem(index);
 
             const speedFactor = 2.0;
@@ -78,7 +73,6 @@ class EditableTextWidget extends StatelessWidget {
   }
 }
 
-// EditTextDialog remains unchanged
 class EditTextDialog extends StatelessWidget {
   final String initialText;
 

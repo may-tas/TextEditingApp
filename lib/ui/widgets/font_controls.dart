@@ -12,11 +12,10 @@ class FontControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Listen to CanvasCubit's state to react to selection changes
     return BlocBuilder<CanvasCubit, CanvasState>(
       builder: (context, state) {
         final isTextSelected = state.selectedIndex != null;
-        // Get the selected text item, or null if nothing is selected
+
         final selectedTextItem =
             isTextSelected ? state.textItems[state.selectedIndex!] : null;
 
@@ -36,10 +35,8 @@ class FontControls extends StatelessWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              mainAxisSize: MainAxisSize
-                  .min, // Corrected typo here (MainAxisSize.min, not MainAxisSize.AxisSize.min)
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Pass selectedTextItem and isTextSelected to child control builders
                 _buildFontSizeControls(
                     context, selectedTextItem, isTextSelected),
                 const SizedBox(width: 25),
@@ -75,9 +72,7 @@ class FontControls extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: isEnabled
-                ? Colors.grey[100]
-                : Colors.grey[200], // Background color based on enabled state
+            color: isEnabled ? Colors.grey[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
                 color: isEnabled ? Colors.grey[300]! : Colors.grey[400]!),
@@ -90,7 +85,7 @@ class FontControls extends StatelessWidget {
                 icon: Icons.remove,
                 onPressed: isEnabled
                     ? () => _changeFontSize(context, decrease: true)
-                    : null, // Disable if not enabled
+                    : null,
               ),
               Container(
                 constraints: const BoxConstraints(minWidth: 36),
@@ -98,14 +93,12 @@ class FontControls extends StatelessWidget {
                 child: Text(
                   selectedTextItem != null
                       ? selectedTextItem.fontSize.round().toString()
-                      : 'N/A', // Display current size or "N/A"
+                      : 'N/A',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
-                    color: isEnabled
-                        ? Colors.grey[800]
-                        : Colors.grey[500], // Text color for disabled state
+                    color: isEnabled ? Colors.grey[800] : Colors.grey[500],
                   ),
                 ),
               ),
@@ -114,7 +107,7 @@ class FontControls extends StatelessWidget {
                 icon: Icons.add,
                 onPressed: isEnabled
                     ? () => _changeFontSize(context, decrease: false)
-                    : null, // Disable if not enabled
+                    : null,
               ),
             ],
           ),
@@ -148,13 +141,11 @@ class FontControls extends StatelessWidget {
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               menuWidth: 170,
-              value: selectedTextItem?.fontFamily ??
-                  'Arial', // Display selected font or default
-              items:
-                  items, // 'items' comes from constants/font_family_list.dart
+              value: selectedTextItem?.fontFamily ?? 'Arial',
+              items: items,
               onChanged: isEnabled
                   ? (value) => _changeFontFamily(context, value)
-                  : null, // Disable if not enabled
+                  : null,
               style: TextStyle(
                 color: isEnabled ? Colors.grey[800] : Colors.grey[500],
                 fontSize: 14,
@@ -162,9 +153,7 @@ class FontControls extends StatelessWidget {
               ),
               icon: Icon(Icons.arrow_drop_down,
                   color: isEnabled ? Colors.grey[600] : Colors.grey[400]),
-              hint: !isEnabled
-                  ? const Text('Select Text')
-                  : null, // Hint when disabled
+              hint: !isEnabled ? const Text('Select Text') : null,
             ),
           ),
         ),
@@ -183,7 +172,7 @@ class FontControls extends StatelessWidget {
       Colors.purple,
       Colors.orange,
       Colors.pink,
-      Colors.white, // Added white for common use
+      Colors.white,
     ];
 
     return Row(
@@ -208,13 +197,11 @@ class FontControls extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: colors.map((color) {
-              final selectedColor = selectedTextItem?.color ??
-                  Colors.black; // Default if no item selected
+              final selectedColor = selectedTextItem?.color ?? Colors.black;
               final isSelected = selectedColor == color;
               return GestureDetector(
-                onTap: isEnabled
-                    ? () => _changeTextColor(context, color)
-                    : null, // Disable if not enabled
+                onTap:
+                    isEnabled ? () => _changeTextColor(context, color) : null,
                 child: Container(
                   width: 30,
                   height: 30,
@@ -224,12 +211,8 @@ class FontControls extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? (isEnabled
-                              ? Colors.blue
-                              : Colors
-                                  .grey) // Blue if selected and enabled, grey if disabled
-                          : Colors.grey.withAlpha((0.3 * 255)
-                              .toInt()), // Transparent if not selected
+                          ? (isEnabled ? Colors.blue : Colors.grey)
+                          : Colors.grey.withAlpha((0.3 * 255).toInt()),
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -299,21 +282,19 @@ class FontControls extends StatelessWidget {
   Widget _buildSizeButton({
     required BuildContext context,
     required IconData icon,
-    required VoidCallback? onPressed, // Made nullable to enable/disable tap
+    required VoidCallback? onPressed,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
-        onTap: onPressed, // Pass the nullable onPressed directly
+        onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(
             icon,
             size: 16,
-            color: onPressed != null
-                ? Colors.grey[700]
-                : Colors.grey[400], // Dim icon if disabled
+            color: onPressed != null ? Colors.grey[700] : Colors.grey[400],
           ),
         ),
       ),
@@ -323,30 +304,25 @@ class FontControls extends StatelessWidget {
   Widget _buildStyleButton({
     required BuildContext context,
     required IconData icon,
-    required VoidCallback? onPressed, // Made nullable to enable/disable tap
+    required VoidCallback? onPressed,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
-        onTap: onPressed, // Pass the nullable onPressed directly
+        onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Icon(
             icon,
             size: 20,
-            color: onPressed != null
-                ? Colors.grey[700]
-                : Colors.grey[400], // Dim icon if disabled
+            color: onPressed != null ? Colors.grey[700] : Colors.grey[400],
           ),
         ),
       ),
     );
   }
 
-  // --- Font Modification Callbacks ---
-  // These methods now call the CanvasCubit methods without an index,
-  // as the cubit will use its internally tracked selectedIndex.
   void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
     context.read<CanvasCubit>().changeFontStyle(fontStyle);
   }
@@ -364,8 +340,7 @@ class FontControls extends StatelessWidget {
   void _changeFontSize(BuildContext context, {required bool decrease}) {
     final cubit = context.read<CanvasCubit>();
     final state = cubit.state;
-    if (state.selectedIndex == null)
-      return; // Do nothing if no item is selected
+    if (state.selectedIndex == null) return;
 
     final currentSize = state.textItems[state.selectedIndex!].fontSize;
     final newSize = decrease ? currentSize - 2 : currentSize + 2;

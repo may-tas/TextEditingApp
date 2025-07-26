@@ -5,14 +5,13 @@ class CanvasState {
   final List<TextItem> textItems;
   final List<CanvasState> history;
   final List<CanvasState> future;
-  final int?
-      selectedIndex; // <--- ADDED: To track the currently selected text item's index
+  final int? selectedIndex;
 
   const CanvasState({
     required this.textItems,
     required this.history,
     required this.future,
-    this.selectedIndex, // <--- ADDED: Constructor parameter
+    this.selectedIndex,
   });
 
   factory CanvasState.initial() {
@@ -20,7 +19,7 @@ class CanvasState {
       textItems: [],
       history: [],
       future: [],
-      selectedIndex: null, // <--- INITIALIZED: No item selected initially
+      selectedIndex: null,
     );
   }
 
@@ -28,13 +27,13 @@ class CanvasState {
     List<TextItem>? textItems,
     List<CanvasState>? history,
     List<CanvasState>? future,
-    int? selectedIndex, // <--- ADDED: copyWith parameter
+    int? selectedIndex,
   }) {
     return CanvasState(
       textItems: textItems ?? this.textItems,
       history: history ?? this.history,
       future: future ?? this.future,
-      selectedIndex: selectedIndex, // <--- USED: Update the selectedIndex
+      selectedIndex: selectedIndex,
     );
   }
 }

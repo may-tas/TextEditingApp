@@ -45,9 +45,7 @@ class CanvasScreen extends StatelessWidget {
         ],
       ),
       body: GestureDetector(
-        // <--- NEW: Add a GestureDetector here for general canvas taps
         onTap: () {
-          // When tapping on the canvas background, deselect any text item
           context.read<CanvasCubit>().selectTextItem(null);
         },
         child: Container(
@@ -72,7 +70,6 @@ class CanvasScreen extends StatelessWidget {
                       return Positioned(
                         left: textItem.x,
                         top: textItem.y,
-                        // Removed the outer GestureDetector here!
                         child: EditableTextWidget(
                             index: index, textItem: textItem),
                       );
