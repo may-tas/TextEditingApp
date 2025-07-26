@@ -1,9 +1,8 @@
-// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
-// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
-import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
-import 'package:celebrare_assignment/models/text_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubit/canvas_cubit.dart';
+import '../../models/text_item_model.dart';
 
 class EditableTextWidget extends StatelessWidget {
   final int index;

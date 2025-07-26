@@ -1,9 +1,10 @@
-import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
-import 'package:celebrare_assignment/cubit/canvas_state.dart';
-import 'package:celebrare_assignment/ui/widgets/editable_text_widget.dart';
-import 'package:celebrare_assignment/ui/widgets/font_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubit/canvas_cubit.dart';
+import '../../cubit/canvas_state.dart';
+import '../widgets/editable_text_widget.dart';
+import '../widgets/font_controls.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});

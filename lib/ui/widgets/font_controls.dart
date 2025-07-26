@@ -1,10 +1,9 @@
-// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
-// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
-import 'package:celebrare_assignment/constants/font_family_list.dart';
-import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
-import 'package:celebrare_assignment/cubit/canvas_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../constants/font_family_list.dart';
+import '../../cubit/canvas_cubit.dart';
+import '../../cubit/canvas_state.dart';
 
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
@@ -211,9 +210,9 @@ class FontControls extends StatelessWidget {
                       final selectedIndex = state.textItems.length - 1;
                       if (selectedIndex >= 0) {
                         context.read<CanvasCubit>().changeTextColor(
-                          selectedIndex,
-                          color,
-                        );
+                              selectedIndex,
+                              color,
+                            );
                       }
                     },
                     child: Container(
@@ -329,8 +328,12 @@ class FontControls extends StatelessWidget {
     final selectedIndex =
         context.read<CanvasCubit>().state.textItems.length - 1;
     if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontWeight(selectedIndex, FontWeight.normal);
-      context.read<CanvasCubit>().changeFontStyle(selectedIndex, FontStyle.normal);
+      context
+          .read<CanvasCubit>()
+          .changeFontWeight(selectedIndex, FontWeight.normal);
+      context
+          .read<CanvasCubit>()
+          .changeFontStyle(selectedIndex, FontStyle.normal);
     }
   }
 
@@ -342,9 +345,9 @@ class FontControls extends StatelessWidget {
           context.read<CanvasCubit>().state.textItems[selectedIndex].fontSize;
       final newSize = decrease ? currentSize - 2 : currentSize + 2;
       context.read<CanvasCubit>().changeFontSize(
-        selectedIndex,
-        newSize,
-      );
+            selectedIndex,
+            newSize,
+          );
     }
   }
 

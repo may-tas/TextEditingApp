@@ -1,6 +1,4 @@
-// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
-// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
-import 'package:celebrare_assignment/models/text_item_model.dart';
+import '../models/text_item_model.dart';
 
 class CanvasState {
   final List<TextItem> textItems;

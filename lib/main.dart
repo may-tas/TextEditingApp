@@ -1,7 +1,7 @@
-import 'package:celebrare_assignment/ui/screens/canvas_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/canvas_cubit.dart';
+import 'ui/screens/canvas_screen.dart';
 
 void main() {
   runApp(const MyApp());
