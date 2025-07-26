@@ -1,3 +1,5 @@
+// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
+// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
 import 'package:celebrare_assignment/cubit/canvas_state.dart';
 import 'package:celebrare_assignment/models/text_item_model.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
 
-
   // method to add the text
-
-  
-  void selectTextItem(int? index) {
-    emit(state.copyWith(selectedItemIndex: index));
-  }
-
-
-
   void addText(String text) {
     final newTextItem = TextItem(
       text: text,
@@ -25,26 +18,9 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Arial',
-      color: Colors.white, 
+      color: Colors.white, // My Default color for the text
     );
-
     _updateState(textItems: [...state.textItems, newTextItem]);
-
-    final newTextItems = [...state.textItems, newTextItem];
-    _updateState(
-      textItems: newTextItems,
-      
-      selectedItemIndex: newTextItems.length - 1,
-    );
-  }
-
-
-  int? _getIndexForUpdate(int? explicitIndex) {
-    if (explicitIndex != null) {
-      return explicitIndex;
-    }
-    return state.selectedItemIndex;
-
   }
 
   // method to change and emit new TextColor
@@ -133,9 +109,6 @@ class CanvasCubit extends Cubit<CanvasState> {
       textItems: textItems,
       history: [...state.history, state],
       future: [],
-
-      selectedItemIndex: selectedItemIndex ?? (textItems.isEmpty ? null : state.selectedItemIndex),
-
     );
     emit(newState);
   }

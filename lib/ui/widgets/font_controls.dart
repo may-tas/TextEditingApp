@@ -1,3 +1,5 @@
+// REVERT: Changes from PR #18 have been reverted due to significant issues and breaking changes.
+// The original PR introduced syntax errors, incomplete implementations, and broke the widget structure.
 import 'package:celebrare_assignment/constants/font_family_list.dart';
 import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
 import 'package:celebrare_assignment/cubit/canvas_state.dart';
@@ -9,7 +11,6 @@ class FontControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -20,30 +21,6 @@ class FontControls extends StatelessWidget {
             color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
-
-    return BlocBuilder<CanvasCubit, CanvasState>(
-      builder: (context, state) {
-        final bool isItemSelected = state.selectedItemIndex != null &&
-            state.selectedItemIndex! >= 0 &&
-            state.selectedItemIndex! < state.textItems.length;
-
-        // Get the selected text item, or a default/dummy one if none is selected
-        final TextItem? selectedTextItem =
-            isItemSelected ? state.textItems[state.selectedItemIndex!] : null;
-
-        return Container(
-          height: 80,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1), 
-                blurRadius: 8,
-                offset: const Offset(0, -2),
-              ),
-            ],
-
           ),
         ],
       ),
