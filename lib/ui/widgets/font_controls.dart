@@ -59,49 +59,123 @@ class FontControls extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey[300]!),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildSizeButton(
-                context: context,
-                icon: Icons.remove,
-                onPressed: () => _changeFontSize(context, decrease: true),
-              ),
-              BlocBuilder<CanvasCubit, CanvasState>(
-                builder: (context, state) {
-                  final fontSize = state.textItems.isNotEmpty
-                      ? state.textItems.last.fontSize.round()
-                      : 16;
-                  return InkWell(
-                    onTap: () => {
-                      if (state.textItems.isNotEmpty) {
-                        _handleFontDialog(context, fontSize),
-                      }
-                    },
-                    child: Container(
-                      constraints: const BoxConstraints(minWidth: 36),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        '$fontSize',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              _buildSizeButton(
-                context: context,
-                icon: Icons.add,
-                onPressed: () => _changeFontSize(context, decrease: false),
-              ),
-            ],
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              final state = context.watch<CanvasCubit>().state;
+              final selectedIndex = _getSelectedTextIndex(state);
+              final currentFontSize = _getCurrentFontSize(state, selectedIndex);
+              final controller = FixedExtentScrollController(
+                initialItem: (currentFontSize - 8).clamp(0, 70),
+              );
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildSizeButton(
+                    context: context,
+                    icon: Icons.remove,
+                    onPressed: selectedIndex != null
+                        ? () => _changeFontSizeWithStep(
+                              context,
+                              controller,
+                              selectedIndex,
+                              currentFontSize,
+                              -2,
+                            )
+                        : null,
+                  ),
+                  _buildFontSizeWheel(
+                    context,
+                    controller,
+                    selectedIndex,
+                  ),
+                  _buildSizeButton(
+                    context: context,
+                    icon: Icons.add,
+                    onPressed: selectedIndex != null
+                        ? () => _changeFontSizeWithStep(
+                              context,
+                              controller,
+                              selectedIndex,
+                              currentFontSize,
+                              2,
+                            )
+                        : null,
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ],
+    );
+  }
+
+  int? _getSelectedTextIndex(CanvasState state) {
+    return state.textItems.isNotEmpty ? state.textItems.length - 1 : null;
+  }
+
+  int _getCurrentFontSize(CanvasState state, int? selectedIndex) {
+    if (selectedIndex != null) {
+      return state.textItems[selectedIndex].fontSize.round();
+    }
+    return 16;
+  }
+
+  void _changeFontSizeWithStep(
+    BuildContext context,
+    FixedExtentScrollController controller,
+    int selectedIndex,
+    int currentSize,
+    int step,
+  ) {
+    final newSize = (currentSize + step).clamp(8, 78);
+    controller.jumpToItem((newSize - 8).clamp(0, 70));
+    context
+        .read<CanvasCubit>()
+        .changeFontSize(selectedIndex, newSize.toDouble());
+  }
+
+  Widget _buildFontSizeWheel(
+    BuildContext context,
+    FixedExtentScrollController controller,
+    int? selectedIndex,
+  ) {
+    return SizedBox(
+      height: 40,
+      width: 60,
+      child: ListWheelScrollView.useDelegate(
+        itemExtent: 32,
+        diameterRatio: 1.2,
+        perspective: 0.003,
+        controller: controller,
+        physics: selectedIndex == null
+            ? const NeverScrollableScrollPhysics()
+            : const FixedExtentScrollPhysics(),
+        onSelectedItemChanged: (index) {
+          if (selectedIndex != null) {
+            final newSize = 8 + index;
+            context
+                .read<CanvasCubit>()
+                .changeFontSize(selectedIndex, newSize.toDouble());
+          }
+        },
+        childDelegate: ListWheelChildBuilderDelegate(
+          childCount: 71,
+          builder: (context, index) {
+            final size = 8 + index;
+            return Center(
+              child: Text(
+                '$size',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -154,7 +228,7 @@ class FontControls extends StatelessWidget {
   Widget _buildSizeButton({
     required BuildContext context,
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return Material(
       color: Colors.transparent,
@@ -315,62 +389,6 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  void _handleFontDialog(BuildContext context, int currentSize) {
-
-    final parentContext = context;
-    showDialog(
-      context: parentContext,
-      builder: (dialogContext) {
-        double sliderValue = currentSize.toDouble();
-
-        return StatefulBuilder(
-          builder: (dialogContext, setState) {
-            return AlertDialog(
-              title: const Text('Change Font Size'),
-              content: SizedBox(
-                width: 200,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Current Size: ${sliderValue.round()}'),
-                    Slider(
-                      value: sliderValue,
-                      min: 8,
-                      max: 72,
-                      divisions: 32,
-                      label: sliderValue.round().toString(),
-                      onChanged: (value) {
-                        setState(() => sliderValue = value);
-                        _onValueChanged(parentContext, value);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Close'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _onValueChanged(BuildContext context, double value) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontSize(
-            selectedIndex,
-            value.roundToDouble(),
-          );
-    }
-  }
-
   void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
     final selectedIndex =
         context.read<CanvasCubit>().state.textItems.length - 1;
@@ -397,20 +415,6 @@ class FontControls extends StatelessWidget {
       context
           .read<CanvasCubit>()
           .changeFontStyle(selectedIndex, FontStyle.normal);
-    }
-  }
-
-  void _changeFontSize(BuildContext context, {required bool decrease}) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      final currentSize =
-          context.read<CanvasCubit>().state.textItems[selectedIndex].fontSize;
-      final newSize = decrease ? currentSize - 2 : currentSize + 2;
-      context.read<CanvasCubit>().changeFontSize(
-            selectedIndex,
-            newSize,
-          );
     }
   }
 
