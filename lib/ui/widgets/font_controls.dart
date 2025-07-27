@@ -72,15 +72,22 @@ class FontControls extends StatelessWidget {
                   final fontSize = state.textItems.isNotEmpty
                       ? state.textItems.last.fontSize.round()
                       : 16;
-                  return Container(
-                    constraints: const BoxConstraints(minWidth: 36),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      '$fontSize',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                  return InkWell(
+                    onTap: () => {
+                      if (state.textItems.isNotEmpty) {
+                        _handleFontDialog(context, fontSize),
+                      }
+                    },
+                    child: Container(
+                      constraints: const BoxConstraints(minWidth: 36),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        '$fontSize',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   );
@@ -306,6 +313,62 @@ class FontControls extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleFontDialog(BuildContext context, int currentSize) {
+
+    final parentContext = context;
+    showDialog(
+      context: parentContext,
+      builder: (dialogContext) {
+        double sliderValue = currentSize.toDouble();
+
+        return StatefulBuilder(
+          builder: (dialogContext, setState) {
+            return AlertDialog(
+              title: const Text('Change Font Size'),
+              content: SizedBox(
+                width: 200,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Current Size: ${sliderValue.round()}'),
+                    Slider(
+                      value: sliderValue,
+                      min: 8,
+                      max: 72,
+                      divisions: 32,
+                      label: sliderValue.round().toString(),
+                      onChanged: (value) {
+                        setState(() => sliderValue = value);
+                        _onValueChanged(parentContext, value);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('Close'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _onValueChanged(BuildContext context, double value) {
+    final selectedIndex =
+        context.read<CanvasCubit>().state.textItems.length - 1;
+    if (selectedIndex >= 0) {
+      context.read<CanvasCubit>().changeFontSize(
+            selectedIndex,
+            value.roundToDouble(),
+          );
+    }
   }
 
   void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
