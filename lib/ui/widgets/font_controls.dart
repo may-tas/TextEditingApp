@@ -41,72 +41,163 @@ class FontControls extends StatelessWidget {
   }
 
   Widget _buildColorControls(BuildContext context) {
-    final canvasCubit = context.read<CanvasCubit>();
+    // Re-introducing the original hardcoded colors
+    final colors = [
+      Colors.black,
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.purple,
+      Colors.orange,
+      Colors.pink,
+    ];
 
-    return BlocBuilder<CanvasCubit, CanvasState>(
-      builder: (context, state) {
-        final selectedIndex = state.textItems.length - 1;
-        final selectedColor = selectedIndex >= 0
-            ? state.textItems[selectedIndex].color
-            : Colors.black;
-
-        return GestureDetector(
-          onTap: () {
-            if (selectedIndex < 0) return;
-
-            Color pickerColor = selectedColor;
-
-            showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  title: const Text('Select a color'),
-                  content: SingleChildScrollView(
-                    child: HueRingPicker(
-                      pickerColor: pickerColor,
-                      onColorChanged: (Color color) {
-                        pickerColor = color;
-                      },
-                      enableAlpha: false,
-                      displayThumbColor: true,
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('Done'),
-                      onPressed: () {
-                        canvasCubit.changeTextColor(selectedIndex, pickerColor);
-                        Navigator.of(dialogContext).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: selectedColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.5),
-                    width: 2,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_drop_down, color: Colors.black54),
-            ],
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          'Color',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
           ),
-        );
-      },
+        ),
+        const SizedBox(width: 12),
+        Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
+          child: BlocBuilder<CanvasCubit, CanvasState>(
+            builder: (context, state) {
+              final selectedIndex = state.textItems.length - 1;
+              final selectedColor = selectedIndex >= 0
+                  ? state.textItems[selectedIndex].color
+                  : Colors.black;
+
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...colors.map((color) {
+                    final isSelected = selectedColor == color;
+                    return GestureDetector(
+                      onTap: () {
+                        if (selectedIndex >= 0) {
+                          context
+                              .read<CanvasCubit>()
+                              .changeTextColor(selectedIndex, color);
+                        }
+                      },
+                      child: Container(
+                        width: 30,
+                        height: 30,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? Colors.blue
+                                : Colors.grey.withOpacity(0.3),
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  // Add button for custom color picker
+                  _buildAddColorButton(context, selectedIndex, selectedColor),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
+
+  Widget _buildAddColorButton(
+      BuildContext context, int selectedIndex, Color currentColor) {
+    return GestureDetector(
+      onTap: () {
+        if (selectedIndex < 0) return;
+
+        Color pickerColor = currentColor;
+
+        showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: const Text(
+                'Select a Color',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: BlockPicker(
+                  pickerColor: pickerColor,
+                  onColorChanged: (Color color) {
+                    pickerColor = color;
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purple[100],
+                    foregroundColor: Colors.deepPurple,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text('Select'),
+                  onPressed: () {
+                    context
+                        .read<CanvasCubit>()
+                        .changeTextColor(selectedIndex, pickerColor);
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.5),
+            width: 1,
+          ),
+        ),
+        child: const Icon(Icons.add, color: Colors.black54, size: 20),
+      ),
+    );
+  }
+
+  // --- Other unchanged methods below ---
 
   Widget _buildFontSizeControls(BuildContext context) {
     return Row(
