@@ -1,10 +1,9 @@
+import 'package:celebrare_assignment/constants/font_family_list.dart';
+import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
+import 'package:celebrare_assignment/cubit/canvas_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
-import '../../constants/font_family_list.dart';
-import '../../cubit/canvas_cubit.dart';
-import '../../cubit/canvas_state.dart';
 
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
@@ -18,7 +17,7 @@ class FontControls extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.1 * 255).toInt()),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -219,123 +218,42 @@ class FontControls extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey[300]!),
           ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              final state = context.watch<CanvasCubit>().state;
-              final selectedIndex = _getSelectedTextIndex(state);
-              final currentFontSize = _getCurrentFontSize(state, selectedIndex);
-              final controller = FixedExtentScrollController(
-                initialItem: (currentFontSize - 8).clamp(0, 70),
-              );
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildSizeButton(
-                    context: context,
-                    icon: Icons.remove,
-                    onPressed: selectedIndex != null
-                        ? () => _changeFontSizeWithStep(
-                              context,
-                              controller,
-                              selectedIndex,
-                              currentFontSize,
-                              -2,
-                            )
-                        : null,
-                  ),
-                  _buildFontSizeWheel(
-                    context,
-                    controller,
-                    selectedIndex,
-                  ),
-                  _buildSizeButton(
-                    context: context,
-                    icon: Icons.add,
-                    onPressed: selectedIndex != null
-                        ? () => _changeFontSizeWithStep(
-                              context,
-                              controller,
-                              selectedIndex,
-                              currentFontSize,
-                              2,
-                            )
-                        : null,
-                  ),
-                ],
-              );
-            },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildSizeButton(
+                context: context,
+                icon: Icons.remove,
+                onPressed: () => _changeFontSize(context, decrease: true),
+              ),
+              BlocBuilder<CanvasCubit, CanvasState>(
+                builder: (context, state) {
+                  final fontSize = state.textItems.isNotEmpty
+                      ? state.textItems.last.fontSize.round()
+                      : 16;
+                  return Container(
+                    constraints: const BoxConstraints(minWidth: 36),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      '$fontSize',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              _buildSizeButton(
+                context: context,
+                icon: Icons.add,
+                onPressed: () => _changeFontSize(context, decrease: false),
+              ),
+            ],
           ),
         ),
       ],
-    );
-  }
-
-  int? _getSelectedTextIndex(CanvasState state) {
-    return state.textItems.isNotEmpty ? state.textItems.length - 1 : null;
-  }
-
-  int _getCurrentFontSize(CanvasState state, int? selectedIndex) {
-    if (selectedIndex != null) {
-      return state.textItems[selectedIndex].fontSize.round();
-    }
-    return 16;
-  }
-
-  void _changeFontSizeWithStep(
-    BuildContext context,
-    FixedExtentScrollController controller,
-    int selectedIndex,
-    int currentSize,
-    int step,
-  ) {
-    final newSize = (currentSize + step).clamp(8, 78);
-    controller.jumpToItem((newSize - 8).clamp(0, 70));
-    context
-        .read<CanvasCubit>()
-        .changeFontSize(selectedIndex, newSize.toDouble());
-  }
-
-  Widget _buildFontSizeWheel(
-    BuildContext context,
-    FixedExtentScrollController controller,
-    int? selectedIndex,
-  ) {
-    return SizedBox(
-      height: 40,
-      width: 60,
-      child: ListWheelScrollView.useDelegate(
-        itemExtent: 32,
-        diameterRatio: 1.2,
-        perspective: 0.003,
-        controller: controller,
-        physics: selectedIndex == null
-            ? const NeverScrollableScrollPhysics()
-            : const FixedExtentScrollPhysics(),
-        onSelectedItemChanged: (index) {
-          if (selectedIndex != null) {
-            final newSize = 8 + index;
-            context
-                .read<CanvasCubit>()
-                .changeFontSize(selectedIndex, newSize.toDouble());
-          }
-        },
-        childDelegate: ListWheelChildBuilderDelegate(
-          childCount: 71,
-          builder: (context, index) {
-            final size = 8 + index;
-            return Center(
-              child: Text(
-                '$size',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 
@@ -388,7 +306,7 @@ class FontControls extends StatelessWidget {
   Widget _buildSizeButton({
     required BuildContext context,
     required IconData icon,
-    required VoidCallback? onPressed,
+    required VoidCallback onPressed,
   }) {
     return Material(
       color: Colors.transparent,
@@ -406,81 +324,6 @@ class FontControls extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildColorControls(BuildContext context) {
-    final colors = [
-      Colors.black,
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.purple,
-      Colors.orange,
-      Colors.pink,
-    ];
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Color',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final selectedColor = state.textItems.isNotEmpty
-                  ? state.textItems.last.color
-                  : Colors.black;
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: colors.map((color) {
-                  final isSelected = selectedColor == color;
-                  return GestureDetector(
-                    onTap: () {
-                      final selectedIndex = state.textItems.length - 1;
-                      if (selectedIndex >= 0) {
-                        context.read<CanvasCubit>().changeTextColor(
-                              selectedIndex,
-                              color,
-                            );
-                      }
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.blue
-                              : Colors.grey.withAlpha((0.3 * 255).toInt()),
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
 
   Widget _buildFontStyleControls(BuildContext context) {
     return Row(
@@ -576,7 +419,6 @@ class FontControls extends StatelessWidget {
       context
           .read<CanvasCubit>()
           .changeFontStyle(selectedIndex, FontStyle.normal);
-
     }
   }
 
@@ -591,7 +433,6 @@ class FontControls extends StatelessWidget {
         selectedIndex,
         newSize,
       );
-
     }
   }
 
