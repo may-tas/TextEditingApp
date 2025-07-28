@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubit/canvas_cubit.dart';
@@ -14,6 +15,18 @@ class EditableTextWidget extends StatelessWidget {
     required this.textItem,
   });
 
+  void _copyStyledText(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: textItem.text));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Text copied!'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -23,13 +36,16 @@ class EditableTextWidget extends StatelessWidget {
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
 
-        if (!context.mounted) return;
         if (result == '_delete_') {
           context.read<CanvasCubit>().deleteText(index);
         } else if (result != null) {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
+
+      /// 👇 Copy text on long press
+      onLongPress: () => _copyStyledText(context),
+
       child: Text(
         textItem.text,
         style: TextStyle(
@@ -108,7 +124,15 @@ class EditTextDialog extends StatelessWidget {
                   onPressed: () {
                     final trimmedText = controller.text.trim();
 
-                    if (trimmedText.isEmpty) {
+                    if (trimmedText.isEmpty) {  
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Text field cannot be empty'),
+                          backgroundColor: Colors.redAccent,
+                          behavior: SnackBarBehavior.fixed,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
                       formKey.currentState?.validate();
                     } else {
                       Navigator.pop(context, trimmedText);
