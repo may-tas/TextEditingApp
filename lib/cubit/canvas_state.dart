@@ -1,4 +1,4 @@
-import 'package:celebrare_assignment/models/text_item_model.dart';
+import '../models/text_item_model.dart';
 
 class CanvasState {
   final List<TextItem> textItems;

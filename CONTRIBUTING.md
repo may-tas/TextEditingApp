@@ -3,19 +3,42 @@
 Contributions are welcome! Please follow these steps:
 
 1. Fork the repository.
-2. Create a new branch for your feature or bugfix:
+2. Clone your fork:
+   ```bash
+   git clone https://github.com/your-username/TextEditingApp.git
+   ```
+3. Set the upstream remote to the original repository:
+   ```bash
+   git remote add upstream https://github.com/may-tas/TextEditingApp.git
+   ```
+4. Verify your remotes are set correctly:
+   ```bash
+   git remote -v
+   ```
+   You should see both origin (your fork) and upstream (original repo).
+   
+5. Before creating a new feature, fetch the latest changes from upstream:
+   ```bash
+   git fetch upstream
+   ```
+6. Check out the main branch and update it:
+   ```bash
+   git checkout main
+   git merge upstream/main
+   ```
+7. Create a new branch for your feature or bugfix:
    ```bash
    git checkout -b feature-name
    ```
-3. Commit your changes:
+8. Make your changes and commit them:
    ```bash
    git commit -m "Add some feature"
    ```
-4. Push to your branch:
+9. Push to your branch:
    ```bash
    git push origin feature-name
    ```
-5. Open a pull request.
+8. Open a pull request from your fork's branch to the original repository's main branch.
 
 📌 Guidelines for Working on Issues
 

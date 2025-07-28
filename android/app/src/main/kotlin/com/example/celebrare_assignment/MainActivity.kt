@@ -1,4 +1,4 @@
-package com.example.celebrare_assignment
+package com.example.texterra
 
 import io.flutter.embedding.android.FlutterActivity
 
