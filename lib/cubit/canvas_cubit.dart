@@ -110,4 +110,9 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
     emit(newState);
   }
+
+  void deleteText(int index) {
+    final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
+    emit(state.copyWith(textItems: updatedList));
+  }
 }
