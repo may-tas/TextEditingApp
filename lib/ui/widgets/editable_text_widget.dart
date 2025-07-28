@@ -30,7 +30,6 @@ class EditableTextWidget extends StatelessWidget {
               context: context,
               builder: (context) => EditTextDialog(initialText: textItem.text),
             );
-
             if (!context.mounted) return;
             if (result == '_delete_') {
               context.read<CanvasCubit>().deleteText(index);
@@ -67,6 +66,12 @@ class EditableTextWidget extends StatelessWidget {
             ),
           ),
         );
+        if (!context.mounted) return;
+        if (result == '_delete_') {
+          context.read<CanvasCubit>().deleteText(index);
+        } else if (result != null) {
+          context.read<CanvasCubit>().editText(index, result);
+        }
       },
     );
   }
@@ -79,6 +84,7 @@ class EditTextDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     final controller = TextEditingController(text: initialText);
 
     return Dialog(
@@ -99,16 +105,23 @@ class EditTextDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: 'Text',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.purple, width: 2),
+            Form(
+              key: formKey,
+              child: TextFormField(
+                controller: controller,
+                validator: (value) => (value == null || value.trim().isEmpty)
+                    ? 'Text cannot be empty'
+                    : null,
+                decoration: InputDecoration(
+                  labelText: 'Text',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide:
+                        const BorderSide(color: Colors.purple, width: 2),
+                  ),
                 ),
               ),
             ),
@@ -129,14 +142,7 @@ class EditTextDialog extends StatelessWidget {
                     final trimmedText = controller.text.trim();
 
                     if (trimmedText.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Text field cannot be empty'),
-                          backgroundColor: Colors.redAccent,
-                          behavior: SnackBarBehavior.fixed,
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
+                      formKey.currentState?.validate();
                     } else {
                       Navigator.pop(context, trimmedText);
                     }
