@@ -1,7 +1,8 @@
-import 'package:celebrare_assignment/cubit/canvas_cubit.dart';
-import 'package:celebrare_assignment/models/text_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubit/canvas_cubit.dart';
+import '../../models/text_item_model.dart';
 
 class EditableTextWidget extends StatelessWidget {
   final int index;
@@ -17,12 +18,16 @@ class EditableTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        final newText = await showDialog<String>(
+        final result = await showDialog<String>(
           context: context,
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
-        if (newText != null) {
-          context.read<CanvasCubit>().editText(index, newText);
+
+        if (!context.mounted) return;
+        if (result == '_delete_') {
+          context.read<CanvasCubit>().deleteText(index);
+        } else if (result != null) {
+          context.read<CanvasCubit>().editText(index, result);
         }
       },
       child: Text(
@@ -46,6 +51,7 @@ class EditTextDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     final controller = TextEditingController(text: initialText);
 
     return Dialog(
@@ -66,16 +72,23 @@ class EditTextDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: 'Text',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.purple, width: 2),
+            Form(
+              key: formKey,
+              child: TextFormField(
+                controller: controller,
+                validator: (value) => (value == null || value.trim().isEmpty)
+                    ? 'Text cannot be empty'
+                    : null,
+                decoration: InputDecoration(
+                  labelText: 'Text',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide:
+                        const BorderSide(color: Colors.purple, width: 2),
+                  ),
                 ),
               ),
             ),
@@ -84,15 +97,23 @@ class EditTextDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context, '_delete_'),
                   child: Text(
-                    'Cancel',
+                    'Remove',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context, controller.text),
+                  onPressed: () {
+                    final trimmedText = controller.text.trim();
+
+                    if (trimmedText.isEmpty) {
+                      formKey.currentState?.validate();
+                    } else {
+                      Navigator.pop(context, trimmedText);
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.purple[100],
                     foregroundColor: Colors.deepPurple,

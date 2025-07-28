@@ -1,7 +1,8 @@
-import 'package:celebrare_assignment/cubit/canvas_state.dart';
-import 'package:celebrare_assignment/models/text_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../models/text_item_model.dart';
+import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
@@ -109,5 +110,10 @@ class CanvasCubit extends Cubit<CanvasState> {
       future: [],
     );
     emit(newState);
+  }
+
+  void deleteText(int index) {
+    final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
+    emit(state.copyWith(textItems: updatedList));
   }
 }
