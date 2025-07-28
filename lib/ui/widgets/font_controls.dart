@@ -1,5 +1,7 @@
+// lib/ui/widgets/font_controls.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:texterra/models/text_item_model.dart';
 
 import '../../constants/font_family_list.dart';
 import '../../cubit/canvas_cubit.dart';
@@ -10,37 +12,51 @@ class FontControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.1 * 255).toInt()),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      builder: (context, state) {
+        final isTextSelected = state.selectedIndex != null;
+        final selectedTextItem =
+            isTextSelected ? state.textItems[state.selectedIndex!] : null;
+
+        return Container(
+          height: 80,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha((0.1 * 255).toInt()),
+                blurRadius: 8,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _buildFontSizeControls(context),
-            const SizedBox(width: 25),
-            _buildFontStyleControls(context),
-            const SizedBox(width: 25),
-            _buildFontFamilyControls(context),
-            const SizedBox(width: 25),
-            _buildColorControls(context),
-          ],
-        ),
-      ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildFontSizeControls(
+                    context, selectedTextItem, isTextSelected),
+                const SizedBox(width: 25),
+                _buildFontStyleControls(
+                    context, selectedTextItem, isTextSelected),
+                const SizedBox(width: 25),
+                _buildFontFamilyControls(
+                    context, selectedTextItem, isTextSelected),
+                const SizedBox(width: 25),
+                _buildColorControls(context, selectedTextItem, isTextSelected),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildFontSizeControls(BuildContext context) {
+  // --- Font Size Controls ---
+  Widget _buildFontSizeControls(
+      BuildContext context, TextItem? selectedTextItem, bool isEnabled) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -55,9 +71,10 @@ class FontControls extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isEnabled ? Colors.grey[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(
+                color: isEnabled ? Colors.grey[300]! : Colors.grey[400]!),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -65,31 +82,31 @@ class FontControls extends StatelessWidget {
               _buildSizeButton(
                 context: context,
                 icon: Icons.remove,
-                onPressed: () => _changeFontSize(context, decrease: true),
+                onPressed: isEnabled
+                    ? () => _changeFontSizeWithStep(context, -2)
+                    : null,
               ),
-              BlocBuilder<CanvasCubit, CanvasState>(
-                builder: (context, state) {
-                  final fontSize = state.textItems.isNotEmpty
-                      ? state.textItems.last.fontSize.round()
-                      : 16;
-                  return Container(
-                    constraints: const BoxConstraints(minWidth: 36),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      '$fontSize',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                    ),
-                  );
-                },
+              Container(
+                constraints: const BoxConstraints(minWidth: 36),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  selectedTextItem != null
+                      ? selectedTextItem.fontSize.round().toString()
+                      : 'N/A',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: isEnabled ? Colors.grey[800] : Colors.grey[500],
+                  ),
+                ),
               ),
               _buildSizeButton(
                 context: context,
                 icon: Icons.add,
-                onPressed: () => _changeFontSize(context, decrease: false),
+                onPressed: isEnabled
+                    ? () => _changeFontSizeWithStep(context, 2)
+                    : null,
               ),
             ],
           ),
@@ -98,7 +115,22 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  Widget _buildFontFamilyControls(BuildContext context) {
+  void _changeFontSizeWithStep(
+    BuildContext context,
+    int step,
+  ) {
+    final cubit = context.read<CanvasCubit>();
+    final state = cubit.state;
+    if (state.selectedIndex == null) return;
+
+    final currentSize = state.textItems[state.selectedIndex!].fontSize;
+    final newSize = (currentSize + step).clamp(8, 78);
+    cubit.changeFontSize(newSize.toDouble());
+  }
+
+  // --- Font Family Controls ---
+  Widget _buildFontFamilyControls(
+      BuildContext context, TextItem? selectedTextItem, bool isEnabled) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -113,60 +145,37 @@ class FontControls extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isEnabled ? Colors.grey[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(
+                color: isEnabled ? Colors.grey[300]! : Colors.grey[400]!),
           ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final currentFont = state.textItems.isNotEmpty
-                  ? state.textItems.last.fontFamily
-                  : 'Arial';
-
-              return DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  menuWidth: 170,
-                  value: currentFont,
-                  items: items,
-                  onChanged: (value) => _changeFontFamily(context, value),
-                  style: TextStyle(
-                    color: Colors.grey[800],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
-                ),
-              );
-            },
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              menuWidth: 170,
+              value: selectedTextItem?.fontFamily ?? 'Arial',
+              items: items,
+              onChanged: isEnabled
+                  ? (value) => _changeFontFamily(context, value)
+                  : null,
+              style: TextStyle(
+                color: isEnabled ? Colors.grey[800] : Colors.grey[500],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              icon: Icon(Icons.arrow_drop_down,
+                  color: isEnabled ? Colors.grey[600] : Colors.grey[400]),
+              hint: !isEnabled ? const Text('Select Text') : null,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSizeButton({
-    required BuildContext context,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(4),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(
-            icon,
-            size: 16,
-            color: Colors.grey[700],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildColorControls(BuildContext context) {
+  // --- Color Controls ---
+  Widget _buildColorControls(
+      BuildContext context, TextItem? selectedTextItem, bool isEnabled) {
     final colors = [
       Colors.black,
       Colors.red,
@@ -175,6 +184,7 @@ class FontControls extends StatelessWidget {
       Colors.purple,
       Colors.orange,
       Colors.pink,
+      Colors.white,
     ];
 
     return Row(
@@ -191,56 +201,45 @@ class FontControls extends StatelessWidget {
         Container(
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isEnabled ? Colors.grey[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(
+                color: isEnabled ? Colors.grey[300]! : Colors.grey[400]!),
           ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final selectedColor = state.textItems.isNotEmpty
-                  ? state.textItems.last.color
-                  : Colors.black;
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: colors.map((color) {
-                  final isSelected = selectedColor == color;
-                  return GestureDetector(
-                    onTap: () {
-                      final selectedIndex = state.textItems.length - 1;
-                      if (selectedIndex >= 0) {
-                        context.read<CanvasCubit>().changeTextColor(
-                              selectedIndex,
-                              color,
-                            );
-                      }
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.blue
-                              : Colors.grey.withAlpha((0.3 * 255).toInt()),
-                          width: isSelected ? 2 : 1,
-                        ),
-                      ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: colors.map((color) {
+              final selectedColor = selectedTextItem?.color ?? Colors.black;
+              final isSelected = selectedColor == color;
+              return GestureDetector(
+                onTap:
+                    isEnabled ? () => _changeTextColor(context, color) : null,
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isSelected
+                          ? (isEnabled ? Colors.blue : Colors.grey)
+                          : Colors.grey.withAlpha((0.3 * 255).toInt()),
+                      width: isSelected ? 2 : 1,
                     ),
-                  );
-                }).toList(),
+                  ),
+                ),
               );
-            },
+            }).toList(),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildFontStyleControls(BuildContext context) {
+  // --- Font Style Controls ---
+  Widget _buildFontStyleControls(
+      BuildContext context, TextItem? selectedTextItem, bool isEnabled) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -255,9 +254,10 @@ class FontControls extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           decoration: BoxDecoration(
-            color: Colors.grey[100],
+            color: isEnabled ? Colors.grey[100] : Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(
+                color: isEnabled ? Colors.grey[300]! : Colors.grey[400]!),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -265,19 +265,23 @@ class FontControls extends StatelessWidget {
               _buildStyleButton(
                 context: context,
                 icon: Icons.format_bold,
-                onPressed: () => _changeFontWeight(context, FontWeight.bold),
+                onPressed: isEnabled
+                    ? () => _changeFontWeight(context, FontWeight.bold)
+                    : null,
               ),
               const SizedBox(width: 8),
               _buildStyleButton(
                 context: context,
                 icon: Icons.format_italic,
-                onPressed: () => _changeFontStyle(context, FontStyle.italic),
+                onPressed: isEnabled
+                    ? () => _changeFontStyle(context, FontStyle.italic)
+                    : null,
               ),
               const SizedBox(width: 8),
               _buildStyleButton(
                 context: context,
                 icon: Icons.format_clear,
-                onPressed: () => _resetFontStyle(context),
+                onPressed: isEnabled ? () => _resetFontStyle(context) : null,
               ),
             ],
           ),
@@ -286,10 +290,33 @@ class FontControls extends StatelessWidget {
     );
   }
 
+  // --- Helper Buttons ---
+  Widget _buildSizeButton({
+    required BuildContext context,
+    required IconData icon,
+    required VoidCallback? onPressed,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(
+            icon,
+            size: 16,
+            color: onPressed != null ? Colors.grey[700] : Colors.grey[400],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildStyleButton({
     required BuildContext context,
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return Material(
       color: Colors.transparent,
@@ -301,63 +328,35 @@ class FontControls extends StatelessWidget {
           child: Icon(
             icon,
             size: 20,
-            color: Colors.grey[700],
+            color: onPressed != null ? Colors.grey[700] : Colors.grey[400],
           ),
         ),
       ),
     );
   }
 
+  // --- Font Modification Callbacks ---
   void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontStyle(selectedIndex, fontStyle);
-    }
+    context.read<CanvasCubit>().changeFontStyle(fontStyle);
   }
 
   void _changeFontWeight(BuildContext context, FontWeight fontWeight) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontWeight(selectedIndex, fontWeight);
-    }
+    context.read<CanvasCubit>().changeFontWeight(fontWeight);
   }
 
   void _resetFontStyle(BuildContext context) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context
-          .read<CanvasCubit>()
-          .changeFontWeight(selectedIndex, FontWeight.normal);
-      context
-          .read<CanvasCubit>()
-          .changeFontStyle(selectedIndex, FontStyle.normal);
-    }
-  }
-
-  void _changeFontSize(BuildContext context, {required bool decrease}) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      final currentSize =
-          context.read<CanvasCubit>().state.textItems[selectedIndex].fontSize;
-      final newSize = decrease ? currentSize - 2 : currentSize + 2;
-      context.read<CanvasCubit>().changeFontSize(
-            selectedIndex,
-            newSize,
-          );
-    }
+    final cubit = context.read<CanvasCubit>();
+    cubit.changeFontWeight(FontWeight.normal);
+    cubit.changeFontStyle(FontStyle.normal);
   }
 
   void _changeFontFamily(BuildContext context, String? fontFamily) {
     if (fontFamily != null) {
-      final selectedIndex =
-          context.read<CanvasCubit>().state.textItems.length - 1;
-      if (selectedIndex >= 0) {
-        context.read<CanvasCubit>().changeFontFamily(selectedIndex, fontFamily);
-      }
+      context.read<CanvasCubit>().changeFontFamily(fontFamily);
     }
+  }
+
+  void _changeTextColor(BuildContext context, Color color) {
+    context.read<CanvasCubit>().changeTextColor(color);
   }
 }
