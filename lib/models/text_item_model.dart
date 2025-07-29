@@ -1,4 +1,3 @@
-// lib/models/text_item_model.dart
 import 'dart:ui';
 
 class TextItem {
