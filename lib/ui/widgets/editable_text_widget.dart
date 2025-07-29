@@ -1,7 +1,9 @@
+// lib/ui/widgets/editable_text_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubit/canvas_cubit.dart';
+import '../../cubit/canvas_state.dart';
 import '../../models/text_item_model.dart';
 
 class EditableTextWidget extends StatelessWidget {
@@ -16,13 +18,54 @@ class EditableTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final result = await showDialog<String>(
-          context: context,
-          builder: (context) => EditTextDialog(initialText: textItem.text),
-        );
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      builder: (context, state) {
+        final isSelected = state.selectedIndex == index;
 
+        return GestureDetector(
+          onTap: () async {
+            context.read<CanvasCubit>().selectTextItem(index);
+
+            final result = await showDialog<String>(
+              context: context,
+              builder: (context) => EditTextDialog(initialText: textItem.text),
+            );
+            if (!context.mounted) return;
+            if (result == '_delete_') {
+              context.read<CanvasCubit>().deleteText(index);
+            } else if (result != null) {
+              context.read<CanvasCubit>().editText(index, result);
+            }
+          },
+          onPanUpdate: (details) {
+            context.read<CanvasCubit>().selectTextItem(index);
+
+            const speedFactor = 2.0;
+            context.read<CanvasCubit>().moveText(
+                  index,
+                  textItem.x + details.delta.dx * speedFactor,
+                  textItem.y + details.delta.dy * speedFactor,
+                );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: isSelected
+                  ? Border.all(color: Colors.blueAccent, width: 2.0)
+                  : Border.all(color: Colors.transparent, width: 2.0),
+            ),
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              textItem.text,
+              style: TextStyle(
+                fontStyle: textItem.fontStyle,
+                fontWeight: textItem.fontWeight,
+                fontSize: textItem.fontSize,
+                fontFamily: textItem.fontFamily,
+                color: textItem.color,
+              ),
+            ),
+          ),
+        );
         if (!context.mounted) return;
         if (result == '_delete_') {
           context.read<CanvasCubit>().deleteText(index);
@@ -30,16 +73,6 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-      child: Text(
-        textItem.text,
-        style: TextStyle(
-          fontStyle: textItem.fontStyle,
-          fontWeight: textItem.fontWeight,
-          fontSize: textItem.fontSize,
-          fontFamily: textItem.fontFamily,
-          color: textItem.color,
-        ),
-      ),
     );
   }
 }
