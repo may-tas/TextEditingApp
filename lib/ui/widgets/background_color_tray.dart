@@ -12,7 +12,7 @@ class BackgroundColorTray extends StatelessWidget {
     Color(0xFF1E3A8A), // Deep Blue
     Color(0xFF166534), // Deep Green
     Color(0xFF7C2D12), // Deep Brown/Orange
-    Color.fromARGB(255, 255, 255, 255) // White
+    Color.fromARGB(254, 255, 255, 255) // White
   ];
 
   @override
