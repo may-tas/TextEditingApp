@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../models/text_item_model.dart';
 import 'canvas_state.dart';
 
@@ -27,6 +26,11 @@ class CanvasCubit extends Cubit<CanvasState> {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(color: color);
     _updateState(textItems: updatedItems);
+  }
+
+  // method to change background color
+  void changeBackgroundColor(Color color) {
+    _updateState(backgroundColor: color);
   }
 
   // method to editText and emit changes
@@ -76,7 +80,6 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.history.isNotEmpty) {
       final previousState = state.history.last;
       final newHistory = List<CanvasState>.from(state.history)..removeLast();
-
       emit(previousState.copyWith(
         history: newHistory,
         future: [state, ...state.future],
@@ -89,7 +92,6 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.future.isNotEmpty) {
       final nextState = state.future.first;
       final newFuture = List<CanvasState>.from(state.future)..removeAt(0);
-
       emit(nextState.copyWith(
         future: newFuture,
         history: [...state.history, state],
@@ -103,9 +105,13 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // update state with this
-  void _updateState({required List<TextItem> textItems}) {
+  void _updateState({
+    List<TextItem>? textItems,
+    Color? backgroundColor,
+  }) {
     final newState = state.copyWith(
-      textItems: textItems,
+      textItems: textItems ?? state.textItems,
+      backgroundColor: backgroundColor,
       history: [...state.history, state],
       future: [],
     );

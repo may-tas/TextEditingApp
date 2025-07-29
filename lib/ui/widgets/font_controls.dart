@@ -262,7 +262,7 @@ class FontControls extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const Text(
-          'Color',
+          'Text Color',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 14,
