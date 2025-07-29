@@ -1,4 +1,3 @@
-// lib/ui/screens/canvas_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,41 +43,46 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          context.read<CanvasCubit>().selectTextItem(null);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFF1A1A1A),
-                const Color(0xFF1A1A1A).withAlpha((0.95 * 255).toInt()),
-              ],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              const Color(0xFF1A1A1A),
+              const Color(0xFF1A1A1A).withAlpha((0.95 * 255).toInt()),
+            ],
           ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  ...state.textItems.asMap().entries.map(
-                    (entry) {
-                      final index = entry.key;
-                      final textItem = entry.value;
-                      return Positioned(
-                        left: textItem.x,
-                        top: textItem.y,
+        ),
+        child: BlocBuilder<CanvasCubit, CanvasState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                ...state.textItems.asMap().entries.map(
+                  (entry) {
+                    final index = entry.key;
+                    final textItem = entry.value;
+                    return Positioned(
+                      left: textItem.x,
+                      top: textItem.y,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          const speedFactor = 2.0;
+                          context.read<CanvasCubit>().moveText(
+                                index,
+                                textItem.x + details.delta.dx * speedFactor,
+                                textItem.y + details.delta.dy * speedFactor,
+                              );
+                        },
                         child: EditableTextWidget(
                             index: index, textItem: textItem),
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
       extendBody: true,

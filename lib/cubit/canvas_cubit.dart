@@ -1,4 +1,3 @@
-// lib/cubit/canvas_cubit.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,20 +6,6 @@ import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
-
-  void selectTextItem(int? index) {
-    if (index != state.selectedIndex) {
-      emit(state.copyWith(selectedIndex: index));
-    }
-  }
-
-  int? _getEffectiveSelectedIndex() {
-    final index = state.selectedIndex;
-    if (index != null && index >= 0 && index < state.textItems.length) {
-      return index;
-    }
-    return null;
-  }
 
   // method to add the text
   void addText(String text) {
@@ -34,18 +19,11 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontFamily: 'Arial',
       color: Colors.white, // My Default color for the text
     );
-    final updatedTextItems = [...state.textItems, newTextItem];
-    _updateState(
-      textItems: updatedTextItems,
-      selectedIndex: updatedTextItems.length - 1,
-    );
+    _updateState(textItems: [...state.textItems, newTextItem]);
   }
 
   // method to change and emit new TextColor
-  void changeTextColor(Color color) {
-    final index = _getEffectiveSelectedIndex();
-    if (index == null) return;
-
+  void changeTextColor(int index, Color color) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(color: color);
     _updateState(textItems: updatedItems);
@@ -66,40 +44,28 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // method to change and emit new fontSize
-  void changeFontSize(double fontSize) {
-    final index = _getEffectiveSelectedIndex();
-    if (index == null) return;
-
+  void changeFontSize(int index, double fontSize) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(fontSize: fontSize);
     _updateState(textItems: updatedItems);
   }
 
   // method to change and emit new fontFamily
-  void changeFontFamily(String fontFamily) {
-    final index = _getEffectiveSelectedIndex();
-    if (index == null) return;
-
+  void changeFontFamily(int index, String fontFamily) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(fontFamily: fontFamily);
     _updateState(textItems: updatedItems);
   }
 
   // method to change and emit new fontStyle
-  void changeFontStyle(FontStyle fontStyle) {
-    final index = _getEffectiveSelectedIndex();
-    if (index == null) return;
-
+  void changeFontStyle(int index, FontStyle fontStyle) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(fontStyle: fontStyle);
     _updateState(textItems: updatedItems);
   }
 
   // method to change and emit new fontWeight
-  void changeFontWeight(FontWeight fontWeight) {
-    final index = _getEffectiveSelectedIndex();
-    if (index == null) return;
-
+  void changeFontWeight(int index, FontWeight fontWeight) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(fontWeight: fontWeight);
     _updateState(textItems: updatedItems);
@@ -133,39 +99,21 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to empty the canvas
   void clearCanvas() {
-    _updateState(textItems: [], selectedIndex: null);
+    _updateState(textItems: []);
   }
 
   // update state with this
-  void _updateState({
-    required List<TextItem> textItems,
-    int? selectedIndex,
-  }) {
-    final effectiveSelectedIndex = selectedIndex ?? state.selectedIndex;
-
+  void _updateState({required List<TextItem> textItems}) {
     final newState = state.copyWith(
       textItems: textItems,
       history: [...state.history, state],
       future: [],
-      selectedIndex: effectiveSelectedIndex,
     );
     emit(newState);
   }
 
   void deleteText(int index) {
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    int? newSelectedIndex = state.selectedIndex;
-
-    if (newSelectedIndex != null) {
-      if (newSelectedIndex == index) {
-        newSelectedIndex = null;
-      } else if (newSelectedIndex > index) {
-        newSelectedIndex--;
-      }
-    }
-    _updateState(
-      textItems: updatedList,
-      selectedIndex: newSelectedIndex,
-    );
+    emit(state.copyWith(textItems: updatedList));
   }
 }
