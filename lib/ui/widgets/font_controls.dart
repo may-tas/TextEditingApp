@@ -34,9 +34,56 @@ class FontControls extends StatelessWidget {
             _buildFontFamilyControls(context),
             const SizedBox(width: 25),
             _buildColorControls(context),
+            const SizedBox(width: 25), // Add spacing for the new button
+            _buildClearFormatButton(context), // Call your new function here
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildClearFormatButton(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) =>
+      previous.selectedTextItemIndex != current.selectedTextItemIndex,
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('Restore Default',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              // re-using Button-style for consistent UI
+              child: _buildStyleButton(
+                icon: Icons.layers_clear,
+                isSelected: false, // This button is never in a "selected" state.
+                onPressed: isDisabled
+                    ? null
+                    : () {
+                  final cubit = context.read<CanvasCubit>();
+                  // Reset all properties to their default values.
+                  cubit.changeFontWeight(selectedIndex, FontWeight.normal);
+                  cubit.changeFontStyle(selectedIndex, FontStyle.normal);
+                  cubit.changeTextColor(selectedIndex, Colors.white);
+                  cubit.changeFontFamily(selectedIndex, 'Arial');
+                  cubit.changeFontSize(selectedIndex, 16.0);
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -116,7 +163,7 @@ class FontControls extends StatelessWidget {
                                 selectedIndex, FontStyle.normal);
                             context.read<CanvasCubit>().changeFontWeight(
                                 selectedIndex, FontWeight.normal);
-                          },
+                            },
                   ),
                 ],
               ),
