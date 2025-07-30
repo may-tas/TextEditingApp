@@ -112,7 +112,7 @@ class FontControls extends StatelessWidget {
   }
 
   int? _getSelectedTextIndex(CanvasState state) {
-    return state.textItems.isNotEmpty ? state.textItems.length - 1 : null;
+    return state.selectedIndex;
   }
 
   int _getCurrentFontSize(CanvasState state, int? selectedIndex) {
@@ -200,9 +200,9 @@ class FontControls extends StatelessWidget {
           ),
           child: BlocBuilder<CanvasCubit, CanvasState>(
             builder: (context, state) {
-              final currentFont = state.textItems.isNotEmpty
-                  ? state.textItems.last.fontFamily
-                  : 'Arial';
+              final selectedTextItem =
+                  context.read<CanvasCubit>().getSelectedTextItem();
+              final currentFont = selectedTextItem?.fontFamily ?? 'Arial';
 
               return DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -311,9 +311,9 @@ class FontControls extends StatelessWidget {
           ),
           child: BlocBuilder<CanvasCubit, CanvasState>(
             builder: (context, state) {
-              final selectedColor = state.textItems.isNotEmpty
-                  ? state.textItems.last.color
-                  : Colors.black;
+              final selectedTextItem =
+                  context.read<CanvasCubit>().getSelectedTextItem();
+              final selectedColor = selectedTextItem?.color ?? Colors.black;
 
               return Row(
                 mainAxisSize: MainAxisSize.min,
@@ -321,10 +321,9 @@ class FontControls extends StatelessWidget {
                   final isSelected = selectedColor == color;
                   return GestureDetector(
                     onTap: () {
-                      final selectedIndex = state.textItems.length - 1;
-                      if (selectedIndex >= 0) {
+                      if (state.selectedIndex != null) {
                         context.read<CanvasCubit>().changeTextColor(
-                              selectedIndex,
+                              state.selectedIndex!,
                               color,
                             );
                       }
@@ -423,25 +422,22 @@ class FontControls extends StatelessWidget {
   }
 
   void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
+    final selectedIndex = context.read<CanvasCubit>().state.selectedIndex;
+    if (selectedIndex != null) {
       context.read<CanvasCubit>().changeFontStyle(selectedIndex, fontStyle);
     }
   }
 
   void _changeFontWeight(BuildContext context, FontWeight fontWeight) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
+    final selectedIndex = context.read<CanvasCubit>().state.selectedIndex;
+    if (selectedIndex != null) {
       context.read<CanvasCubit>().changeFontWeight(selectedIndex, fontWeight);
     }
   }
 
   void _resetFontStyle(BuildContext context) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
+    final selectedIndex = context.read<CanvasCubit>().state.selectedIndex;
+    if (selectedIndex != null) {
       context
           .read<CanvasCubit>()
           .changeFontWeight(selectedIndex, FontWeight.normal);
@@ -453,9 +449,8 @@ class FontControls extends StatelessWidget {
 
   void _changeFontFamily(BuildContext context, String? fontFamily) {
     if (fontFamily != null) {
-      final selectedIndex =
-          context.read<CanvasCubit>().state.textItems.length - 1;
-      if (selectedIndex >= 0) {
+      final selectedIndex = context.read<CanvasCubit>().state.selectedIndex;
+      if (selectedIndex != null) {
         context.read<CanvasCubit>().changeFontFamily(selectedIndex, fontFamily);
       }
     }

@@ -55,16 +55,22 @@ class CanvasScreen extends StatelessWidget {
             ],
           ),
         ),
-        child: BlocBuilder<CanvasCubit, CanvasState>(
-          builder: (context, state) {
-            return Stack(
-              children: state.textItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final textItem = entry.value;
-                return _DraggableText(index: index, textItem: textItem);
-              }).toList(),
-            );
+        child: GestureDetector(
+          onTap: () {
+            // Deselect text when tapping on empty space
+            context.read<CanvasCubit>().deselectText();
           },
+          child: BlocBuilder<CanvasCubit, CanvasState>(
+            builder: (context, state) {
+              return Stack(
+                children: state.textItems.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final textItem = entry.value;
+                  return _DraggableText(index: index, textItem: textItem);
+                }).toList(),
+              );
+            },
+          ),
         ),
       ),
       extendBody: true,

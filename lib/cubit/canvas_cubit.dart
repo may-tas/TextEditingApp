@@ -19,7 +19,10 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontFamily: 'Arial',
       color: Colors.white, // My Default color for the text
     );
+    final newIndex = state.textItems.length;
     _updateState(textItems: [...state.textItems, newTextItem]);
+    // Automatically select the newly added text
+    selectText(newIndex);
   }
 
   // method to change and emit new TextColor
@@ -108,12 +111,49 @@ class CanvasCubit extends Cubit<CanvasState> {
       textItems: textItems,
       history: [...state.history, state],
       future: [],
+      selectedIndex: state.selectedIndex,
     );
     emit(newState);
   }
 
   void deleteText(int index) {
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    emit(state.copyWith(textItems: updatedList));
+    
+    // Update selectedIndex if the deleted item was selected
+    int? newSelectedIndex = state.selectedIndex;
+    if (state.selectedIndex == index) {
+      // If we deleted the selected item, deselect
+      newSelectedIndex = null;
+    } else if (state.selectedIndex != null && state.selectedIndex! > index) {
+      // If we deleted an item before the selected item, adjust the index
+      newSelectedIndex = state.selectedIndex! - 1;
+    }
+    
+    emit(state.copyWith(
+      textItems: updatedList,
+      selectedIndex: newSelectedIndex,
+    ));
+  }
+
+  // method to select a text item
+  void selectText(int index) {
+    if (index >= 0 && index < state.textItems.length) {
+      emit(state.copyWith(selectedIndex: index));
+    }
+  }
+
+  // method to deselect text
+  void deselectText() {
+    emit(state.copyWith(selectedIndex: null));
+  }
+
+  // method to get the currently selected text item
+  TextItem? getSelectedTextItem() {
+    if (state.selectedIndex != null && 
+        state.selectedIndex! >= 0 && 
+        state.selectedIndex! < state.textItems.length) {
+      return state.textItems[state.selectedIndex!];
+    }
+    return null;
   }
 }

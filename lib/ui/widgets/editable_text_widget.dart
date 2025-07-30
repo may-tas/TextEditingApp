@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubit/canvas_cubit.dart';
+import '../../cubit/canvas_state.dart';
 import '../../models/text_item_model.dart';
 
 class EditableTextWidget extends StatelessWidget {
@@ -17,30 +18,56 @@ class EditableTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        final result = await showDialog<String>(
-          context: context,
-          builder: (context) => EditTextDialog(initialText: textItem.text),
-        );
+      onTap: () {
+        // Select this text item first
+        context.read<CanvasCubit>().selectText(index);
 
-        if (!context.mounted) return;
-        if (result == '_delete_') {
-          context.read<CanvasCubit>().deleteText(index);
-        } else if (result != null) {
-          context.read<CanvasCubit>().editText(index, result);
-        }
+        // Then show the edit dialog
+        _showEditDialog(context);
       },
-      child: Text(
-        textItem.text,
-        style: TextStyle(
-          fontStyle: textItem.fontStyle,
-          fontWeight: textItem.fontWeight,
-          fontSize: textItem.fontSize,
-          fontFamily: textItem.fontFamily,
-          color: textItem.color,
-        ),
+      child: BlocBuilder<CanvasCubit, CanvasState>(
+        builder: (context, state) {
+          final isSelected =
+              state.selectedIndex != null && state.selectedIndex == index;
+          return Container(
+            padding: const EdgeInsets.all(4),
+            decoration: isSelected
+                ? BoxDecoration(
+                    border: Border.all(
+                      color: Colors.blue,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  )
+                : null,
+            child: Text(
+              textItem.text,
+              style: TextStyle(
+                fontStyle: textItem.fontStyle,
+                fontWeight: textItem.fontWeight,
+                fontSize: textItem.fontSize,
+                fontFamily: textItem.fontFamily,
+                color: textItem.color,
+              ),
+            ),
+          );
+        },
       ),
     );
+  }
+
+  void _showEditDialog(BuildContext context) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => EditTextDialog(initialText: textItem.text),
+    );
+
+    if (!context.mounted) return;
+    if (result == '_delete_') {
+      context.read<CanvasCubit>().deleteText(index);
+    } else if (result != null) {
+      context.read<CanvasCubit>().editText(index, result);
+    }
   }
 }
 
