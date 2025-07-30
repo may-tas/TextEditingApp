@@ -61,7 +61,8 @@ class CanvasScreen extends StatelessWidget {
               children: state.textItems.asMap().entries.map((entry) {
                 final index = entry.key;
                 final textItem = entry.value;
-                return _DraggableText(index: index, textItem: textItem);
+                final isSelected = state.selectedTextItemIndex == index;
+                return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
               }).toList(),
             );
           },
@@ -101,10 +102,12 @@ class CanvasScreen extends StatelessWidget {
 class _DraggableText extends StatefulWidget {
   final int index;
   final TextItem textItem;
+  final bool isSelected;
 
   const _DraggableText({
     required this.index,
     required this.textItem,
+    required this.isSelected,
   });
 
   @override
@@ -150,6 +153,7 @@ class _DraggableTextState extends State<_DraggableText> {
         child: EditableTextWidget(
           index: widget.index,
           textItem: widget.textItem,
+          isSelected: widget.isSelected,
         ),
       ),
     );
