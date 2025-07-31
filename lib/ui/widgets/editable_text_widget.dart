@@ -7,17 +7,20 @@ import '../../models/text_item_model.dart';
 class EditableTextWidget extends StatelessWidget {
   final int index;
   final TextItem textItem;
+  final bool isSelected;
 
   const EditableTextWidget({
     super.key,
     required this.index,
     required this.textItem,
+    required this.isSelected,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
+      onTap: () => context.read<CanvasCubit>().selectText(index),
+      onDoubleTap: () async {
         final result = await showDialog<String>(
           context: context,
           builder: (context) => EditTextDialog(initialText: textItem.text),
@@ -38,6 +41,7 @@ class EditableTextWidget extends StatelessWidget {
           fontSize: textItem.fontSize,
           fontFamily: textItem.fontFamily,
           color: textItem.color,
+          backgroundColor: isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
         ),
       ),
     );

@@ -6,6 +6,13 @@ import 'canvas_state.dart';
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
 
+  //method to select text
+  void selectText(int index) {
+    if (index >= 0 && index < state.textItems.length) {
+      emit(state.copyWith(selectedTextItemIndex: index));
+    }
+  }
+
   // method to add the text
   void addText(String text) {
     final newTextItem = TextItem(
@@ -18,7 +25,15 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontFamily: 'Arial',
       color: Colors.white, // My Default color for the text
     );
-    _updateState(textItems: [...state.textItems, newTextItem]);
+    final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
+    emit(
+      state.copyWith(
+        textItems: updatedItems,
+        selectedTextItemIndex: updatedItems.length - 1,
+        history: [...state.history, state],
+        future: [],
+      ),
+    );
   }
 
   // method to change and emit new TextColor
@@ -101,7 +116,15 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to empty the canvas
   void clearCanvas() {
-    _updateState(textItems: []);
+    emit(
+      state.copyWith(
+        textItems: [],
+        history: [...state.history, state],
+        future: [],
+        selectedTextItemIndex: null,
+        deselect: true,
+      ),
+    );
   }
 
   // update state with this
@@ -120,6 +143,11 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   void deleteText(int index) {
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    emit(state.copyWith(textItems: updatedList));
+    emit(state.copyWith(
+        textItems: updatedList,
+        selectedTextItemIndex: null,
+        history: [...state.history, state],
+        future: [],
+        deselect: true));
   }
 }
