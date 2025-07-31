@@ -35,14 +35,17 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 25),
             _buildColorControls(context),
             const SizedBox(width: 25),
-            _buildBackgroundColorButton(context), // Added background color button
+            _buildBackgroundColorButton(
+                context), // Added background color button
+            const SizedBox(width: 25), // Add spacing for the new button
+            _buildClearFormatButton(context), // Call your new function here
+            // Added background color button
           ],
         ),
       ),
     );
   }
 
-  // New method for background color button
   Widget _buildBackgroundColorButton(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
       builder: (context, state) {
@@ -63,15 +66,16 @@ class FontControls extends StatelessWidget {
               },
               child: Container(
                 height: 40,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: state.isBackgroundColorTrayVisible 
-                      ? Colors.blue.shade50 
+                  color: state.isBackgroundColorTrayVisible
+                      ? Colors.blue.shade50
                       : Colors.grey[100],
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: state.isBackgroundColorTrayVisible 
-                        ? Colors.blue.shade300 
+                    color: state.isBackgroundColorTrayVisible
+                        ? Colors.blue.shade300
                         : Colors.grey[300]!,
                   ),
                 ),
@@ -84,21 +88,66 @@ class FontControls extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: state.backgroundColor,
                         borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey.shade400, width: 1),
+                        border:
+                            Border.all(color: Colors.grey.shade400, width: 1),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Icon(
-                      state.isBackgroundColorTrayVisible 
-                          ? Icons.keyboard_arrow_up 
+                      state.isBackgroundColorTrayVisible
+                          ? Icons.keyboard_arrow_up
                           : Icons.keyboard_arrow_down,
                       size: 16,
-                      color: state.isBackgroundColorTrayVisible 
-                          ? Colors.blue.shade700 
+                      color: state.isBackgroundColorTrayVisible
+                          ? Colors.blue.shade700
                           : Colors.black54,
                     ),
                   ],
                 ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+
+  Widget _buildClearFormatButton(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) =>
+      previous.selectedTextItemIndex != current.selectedTextItemIndex,
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('Restore Default',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: _buildStyleButton(
+                icon: Icons.layers_clear,
+                isSelected: false,
+                onPressed: isDisabled
+                    ? null
+                    : () {
+                  final cubit = context.read<CanvasCubit>();
+                  cubit.changeFontWeight(selectedIndex, FontWeight.normal);
+                  cubit.changeFontStyle(selectedIndex, FontStyle.normal);
+                  cubit.changeTextColor(selectedIndex, Colors.white);
+                  cubit.changeFontFamily(selectedIndex, 'Arial');
+                  cubit.changeFontSize(selectedIndex, 16.0);
+                },
               ),
             ),
           ],
@@ -184,6 +233,7 @@ class FontControls extends StatelessWidget {
                             context.read<CanvasCubit>().changeFontWeight(
                                 selectedIndex, FontWeight.normal);
                           },
+                          
                   ),
                 ],
               ),
@@ -484,3 +534,5 @@ class FontControls extends StatelessWidget {
     );
   }
 }
+
+

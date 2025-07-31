@@ -6,8 +6,8 @@ class CanvasState {
   final List<CanvasState> history;
   final List<CanvasState> future;
   final Color backgroundColor;
-  final bool isBackgroundColorTrayVisible; // Added visibility state
-  final int? selectedTextItemIndex; // Added for text selection
+  final bool isBackgroundColorTrayVisible; // Added this field
+  final int? selectedTextItemIndex;
 
   const CanvasState({
     required this.textItems,
@@ -20,10 +20,10 @@ class CanvasState {
 
   factory CanvasState.initial() {
     return const CanvasState(
-      textItems: [], 
-      history: [], 
+      textItems: [],
+      history: [],
       future: [],
-      backgroundColor: Color(0xFF1A1A1A), // Default dark background
+      backgroundColor: Color(0xFF1A1A1A),
       isBackgroundColorTrayVisible: false,
       selectedTextItemIndex: null,
     );
@@ -36,6 +36,7 @@ class CanvasState {
     Color? backgroundColor,
     bool? isBackgroundColorTrayVisible,
     int? selectedTextItemIndex,
+    bool deselect = false,
   }) {
     return CanvasState(
       textItems: textItems ?? this.textItems,
@@ -43,7 +44,7 @@ class CanvasState {
       future: future ?? this.future,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       isBackgroundColorTrayVisible: isBackgroundColorTrayVisible ?? this.isBackgroundColorTrayVisible,
-      selectedTextItemIndex: selectedTextItemIndex ?? this.selectedTextItemIndex,
+      selectedTextItemIndex: deselect ? null : selectedTextItemIndex ?? this.selectedTextItemIndex,
     );
   }
 }
