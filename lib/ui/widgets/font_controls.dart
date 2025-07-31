@@ -113,6 +113,8 @@ class FontControls extends StatelessWidget {
   }
   
 
+
+
   Widget _buildClearFormatButton(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
       buildWhen: (previous, current) =>
@@ -232,8 +234,9 @@ class FontControls extends StatelessWidget {
                                 selectedIndex, FontStyle.normal);
                             context.read<CanvasCubit>().changeFontWeight(
                                 selectedIndex, FontWeight.normal);
-                          },
-                          
+
+                            },
+
                   ),
                 ],
               ),
