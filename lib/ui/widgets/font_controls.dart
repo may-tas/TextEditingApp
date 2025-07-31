@@ -27,7 +27,7 @@ class FontControls extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            _buildFontSizeControls(context),
+            _buildFontSizeWheel(context),
             const SizedBox(width: 25),
             _buildFontStyleControls(context),
             const SizedBox(width: 25),
@@ -40,340 +40,343 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  Widget _buildFontSizeControls(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Size',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              final state = context.watch<CanvasCubit>().state;
-              final selectedIndex = _getSelectedTextIndex(state);
-              final currentFontSize = _getCurrentFontSize(state, selectedIndex);
-              final controller = FixedExtentScrollController(
-                initialItem: (currentFontSize - 8).clamp(0, 70),
-              );
+  Widget _buildFontStyleControls(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) {
+        if (previous.selectedTextItemIndex != current.selectedTextItemIndex) {
+          return true;
+        }
+        if (current.selectedTextItemIndex != null) {
+          final pItem = previous.textItems[current.selectedTextItemIndex!];
+          final cItem = current.textItems[current.selectedTextItemIndex!];
+          return pItem.fontWeight != cItem.fontWeight ||
+              pItem.fontStyle != cItem.fontStyle;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
 
-              return Row(
-                mainAxisSize: MainAxisSize.min,
+        final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
+        final isBold = textItem?.fontWeight == FontWeight.bold;
+        final isItalic = textItem?.fontStyle == FontStyle.italic;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Style',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
                 children: [
-                  _buildSizeButton(
-                    context: context,
-                    icon: Icons.remove,
-                    onPressed: selectedIndex != null
-                        ? () => _changeFontSizeWithStep(
-                              context,
-                              controller,
-                              selectedIndex,
-                              currentFontSize,
-                              -2,
-                            )
-                        : null,
+                  _buildStyleButton(
+                    icon: Icons.format_bold,
+                    isSelected: isBold,
+                    onPressed: isDisabled
+                        ? null
+                        : () {
+                            final newWeight =
+                                isBold ? FontWeight.normal : FontWeight.bold;
+                            context
+                                .read<CanvasCubit>()
+                                .changeFontWeight(selectedIndex, newWeight);
+                          },
                   ),
-                  _buildFontSizeWheel(
-                    context,
-                    controller,
-                    selectedIndex,
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
+                    icon: Icons.format_italic,
+                    isSelected: isItalic,
+                    onPressed: isDisabled
+                        ? null
+                        : () {
+                            final newStyle =
+                                isItalic ? FontStyle.normal : FontStyle.italic;
+                            context
+                                .read<CanvasCubit>()
+                                .changeFontStyle(selectedIndex, newStyle);
+                          },
                   ),
-                  _buildSizeButton(
-                    context: context,
-                    icon: Icons.add,
-                    onPressed: selectedIndex != null
-                        ? () => _changeFontSizeWithStep(
-                              context,
-                              controller,
-                              selectedIndex,
-                              currentFontSize,
-                              2,
-                            )
-                        : null,
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
+                    icon: Icons.format_clear,
+                    isSelected: false,
+                    onPressed: isDisabled
+                        ? null
+                        : () {
+                            context.read<CanvasCubit>().changeFontStyle(
+                                selectedIndex, FontStyle.normal);
+                            context.read<CanvasCubit>().changeFontWeight(
+                                selectedIndex, FontWeight.normal);
+                          },
                   ),
                 ],
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  int? _getSelectedTextIndex(CanvasState state) {
-    return state.textItems.isNotEmpty ? state.textItems.length - 1 : null;
-  }
-
-  int _getCurrentFontSize(CanvasState state, int? selectedIndex) {
-    if (selectedIndex != null) {
-      return state.textItems[selectedIndex].fontSize.round();
-    }
-    return 16;
-  }
-
-  void _changeFontSizeWithStep(
-    BuildContext context,
-    FixedExtentScrollController controller,
-    int selectedIndex,
-    int currentSize,
-    int step,
-  ) {
-    final newSize = (currentSize + step).clamp(8, 78);
-    controller.jumpToItem((newSize - 8).clamp(0, 70));
-    context
-        .read<CanvasCubit>()
-        .changeFontSize(selectedIndex, newSize.toDouble());
-  }
-
-  Widget _buildFontSizeWheel(
-    BuildContext context,
-    FixedExtentScrollController controller,
-    int? selectedIndex,
-  ) {
-    return SizedBox(
-      height: 40,
-      width: 60,
-      child: ListWheelScrollView.useDelegate(
-        itemExtent: 32,
-        diameterRatio: 1.2,
-        perspective: 0.003,
-        controller: controller,
-        physics: selectedIndex == null
-            ? const NeverScrollableScrollPhysics()
-            : const FixedExtentScrollPhysics(),
-        onSelectedItemChanged: (index) {
-          if (selectedIndex != null) {
-            final newSize = 8 + index;
-            context
-                .read<CanvasCubit>()
-                .changeFontSize(selectedIndex, newSize.toDouble());
-          }
-        },
-        childDelegate: ListWheelChildBuilderDelegate(
-          childCount: 71,
-          builder: (context, index) {
-            final size = 8 + index;
-            return Center(
-              child: Text(
-                '$size',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildFontFamilyControls(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Font',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final currentFont = state.textItems.isNotEmpty
-                  ? state.textItems.last.fontFamily
-                  : 'Arial';
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) {
+        if (previous.selectedTextItemIndex != current.selectedTextItemIndex) {
+          return true;
+        }
+        if (current.selectedTextItemIndex != null &&
+            current.selectedTextItemIndex! < current.textItems.length) {
+          final pItem = previous.textItems[current.selectedTextItemIndex!];
+          final cItem = current.textItems[current.selectedTextItemIndex!];
+          return pItem.fontFamily != cItem.fontFamily;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
 
-              return DropdownButtonHideUnderline(
+        final currentFont =
+            !isDisabled ? state.textItems[selectedIndex].fontFamily : 'Arial';
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Font',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  menuWidth: 170,
                   value: currentFont,
                   items: items,
-                  onChanged: (value) => _changeFontFamily(context, value),
+                  onChanged: isDisabled
+                      ? null
+                      : (value) {
+                          if (value != null) {
+                            context
+                                .read<CanvasCubit>()
+                                .changeFontFamily(selectedIndex, value);
+                          }
+                        },
                   style: TextStyle(
-                    color: Colors.grey[800],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
+                      color: Colors.grey[800],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
                   icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
                 ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSizeButton({
-    required BuildContext context,
-    required IconData icon,
-    required VoidCallback? onPressed,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(4),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Icon(
-            icon,
-            size: 16,
-            color: Colors.grey[700],
-          ),
-        ),
-      ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildColorControls(BuildContext context) {
     final colors = [
+      Colors.white,
       Colors.black,
       Colors.red,
       Colors.blue,
       Colors.green,
       Colors.purple,
       Colors.orange,
-      Colors.pink,
     ];
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Text Color',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          height: 40,
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              final selectedColor = state.textItems.isNotEmpty
-                  ? state.textItems.last.color
-                  : Colors.black;
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
+        final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
+        final selectedColor = textItem?.color ?? Colors.black;
 
-              return Row(
-                mainAxisSize: MainAxisSize.min,
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Color',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
                 children: colors.map((color) {
                   final isSelected = selectedColor == color;
                   return GestureDetector(
-                    onTap: () {
-                      final selectedIndex = state.textItems.length - 1;
-                      if (selectedIndex >= 0) {
-                        context.read<CanvasCubit>().changeTextColor(
-                              selectedIndex,
-                              color,
-                            );
-                      }
-                    },
+                    onTap: isDisabled
+                        ? null
+                        : () => context
+                            .read<CanvasCubit>()
+                            .changeTextColor(selectedIndex, color),
                     child: Container(
-                      width: 30,
-                      height: 30,
+                      width: 28,
+                      height: 28,
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         color: color,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: isSelected
-                              ? Colors.blue
-                              : Colors.grey.withAlpha((0.3 * 255).toInt()),
-                          width: isSelected ? 2 : 1,
+                              ? Colors.blueAccent
+                              : (color == Colors.white
+                                  ? Colors.grey[400]!
+                                  : Colors.transparent),
+                          width: isSelected ? 3 : 1,
                         ),
                       ),
                     ),
                   );
                 }).toList(),
-              );
-            },
-          ),
-        ),
-      ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildFontStyleControls(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          'Style',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildStyleButton(
-                context: context,
-                icon: Icons.format_bold,
-                onPressed: () => _changeFontWeight(context, FontWeight.bold),
-              ),
-              const SizedBox(width: 8),
-              _buildStyleButton(
-                context: context,
-                icon: Icons.format_italic,
-                onPressed: () => _changeFontStyle(context, FontStyle.italic),
-              ),
-              const SizedBox(width: 8),
-              _buildStyleButton(
-                context: context,
-                icon: Icons.format_clear,
-                onPressed: () => _resetFontStyle(context),
-              ),
-            ],
-          ),
-        ),
-      ],
+  Widget _buildFontSizeWheel(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) {
+        if (previous.selectedTextItemIndex != current.selectedTextItemIndex) {
+          return true;
+        }
+        if (current.selectedTextItemIndex != null) {
+          final pItem = previous.textItems[current.selectedTextItemIndex!];
+          final cItem = current.textItems[current.selectedTextItemIndex!];
+          return pItem.fontSize != cItem.fontSize;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled = selectedIndex == null;
+        final currentSize =
+            !isDisabled ? state.textItems[selectedIndex].fontSize.round() : 16;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final controller = FixedExtentScrollController(
+              initialItem: (currentSize - 8).clamp(0, 70),
+            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final index = (currentSize - 8).clamp(0, 70);
+              if (controller.hasClients && controller.selectedItem != index) {
+                controller.jumpToItem(index);
+              }
+            });
+
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Size',
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                const SizedBox(width: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    children: [
+                      _buildSizeButton(
+                        icon: Icons.remove,
+                        onPressed: isDisabled
+                            ? null
+                            : () {
+                                final newSize = (currentSize - 2).clamp(8, 78);
+                                context.read<CanvasCubit>().changeFontSize(
+                                    selectedIndex, newSize.toDouble());
+                              },
+                      ),
+                      SizedBox(
+                        height: 40,
+                        width: 60,
+                        child: ListWheelScrollView.useDelegate(
+                          controller: controller,
+                          itemExtent: 32,
+                          diameterRatio: 1.2,
+                          perspective: 0.003,
+                          physics: isDisabled
+                              ? const NeverScrollableScrollPhysics()
+                              : const FixedExtentScrollPhysics(),
+                          onSelectedItemChanged: (index) {
+                            if (!isDisabled) {
+                              final newSize = 8 + index;
+                              context.read<CanvasCubit>().changeFontSize(
+                                  selectedIndex, newSize.toDouble());
+                            }
+                          },
+                          childDelegate: ListWheelChildBuilderDelegate(
+                            childCount: 71,
+                            builder: (context, index) {
+                              final size = 8 + index;
+                              return Center(
+                                child: Text(
+                                  '$size',
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      _buildSizeButton(
+                        icon: Icons.add,
+                        onPressed: isDisabled
+                            ? null
+                            : () {
+                                final newSize = (currentSize + 2).clamp(8, 78);
+                                context.read<CanvasCubit>().changeFontSize(
+                                    selectedIndex, newSize.toDouble());
+                              },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildStyleButton({
-    required BuildContext context,
+  Widget _buildSizeButton({
     required IconData icon,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return Material(
       color: Colors.transparent,
+      borderRadius: BorderRadius.circular(4),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
         onTap: onPressed,
@@ -389,42 +392,28 @@ class FontControls extends StatelessWidget {
     );
   }
 
-  void _changeFontStyle(BuildContext context, FontStyle fontStyle) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontStyle(selectedIndex, fontStyle);
-    }
-  }
-
-  void _changeFontWeight(BuildContext context, FontWeight fontWeight) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context.read<CanvasCubit>().changeFontWeight(selectedIndex, fontWeight);
-    }
-  }
-
-  void _resetFontStyle(BuildContext context) {
-    final selectedIndex =
-        context.read<CanvasCubit>().state.textItems.length - 1;
-    if (selectedIndex >= 0) {
-      context
-          .read<CanvasCubit>()
-          .changeFontWeight(selectedIndex, FontWeight.normal);
-      context
-          .read<CanvasCubit>()
-          .changeFontStyle(selectedIndex, FontStyle.normal);
-    }
-  }
-
-  void _changeFontFamily(BuildContext context, String? fontFamily) {
-    if (fontFamily != null) {
-      final selectedIndex =
-          context.read<CanvasCubit>().state.textItems.length - 1;
-      if (selectedIndex >= 0) {
-        context.read<CanvasCubit>().changeFontFamily(selectedIndex, fontFamily);
-      }
-    }
+  Widget _buildStyleButton({
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback? onPressed,
+  }) {
+    return Material(
+      color: isSelected
+          ? Colors.blue.withAlpha((0.2 * 255).toInt())
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(
+            icon,
+            size: 20,
+            color: isSelected ? Colors.blueAccent : Colors.grey[700],
+          ),
+        ),
+      ),
+    );
   }
 }
