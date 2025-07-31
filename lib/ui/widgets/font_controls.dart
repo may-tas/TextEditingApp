@@ -34,9 +34,76 @@ class FontControls extends StatelessWidget {
             _buildFontFamilyControls(context),
             const SizedBox(width: 25),
             _buildColorControls(context),
+            const SizedBox(width: 25),
+            _buildBackgroundColorButton(context), // Added background color button
           ],
         ),
       ),
+    );
+  }
+
+  // New method for background color button
+  Widget _buildBackgroundColorButton(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Background',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(width: 12),
+            GestureDetector(
+              onTap: () {
+                context.read<CanvasCubit>().toggleBackgroundColorTray();
+              },
+              child: Container(
+                height: 40,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: state.isBackgroundColorTrayVisible 
+                      ? Colors.blue.shade50 
+                      : Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: state.isBackgroundColorTrayVisible 
+                        ? Colors.blue.shade300 
+                        : Colors.grey[300]!,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: state.backgroundColor,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.grey.shade400, width: 1),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      state.isBackgroundColorTrayVisible 
+                          ? Icons.keyboard_arrow_up 
+                          : Icons.keyboard_arrow_down,
+                      size: 16,
+                      color: state.isBackgroundColorTrayVisible 
+                          ? Colors.blue.shade700 
+                          : Colors.black54,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:texterra/models/text_item_model.dart';
-
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
@@ -45,29 +43,59 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF1A1A1A),
-              const Color(0xFF1A1A1A).withAlpha((0.95 * 255).toInt()),
-            ],
-          ),
-        ),
-        child: BlocBuilder<CanvasCubit, CanvasState>(
-          builder: (context, state) {
-            return Stack(
-              children: state.textItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final textItem = entry.value;
-                final isSelected = state.selectedTextItemIndex == index;
-                return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
-              }).toList(),
-            );
-          },
-        ),
+      body: BlocBuilder<CanvasCubit, CanvasState>(
+        builder: (context, state) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  state.backgroundColor,
+                  state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+                ],
+              ),
+            ),
+            child: Stack(
+              children: [
+                // Add a gesture detector to clear selection when tapping empty area
+                GestureDetector(
+                  onTap: () => context.read<CanvasCubit>().clearSelection(),
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.transparent,
+                  ),
+                ),
+                ...state.textItems.asMap().entries.map(
+                  (entry) {
+                    final index = entry.key;
+                    final textItem = entry.value;
+                    return Positioned(
+                      left: textItem.x,
+                      top: textItem.y,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          const speedFactor = 2.0;
+                          context.read<CanvasCubit>().moveText(
+                                index,
+                                textItem.x + details.delta.dx * speedFactor,
+                                textItem.y + details.delta.dy * speedFactor,
+                              );
+                        },
+                        child: EditableTextWidget(
+                          index: index,
+                          textItem: textItem,
+                          isSelected: state.selectedTextItemIndex == index,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
       extendBody: true,
       bottomNavigationBar: Container(
@@ -86,10 +114,7 @@ class CanvasScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              color: Colors.white,
-              child: const BackgroundColorTray(),
-            ),
+            const BackgroundColorTray(),
             const FontControls(),
           ],
         ),
@@ -103,67 +128,6 @@ class CanvasScreen extends StatelessWidget {
           elevation: 0.5,
           onPressed: () => context.read<CanvasCubit>().addText('New Text'),
           child: const Icon(Icons.add, color: Colors.black),
-        ),
-      ),
-    );
-  }
-}
-
-class _DraggableText extends StatefulWidget {
-  final int index;
-  final TextItem textItem;
-  final bool isSelected;
-
-  const _DraggableText({
-    required this.index,
-    required this.textItem,
-    required this.isSelected,
-  });
-
-  @override
-  State<_DraggableText> createState() => _DraggableTextState();
-}
-
-class _DraggableTextState extends State<_DraggableText> {
-  late Offset localPosition;
-
-  @override
-  void initState() {
-    super.initState();
-    localPosition = Offset(widget.textItem.x, widget.textItem.y);
-  }
-
-  @override
-  void didUpdateWidget(covariant _DraggableText oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.textItem.x != widget.textItem.x ||
-        oldWidget.textItem.y != widget.textItem.y) {
-      localPosition = Offset(widget.textItem.x, widget.textItem.y);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: localPosition.dx,
-      top: localPosition.dy,
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          setState(() {
-            localPosition += details.delta;
-          });
-        },
-        onPanEnd: (_) {
-          context.read<CanvasCubit>().moveText(
-                widget.index,
-                localPosition.dx,
-                localPosition.dy,
-              );
-        },
-        child: EditableTextWidget(
-          index: widget.index,
-          textItem: widget.textItem,
-          isSelected: widget.isSelected,
         ),
       ),
     );
