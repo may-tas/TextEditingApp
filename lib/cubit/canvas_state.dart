@@ -22,7 +22,7 @@ class CanvasState {
       history: [], 
       future: [],
       backgroundColor: Color(0xFF1A1A1A), // Default dark background
-    , selectedTextItemIndex: null);
+      selectedTextItemIndex: null);
   }
 
   CanvasState copyWith({
