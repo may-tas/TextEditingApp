@@ -258,7 +258,7 @@ class FontControls extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Color',
+            const Text('Text Color',
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             const SizedBox(width: 12),
             Container(

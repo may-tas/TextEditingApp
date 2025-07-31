@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
-
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
 import '../widgets/font_controls.dart';
+import '../widgets/background_color_tray.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -44,29 +44,29 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color(0xFF1A1A1A),
-              const Color(0xFF1A1A1A).withAlpha((0.95 * 255).toInt()),
-            ],
-          ),
-        ),
-        child: BlocBuilder<CanvasCubit, CanvasState>(
-          builder: (context, state) {
-            return Stack(
+      body: BlocBuilder<CanvasCubit, CanvasState>(
+        builder: (context, state) {
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  state.backgroundColor,
+                  state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+                ],
+              ),
+            ),
+            child: Stack(
               children: state.textItems.asMap().entries.map((entry) {
                 final index = entry.key;
                 final textItem = entry.value;
                 final isSelected = state.selectedTextItemIndex == index;
                 return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
               }).toList(),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
       extendBody: true,
       bottomNavigationBar: Container(
@@ -82,7 +82,16 @@ class CanvasScreen extends StatelessWidget {
             ),
           ],
         ),
-        child: const FontControls(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              color: Colors.white,
+              child: const BackgroundColorTray(),
+            ),
+            const FontControls(),
+          ],
+        ),
       ),
       floatingActionButton: Container(
         decoration: BoxDecoration(
