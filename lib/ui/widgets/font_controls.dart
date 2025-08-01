@@ -315,6 +315,10 @@ class FontControls extends StatelessWidget {
                               showColorCode: true,
                               showRecentColors: false,
                               backgroundColor: Colors.white, 
+                              constraints: const BoxConstraints(
+                                  minHeight: 400,
+                                  minWidth: 300,
+                                ),
                             );
 
                             if (!context.mounted) return;
