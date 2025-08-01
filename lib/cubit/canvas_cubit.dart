@@ -13,6 +13,11 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
+  // method to deselect text
+  void deselectText() {
+    emit(state.copyWith(selectedTextItemIndex: null, deselect: true));
+  }
+
   // method to add the text
   void addText(String text) {
     final newTextItem = TextItem(
@@ -22,7 +27,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontSize: 16,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
-      fontFamily: 'Arial',
+      fontFamily: 'Roboto',
       color: Colors.white, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
@@ -34,6 +39,19 @@ class CanvasCubit extends Cubit<CanvasState> {
         future: [],
       ),
     );
+  }
+
+  // FIX: Reset all formatting
+  void resetFormatting(int index) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      fontSize: 16,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.normal,
+      fontFamily: 'Roboto',
+      color: Colors.white, // Reset to default color
+    );
+    _updateState(textItems: updatedItems);
   }
 
   // method to change and emit new TextColor

@@ -22,7 +22,8 @@ class BackgroundColorTray extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
-              color: const Color.fromARGB(163, 187, 223, 243)),
+            color: Color.fromARGB(163, 187, 223, 243),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +59,8 @@ class BackgroundColorTray extends StatelessWidget {
                         boxShadow: [
                           if (isSelected)
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color:
+                                  Colors.black.withAlpha((0.3 * 255).toInt()),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),

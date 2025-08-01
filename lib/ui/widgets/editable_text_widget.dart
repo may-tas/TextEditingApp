@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../cubit/canvas_cubit.dart';
 import '../../models/text_item_model.dart';
@@ -35,11 +36,11 @@ class EditableTextWidget extends StatelessWidget {
       },
       child: Text(
         textItem.text,
-        style: TextStyle(
+        style: GoogleFonts.getFont(
+          textItem.fontFamily,
           fontStyle: textItem.fontStyle,
           fontWeight: textItem.fontWeight,
           fontSize: textItem.fontSize,
-          fontFamily: textItem.fontFamily,
           color: textItem.color,
           backgroundColor: isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
         ),

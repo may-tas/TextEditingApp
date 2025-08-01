@@ -46,24 +46,27 @@ class CanvasScreen extends StatelessWidget {
       ),
       body: BlocBuilder<CanvasCubit, CanvasState>(
         builder: (context, state) {
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  state.backgroundColor,
-                  state.backgroundColor.withAlpha((0.95 * 255).toInt()),
-                ],
+          return GestureDetector(
+            onTap: () => context.read<CanvasCubit>().deselectText(),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    state.backgroundColor,
+                    state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+                  ],
+                ),
               ),
-            ),
-            child: Stack(
-              children: state.textItems.asMap().entries.map((entry) {
-                final index = entry.key;
-                final textItem = entry.value;
-                final isSelected = state.selectedTextItemIndex == index;
-                return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
-              }).toList(),
+              child: Stack(
+                children: state.textItems.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final textItem = entry.value;
+                  final isSelected = state.selectedTextItemIndex == index;
+                  return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
+                }).toList(),
+              ),
             ),
           );
         },
