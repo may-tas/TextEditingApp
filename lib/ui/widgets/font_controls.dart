@@ -314,6 +314,7 @@ class FontControls extends StatelessWidget {
                               title: const Text('Pick a color'),
                               showColorCode: true,
                               showRecentColors: false,
+                              backgroundColor: Colors.white, 
                             );
 
                             if (!context.mounted) return;
