@@ -1,3 +1,4 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,7 +46,7 @@ class FontControls extends StatelessWidget {
   Widget _buildClearFormatButton(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
       buildWhen: (previous, current) =>
-      previous.selectedTextItemIndex != current.selectedTextItemIndex,
+          previous.selectedTextItemIndex != current.selectedTextItemIndex,
       builder: (context, state) {
         final selectedIndex = state.selectedTextItemIndex;
         final isDisabled =
@@ -67,18 +68,20 @@ class FontControls extends StatelessWidget {
               // re-using Button-style for consistent UI
               child: _buildStyleButton(
                 icon: Icons.layers_clear,
-                isSelected: false, // This button is never in a "selected" state.
+                isSelected:
+                    false, // This button is never in a "selected" state.
                 onPressed: isDisabled
                     ? null
                     : () {
-                  final cubit = context.read<CanvasCubit>();
-                  // Reset all properties to their default values.
-                  cubit.changeFontWeight(selectedIndex, FontWeight.normal);
-                  cubit.changeFontStyle(selectedIndex, FontStyle.normal);
-                  cubit.changeTextColor(selectedIndex, Colors.white);
-                  cubit.changeFontFamily(selectedIndex, 'Arial');
-                  cubit.changeFontSize(selectedIndex, 16.0);
-                },
+                        final cubit = context.read<CanvasCubit>();
+                        // Reset all properties to their default values.
+                        cubit.changeFontWeight(
+                            selectedIndex, FontWeight.normal);
+                        cubit.changeFontStyle(selectedIndex, FontStyle.normal);
+                        cubit.changeTextColor(selectedIndex, Colors.white);
+                        cubit.changeFontFamily(selectedIndex, 'Arial');
+                        cubit.changeFontSize(selectedIndex, 16.0);
+                      },
               ),
             ),
           ],
@@ -163,7 +166,7 @@ class FontControls extends StatelessWidget {
                                 selectedIndex, FontStyle.normal);
                             context.read<CanvasCubit>().changeFontWeight(
                                 selectedIndex, FontWeight.normal);
-                            },
+                          },
                   ),
                 ],
               ),
@@ -270,33 +273,57 @@ class FontControls extends StatelessWidget {
                 border: Border.all(color: Colors.grey[300]!),
               ),
               child: Row(
-                children: colors.map((color) {
-                  final isSelected = selectedColor == color;
-                  return GestureDetector(
-                    onTap: isDisabled
-                        ? null
-                        : () => context
-                            .read<CanvasCubit>()
-                            .changeTextColor(selectedIndex, color),
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.blueAccent
-                              : (color == Colors.white
-                                  ? Colors.grey[400]!
-                                  : Colors.transparent),
-                          width: isSelected ? 3 : 1,
+                children: [
+                  ...colors.map((color) {
+                    final isSelected = selectedColor == color;
+                    return GestureDetector(
+                      onTap: isDisabled
+                          ? null
+                          : () => context
+                              .read<CanvasCubit>()
+                              .changeTextColor(selectedIndex, color),
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? Colors.blueAccent
+                                : (color == Colors.white
+                                    ? Colors.grey[400]!
+                                    : Colors.transparent),
+                            width: isSelected ? 3 : 1,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }),
+                  //More Colors Button ^_^
+                  IconButton(
+                    icon: const Icon(Icons.more_horiz, color: Colors.black54),
+                    tooltip: 'More colors',
+                    onPressed: isDisabled
+                        ? null
+                        : () async {
+                            final pickedColor = await showColorPickerDialog(
+                              context,
+                              selectedColor,
+                              title: const Text('Pick a color'),
+                              showColorCode: true,
+                              showRecentColors: false,
+                            );
+
+                            if (!context.mounted) return;
+
+                            context
+                                .read<CanvasCubit>()
+                                .changeTextColor(selectedIndex, pickedColor);
+                          },
+                  ),
+                ],
               ),
             ),
           ],
