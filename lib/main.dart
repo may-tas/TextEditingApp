@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
         title: 'Text Editor',
         theme: ThemeData(primarySwatch: Colors.blue),
         debugShowCheckedModeBanner: false,
-        navigatorKey: CustomSnackbar.navigatorKey,
         home: const SplashScreen(),
       ),
     );
