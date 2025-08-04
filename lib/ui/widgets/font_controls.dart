@@ -1,6 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants/font_family_list.dart';
 import '../../cubit/canvas_cubit.dart';
@@ -73,14 +74,9 @@ class FontControls extends StatelessWidget {
                 onPressed: isDisabled
                     ? null
                     : () {
-                        final cubit = context.read<CanvasCubit>();
-                        // Reset all properties to their default values.
-                        cubit.changeFontWeight(
-                            selectedIndex, FontWeight.normal);
-                        cubit.changeFontStyle(selectedIndex, FontStyle.normal);
-                        cubit.changeTextColor(selectedIndex, Colors.white);
-                        cubit.changeFontFamily(selectedIndex, 'Arial');
-                        cubit.changeFontSize(selectedIndex, 16.0);
+                        context
+                            .read<CanvasCubit>()
+                            .resetFormatting(selectedIndex);
                       },
               ),
             ),
@@ -197,7 +193,7 @@ class FontControls extends StatelessWidget {
             selectedIndex == null || selectedIndex >= state.textItems.length;
 
         final currentFont =
-            !isDisabled ? state.textItems[selectedIndex].fontFamily : 'Arial';
+            !isDisabled ? state.textItems[selectedIndex].fontFamily : 'Roboto';
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -205,35 +201,56 @@ class FontControls extends StatelessWidget {
             const Text('Font',
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             const SizedBox(width: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+            ElevatedButton.icon(
+              onPressed: isDisabled
+                  ? null
+                  : () =>
+                      _showFontPickerModal(context, selectedIndex, currentFont),
+              label: Text(
+                currentFont,
+                style: GoogleFonts.getFont(currentFont, fontSize: 14),
               ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: currentFont,
-                  items: items,
-                  onChanged: isDisabled
-                      ? null
-                      : (value) {
-                          if (value != null) {
-                            context
-                                .read<CanvasCubit>()
-                                .changeFontFamily(selectedIndex, value);
-                          }
-                        },
-                  style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[100],
+                foregroundColor: Colors.grey[800],
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.grey[300]!),
                 ),
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showFontPickerModal(
+      BuildContext context, int selectedIndex, String currentFont) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.8,
+              maxChildSize: 0.95,
+              minChildSize: 0.5,
+              builder: (context, scrollController) {
+                return _FontPickerContent(
+                  currentFont: currentFont,
+                  selectedIndex: selectedIndex,
+                  scrollController: scrollController,
+                );
+              },
+            );
+          },
         );
       },
     );
@@ -314,11 +331,11 @@ class FontControls extends StatelessWidget {
                               title: const Text('Pick a color'),
                               showColorCode: true,
                               showRecentColors: false,
-                              backgroundColor: Colors.white, 
+                              backgroundColor: Colors.white,
                               constraints: const BoxConstraints(
-                                  minHeight: 400,
-                                  minWidth: 300,
-                                ),
+                                minHeight: 400,
+                                minWidth: 300,
+                              ),
                             );
 
                             if (!context.mounted) return;
@@ -493,6 +510,96 @@ class FontControls extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FontPickerContent extends StatefulWidget {
+  final String currentFont;
+  final int selectedIndex;
+  final ScrollController scrollController;
+
+  const _FontPickerContent({
+    required this.currentFont,
+    required this.selectedIndex,
+    required this.scrollController,
+  });
+
+  @override
+  State<_FontPickerContent> createState() => _FontPickerContentState();
+}
+
+class _FontPickerContentState extends State<_FontPickerContent> {
+  String searchQuery = '';
+  late List<String> filteredFonts;
+
+  @override
+  void initState() {
+    super.initState();
+    filteredFonts = List.from(googleFontNames);
+  }
+
+  void _updateSearch(String value) {
+    setState(() {
+      searchQuery = value.toLowerCase();
+      filteredFonts = googleFontNames
+          .where((font) => font.toLowerCase().contains(searchQuery))
+          .toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 8),
+          child: Text("Select Font",
+              style: Theme.of(context).textTheme.headlineSmall),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          child: TextField(
+            onChanged: _updateSearch,
+            decoration: InputDecoration(
+              hintText: 'Search fonts...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              filled: true,
+              fillColor: Colors.grey[100],
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            controller: widget.scrollController,
+            itemCount: filteredFonts.length,
+            itemBuilder: (context, index) {
+              final font = filteredFonts[index];
+              final isSelected = font == widget.currentFont;
+
+              return ListTile(
+                title: Text(
+                  font,
+                  style: GoogleFonts.getFont(font, fontSize: 16),
+                ),
+                trailing: isSelected
+                    ? const Icon(Icons.check, color: Colors.blue)
+                    : null,
+                onTap: () {
+                  context
+                      .read<CanvasCubit>()
+                      .changeFontFamily(widget.selectedIndex, font);
+                  Navigator.of(context).pop();
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

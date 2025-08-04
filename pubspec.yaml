@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.6
   flex_color_picker: ^3.7.1
+  google_fonts: ^6.3.0
 
 dev_dependencies:
   flutter_test:
