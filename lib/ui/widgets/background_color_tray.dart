@@ -23,7 +23,8 @@ class BackgroundColorTray extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
-              color: Color.fromARGB(163, 187, 223, 243)),
+            color: Color.fromARGB(163, 187, 223, 243),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
