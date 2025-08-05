@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
+import '../../utils/custom_snackbar.dart';
 
 class BackgroundColorTray extends StatelessWidget {
   const BackgroundColorTray({super.key});
@@ -44,6 +45,7 @@ class BackgroundColorTray extends StatelessWidget {
                   return GestureDetector(
                     onTap: () {
                       context.read<CanvasCubit>().changeBackgroundColor(color);
+                      CustomSnackbar.showSuccess('Background color changed');
                     },
                     child: Container(
                       width: 40,
@@ -59,8 +61,7 @@ class BackgroundColorTray extends StatelessWidget {
                         boxShadow: [
                           if (isSelected)
                             BoxShadow(
-                              color:
-                                  Colors.black.withAlpha((0.3 * 255).toInt()),
+                              color: Colors.black.withValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),

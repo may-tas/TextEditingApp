@@ -6,6 +6,7 @@ import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
 import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
+import '../../utils/custom_snackbar.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -29,18 +30,42 @@ class CanvasScreen extends StatelessWidget {
         leading: IconButton(
           tooltip: "Clear Canvas",
           icon: const Icon(Icons.delete, color: Colors.black54),
-          onPressed: () => context.read<CanvasCubit>().clearCanvas(),
+          onPressed: () {
+            final cubit = context.read<CanvasCubit>();
+            if (cubit.state.textItems.isNotEmpty) {
+              cubit.clearCanvas();
+              CustomSnackbar.showInfo('Canvas cleared');
+            } else {
+              CustomSnackbar.showInfo('Canvas is already empty');
+            }
+          },
         ),
         actions: [
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
-            onPressed: () => context.read<CanvasCubit>().undo(),
+            onPressed: () {
+              final cubit = context.read<CanvasCubit>();
+              if (cubit.state.history.isNotEmpty) {
+                cubit.undo();
+                CustomSnackbar.showInfo('Action undone');
+              } else {
+                CustomSnackbar.showInfo('Nothing to undo');
+              }
+            },
           ),
           IconButton(
             tooltip: "Redo",
             icon: const Icon(Icons.redo, color: Colors.black54),
-            onPressed: () => context.read<CanvasCubit>().redo(),
+            onPressed: () {
+              final cubit = context.read<CanvasCubit>();
+              if (cubit.state.future.isNotEmpty) {
+                cubit.redo();
+                CustomSnackbar.showInfo('Action redone');
+              } else {
+                CustomSnackbar.showInfo('Nothing to redo');
+              }
+            },
           ),
         ],
       ),
@@ -103,7 +128,9 @@ class CanvasScreen extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: Colors.white,
           elevation: 0.5,
-          onPressed: () => context.read<CanvasCubit>().addText('New Text'),
+          onPressed: () {
+            context.read<CanvasCubit>().addText('New Text');
+          },
           child: const Icon(Icons.add, color: Colors.black),
         ),
       ),
