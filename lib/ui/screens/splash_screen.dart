@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(
           builder: (_) => BlocProvider.value(
             value: BlocProvider.of<CanvasCubit>(context),
-            child: const CanvasScreen(),
+            child:  CanvasScreen(),
           ),
         ),
       );

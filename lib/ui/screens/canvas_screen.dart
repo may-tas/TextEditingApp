@@ -5,10 +5,24 @@ import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
 import '../widgets/font_controls.dart';
-import '../widgets/background_color_tray.dart';
 
-class CanvasScreen extends StatelessWidget {
-  const CanvasScreen({super.key});
+class CanvasScreen extends StatefulWidget {
+  const  CanvasScreen({super.key});
+
+  @override
+  State<CanvasScreen> createState() => _CanvasScreenState();
+}
+
+class _CanvasScreenState extends State<CanvasScreen>{
+  bool showTray = false;
+  static const List<Color> backgroundColors = [
+    Color(0xFF1A1A1A), // Dark Gray (default)
+    Color(0xFF2E1065), // Deep Purple
+    Color(0xFF1E3A8A), // Deep Blue
+    Color(0xFF166534), // Deep Green
+    Color(0xFF7C2D12), // Deep Brown/Orange
+    Color.fromARGB(255, 255, 255, 255) // White
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +46,52 @@ class CanvasScreen extends StatelessWidget {
           onPressed: () => context.read<CanvasCubit>().clearCanvas(),
         ),
         actions: [
+          //Button to change the color of the background
+          IconButton(
+            tooltip: "Change Background Color",
+            onPressed: (){
+              showModalBottomSheet(
+                context: context,
+                backgroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                ),
+                builder: (context) {
+                
+                  final cubit = context.read<CanvasCubit>();
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child:Wrap(
+                      spacing :12,
+                      children: backgroundColors.map((color) {
+                        return GestureDetector(
+                          onTap: () {
+                            cubit.changeBackgroundColor(color);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+
+                }
+              );
+            },
+            icon: const Icon(
+              Icons.color_lens,
+              color: Colors.black54,
+            ),
+          ),
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
@@ -87,7 +147,7 @@ class CanvasScreen extends StatelessWidget {
           children: [
             Container(
               color: Colors.white,
-              child: const BackgroundColorTray(),
+              
             ),
             const FontControls(),
           ],
