@@ -37,6 +37,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   flex_color_picker: ^3.7.1
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,6 +62,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/playstore.png
+    - assets/icons/whitebg.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -101,3 +103,8 @@ flutter_native_splash:
   android: true
   ios: true
   fullscreen: true
+  image: assets/icons/whitebg.png
+
+  android_12: 
+    color: "#ffffff"
+    image: assets/icons/whitebg.png
