@@ -6,16 +6,14 @@ import 'canvas_state.dart';
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
   
+  void toggleTray(){
+    emit(state.copyWith(isTrayShown: !state.isTrayShown));
+  }
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
       emit(state.copyWith(selectedTextItemIndex: index));
     }
-  }
-
-  // method to deselect text
-  void deselectText() {
-    emit(state.copyWith(selectedTextItemIndex: null, deselect: true));
   }
 
   // method to add the text
@@ -27,7 +25,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontSize: 16,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
-      fontFamily: 'Roboto',
+      fontFamily: 'Arial',
       color: Colors.white, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
@@ -39,19 +37,6 @@ class CanvasCubit extends Cubit<CanvasState> {
         future: [],
       ),
     );
-  }
-
-  // FIX: Reset all formatting
-  void resetFormatting(int index) {
-    final updatedItems = List<TextItem>.from(state.textItems);
-    updatedItems[index] = updatedItems[index].copyWith(
-      fontSize: 16,
-      fontStyle: FontStyle.normal,
-      fontWeight: FontWeight.normal,
-      fontFamily: 'Roboto',
-      color: Colors.white, // Reset to default color
-    );
-    _updateState(textItems: updatedItems);
   }
 
   // method to change and emit new TextColor
