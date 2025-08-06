@@ -7,9 +7,16 @@ import '../widgets/editable_text_widget.dart';
 import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 
-class CanvasScreen extends StatelessWidget {
+class CanvasScreen extends StatefulWidget {
   const CanvasScreen({super.key});
 
+  @override
+  State<CanvasScreen> createState() => _CanvasScreenState();
+}
+
+class _CanvasScreenState extends State<CanvasScreen>  {
+  
+  bool showTray = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +39,14 @@ class CanvasScreen extends StatelessWidget {
           onPressed: () => context.read<CanvasCubit>().clearCanvas(),
         ),
         actions: [
+          IconButton(
+            tooltip :'change background color',
+            icon :const Icon(
+              Icons.color_lens,
+              color: Colors.black54,
+            ),
+            onPressed: () => setState(() => showTray = !showTray),
+          ),
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
@@ -85,9 +100,12 @@ class CanvasScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            Visibility(
+            visible: showTray,
+            child: Container(
               color: Colors.white,
               child: const BackgroundColorTray(),
+            ),
             ),
             const FontControls(),
           ],

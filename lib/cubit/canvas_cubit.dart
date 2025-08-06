@@ -5,7 +5,7 @@ import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
-
+  
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
