@@ -40,7 +40,16 @@ class CanvasScreen extends StatelessWidget {
             }
           },
         ),
-        actions: [
+        actions:<Widget>[
+          //add icon to show or hide the background colors
+          IconButton(
+            tooltip :'change background color',
+            icon :const Icon(
+              Icons.color_lens,
+              color: Colors.black54,
+            ),
+            onPressed: () => context.read<CanvasCubit>().toggleTray(),
+          ),
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
@@ -97,30 +106,39 @@ class CanvasScreen extends StatelessWidget {
         },
       ),
       extendBody: true,
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha((0.05 * 255).toInt()),
-              blurRadius: 10,
-              offset: const Offset(0, -5),
+    bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
+        builder: (context, state) {
+          return Container(
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha((0.05 * 255).toInt()),
+                  blurRadius: 10,
+                  offset: const Offset(0, -5),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              color: Colors.white,
-              child: const BackgroundColorTray(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  visible: state.isTrayShown,
+                  child: Container(
+                    color: Colors.white,
+                    child: const BackgroundColorTray(),
+                  ),
+                ),
+                const FontControls(),
+              ],
             ),
-            const FontControls(),
-          ],
-        ),
+          );
+
+        },
       ),
+
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
