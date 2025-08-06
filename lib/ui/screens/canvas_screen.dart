@@ -40,7 +40,16 @@ class CanvasScreen extends StatelessWidget {
             }
           },
         ),
-        actions: [
+        actions:<Widget>[
+          //add icon to show or hide the background colors
+          IconButton(
+            tooltip :'change background color',
+            icon :const Icon(
+              Icons.color_lens,
+              color: Colors.black54,
+            ),
+            onPressed: () => context.read<CanvasCubit>().toggleTray(),
+          ),
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
