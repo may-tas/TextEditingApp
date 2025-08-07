@@ -37,10 +37,51 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 25),
             _buildColorControls(context),
             const SizedBox(width: 25), // Add spacing for the new button
+            _buildCopyButton(context),
+            const SizedBox(width: 25),
             _buildClearFormatButton(context), // Call your new function here
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCopyButton(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) =>
+          previous.selectedTextItemIndex != current.selectedTextItemIndex,
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('Copy',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: _buildStyleButton(
+                icon: Icons.copy,
+                isSelected:
+                    false, // This button is never in a "selected" state.
+                onPressed: isDisabled
+                    ? null
+                    : () {
+                        context.read<CanvasCubit>().copyText(selectedIndex, context);
+                      },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

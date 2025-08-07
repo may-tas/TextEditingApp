@@ -42,4 +42,12 @@ class TextItem {
       color: color ?? this.color,
     );
   }
+
+  String toHTML() {
+    final cssColor = "#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}";
+    final cssFontWeight = fontWeight.value;
+    final cssFontStyle = fontStyle == FontStyle.italic ? 'italic' : 'normal';
+    final style = 'font-size: ${fontSize}px; font-family: $fontFamily; color: $cssColor; font-weight: $cssFontWeight; font-style: $cssFontStyle;';
+    return '<span style="$style">$text</span>';
+  }
 }
