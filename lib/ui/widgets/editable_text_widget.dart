@@ -20,13 +20,17 @@ class EditableTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.read<CanvasCubit>().selectText(index),
-      onDoubleTap: () async {
+      onTap: () async {
+        // 1. Select the text item
+        context.read<CanvasCubit>().selectText(index);
+
+        // 2. Open the EditTextDialog immediately
         final result = await showDialog<String>(
           context: context,
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
 
+        // 3. Handle the result from the dialog
         if (!context.mounted) return;
         if (result == '_delete_') {
           context.read<CanvasCubit>().deleteText(index);
@@ -34,6 +38,7 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
+      // 4. onDoubleTap handler is now gone
       child: Text(
         textItem.text,
         style: GoogleFonts.getFont(
@@ -80,7 +85,6 @@ class EditTextDialog extends StatelessWidget {
             Form(
               key: formKey,
               child: TextFormField(
-                autofocus: true,
                 controller: controller,
                 validator: (value) => (value == null || value.trim().isEmpty)
                     ? 'Text cannot be empty'
