@@ -38,7 +38,6 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-      // 4. onDoubleTap handler is now gone
       child: Text(
         textItem.text,
         style: GoogleFonts.getFont(
@@ -47,7 +46,8 @@ class EditableTextWidget extends StatelessWidget {
           fontWeight: textItem.fontWeight,
           fontSize: textItem.fontSize,
           color: textItem.color,
-          backgroundColor: isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
+          backgroundColor:
+              isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
         ),
       ),
     );
