@@ -8,8 +8,27 @@ import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 import '../../utils/custom_snackbar.dart';
 
-class CanvasScreen extends StatelessWidget {
+class CanvasScreen extends StatefulWidget {
   const CanvasScreen({super.key});
+
+  @override
+  State<CanvasScreen> createState() => _CanvasScreenState();
+}
+
+class _CanvasScreenState extends State<CanvasScreen> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +60,6 @@ class CanvasScreen extends StatelessWidget {
           },
         ),
         actions:<Widget>[
-          //add icon to show or hide the background colors
           IconButton(
             tooltip :'change background color',
             icon :const Icon(
@@ -78,35 +96,72 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<CanvasCubit, CanvasState>(
-        builder: (context, state) {
-          return GestureDetector(
-            onTap: () => context.read<CanvasCubit>().deselectText(),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    state.backgroundColor,
-                    state.backgroundColor.withAlpha((0.95 * 255).toInt()),
-                  ],
-                ),
-              ),
-              child: Stack(
-                children: state.textItems.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final textItem = entry.value;
-                  final isSelected = state.selectedTextItemIndex == index;
-                  return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
-                }).toList(),
-              ),
-            ),
-          );
+      body: BlocListener<CanvasCubit, CanvasState>(
+        listenWhen: (previous, current) {
+          return previous.textItems.length < current.textItems.length &&
+                 previous.canvasWidth < current.canvasWidth;
         },
+        listener: (context, state) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          });
+        },
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            context.read<CanvasCubit>().setCanvasSize(constraints.biggest);
+
+            return BlocBuilder<CanvasCubit, CanvasState>(
+              buildWhen: (previous, current) =>
+                  previous.canvasWidth != current.canvasWidth ||
+                  previous.textItems != current.textItems ||
+                  previous.backgroundColor != current.backgroundColor,
+              builder: (context, state) {
+                if (state.canvasWidth == 0) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: GestureDetector(
+                    onTap: () => context.read<CanvasCubit>().deselectText(),
+                    child: SizedBox(
+                      width: state.canvasWidth,
+                      height: state.canvasHeight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              state.backgroundColor,
+                              state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+                            ],
+                          ),
+                        ),
+                        child: Stack(
+                          children: state.textItems.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final textItem = entry.value;
+                            final isSelected = state.selectedTextItemIndex == index;
+                            return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
       extendBody: true,
-    bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
+      bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
         builder: (context, state) {
           return Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -135,10 +190,8 @@ class CanvasScreen extends StatelessWidget {
               ],
             ),
           );
-
         },
       ),
-
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),

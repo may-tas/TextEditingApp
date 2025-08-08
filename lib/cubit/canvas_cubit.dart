@@ -4,8 +4,22 @@ import '../models/text_item_model.dart';
 import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
-  CanvasCubit() : super(CanvasState.initial());
+  static const Offset _kInitialPosition = Offset(20.0, 40.0);
+  static const double _kVerticalSpacing = 40.0;
+  static const double _kColumnWidth = 120.0;
+  static const double _kBottomMargin = 60.0;
 
+  CanvasCubit() : super(CanvasState.initial());
+  
+  void setCanvasSize(Size size) {
+    if (state.canvasWidth == 0 || state.canvasHeight == 0) {
+      emit(state.copyWith(
+        canvasWidth: size.width,
+        canvasHeight: size.height,
+      ));
+    }
+  }
+  
   //method to toggle the color tray
   void toggleTray(){
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
@@ -24,25 +38,50 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to add the text
   void addText(String text) {
+    if (state.canvasHeight == 0) return;
+
+    Offset position;
+    double newCanvasWidth = state.canvasWidth;
+
+    if (state.textItems.isEmpty) {
+      position = _kInitialPosition;
+    } else {
+      final lastItem = state.textItems.last;
+      Offset nextPosition = Offset(lastItem.x, lastItem.y + _kVerticalSpacing);
+
+      if (nextPosition.dy > state.canvasHeight - _kBottomMargin) {
+        nextPosition = Offset(
+          lastItem.x + _kColumnWidth,
+          _kInitialPosition.dy,
+        );
+      }
+      position = nextPosition;
+
+      double requiredWidth = position.dx + _kColumnWidth;
+      if (requiredWidth > state.canvasWidth) {
+        newCanvasWidth = requiredWidth;
+      }
+    }
+
     final newTextItem = TextItem(
       text: text,
-      x: 50,
-      y: 50,
+      x: position.dx,
+      y: position.dy,
       fontSize: 16,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
-      color: Colors.white, // My Default color for the text
+      color: Colors.white,
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
-    emit(
-      state.copyWith(
-        textItems: updatedItems,
-        selectedTextItemIndex: updatedItems.length - 1,
-        history: [...state.history, state],
-        future: [],
-      ),
-    );
+    
+    emit(state.copyWith(
+      textItems: updatedItems,
+      selectedTextItemIndex: updatedItems.length - 1,
+      history: [...state.history, state],
+      future: [],
+      canvasWidth: newCanvasWidth,
+    ));
   }
 
   // FIX: Reset all formatting
@@ -53,7 +92,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
-      color: Colors.white, // Reset to default color
+      color: Colors.white,
     );
     _updateState(textItems: updatedItems);
   }
@@ -138,15 +177,12 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to empty the canvas
   void clearCanvas() {
-    emit(
-      state.copyWith(
-        textItems: [],
-        history: [...state.history, state],
-        future: [],
-        selectedTextItemIndex: null,
-        deselect: true,
-      ),
-    );
+    final originalWidth = state.canvasWidth;
+    final originalHeight = state.canvasHeight;
+    emit(CanvasState.initial().copyWith(
+      canvasWidth: originalWidth,
+      canvasHeight: originalHeight,
+    ));
   }
 
   // update state with this
