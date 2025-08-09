@@ -7,6 +7,7 @@ class CanvasState {
   final List<CanvasState> future;
   final Color backgroundColor; // Added background color
   final int? selectedTextItemIndex;
+  final bool isTrayShown ;
 
   const CanvasState({
     required this.textItems,
@@ -14,6 +15,7 @@ class CanvasState {
     required this.future,
     this.backgroundColor = const Color(0xFF1A1A1A), // Default value
     this.selectedTextItemIndex,
+    this.isTrayShown = false,
   });
 
   factory CanvasState.initial() {
@@ -23,6 +25,7 @@ class CanvasState {
       future: [],
       backgroundColor: Color(0xFF1A1A1A), // Default dark background
       selectedTextItemIndex: null);
+
   }
 
   CanvasState copyWith({
@@ -32,6 +35,7 @@ class CanvasState {
     Color? backgroundColor,
     int? selectedTextItemIndex,
     bool deselect = false,
+    bool isTrayShown = false
   }) {
     return CanvasState(
       textItems: textItems ?? this.textItems,
@@ -39,6 +43,7 @@ class CanvasState {
       future: future ?? this.future,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       selectedTextItemIndex: deselect ? null : selectedTextItemIndex ?? this.selectedTextItemIndex,
+      isTrayShown: deselect ? false : isTrayShown
     );
   }
 }

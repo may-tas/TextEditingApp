@@ -84,6 +84,7 @@ class EditTextDialog extends StatelessWidget {
             Form(
               key: formKey,
               child: TextFormField(
+                autofocus: true,
                 controller: controller,
                 validator: (value) => (value == null || value.trim().isEmpty)
                     ? 'Text cannot be empty'
