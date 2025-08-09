@@ -7,6 +7,7 @@ class TextItem {
   final double fontSize;
   final FontStyle fontStyle;
   final FontWeight fontWeight;
+  final bool isUnderlined;
   final String fontFamily;
   final Color color;
 
@@ -18,6 +19,7 @@ class TextItem {
     required this.fontStyle,
     required this.fontWeight,
     required this.fontFamily,
+    required this.isUnderlined,
     required this.color,
   });
 
@@ -29,6 +31,7 @@ class TextItem {
     FontStyle? fontStyle,
     FontWeight? fontWeight,
     String? fontFamily,
+    bool? isUnderlined,
     Color? color,
   }) {
     return TextItem(
@@ -39,6 +42,7 @@ class TextItem {
       fontStyle: fontStyle ?? this.fontStyle,
       fontWeight: fontWeight ?? this.fontWeight,
       fontFamily: fontFamily ?? this.fontFamily,
+      isUnderlined: isUnderlined ?? this.isUnderlined,
       color: color ?? this.color,
     );
   }

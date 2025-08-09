@@ -7,9 +7,10 @@ class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
 
   //method to toggle the color tray
-  void toggleTray(){
+  void toggleTray() {
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
   }
+
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
@@ -32,6 +33,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
+      isUnderlined: false,
       color: Colors.white, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
@@ -53,6 +55,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
+      isUnderlined: false,
       color: Colors.white, // Reset to default color
     );
     _updateState(textItems: updatedItems);
@@ -102,6 +105,13 @@ class CanvasCubit extends Cubit<CanvasState> {
   void changeFontStyle(int index, FontStyle fontStyle) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(fontStyle: fontStyle);
+    _updateState(textItems: updatedItems);
+  }
+
+  void changeTextUnderline(int index, bool isUnderlined) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] =
+        updatedItems[index].copyWith(isUnderlined: isUnderlined);
     _updateState(textItems: updatedItems);
   }
 
