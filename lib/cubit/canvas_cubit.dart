@@ -7,9 +7,10 @@ class CanvasCubit extends Cubit<CanvasState> {
   CanvasCubit() : super(CanvasState.initial());
 
   //method to toggle the color tray
-  void toggleTray(){
+  void toggleTray() {
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
   }
+
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
