@@ -137,7 +137,8 @@ class FontControls extends StatelessWidget {
           final pItem = previous.textItems[current.selectedTextItemIndex!];
           final cItem = current.textItems[current.selectedTextItemIndex!];
           return pItem.fontWeight != cItem.fontWeight ||
-              pItem.fontStyle != cItem.fontStyle;
+              pItem.fontStyle != cItem.fontStyle ||
+              pItem.isUnderlined != cItem.isUnderlined;
         }
         return false;
       },
@@ -149,6 +150,7 @@ class FontControls extends StatelessWidget {
         final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
         final isBold = textItem?.fontWeight == FontWeight.bold;
         final isItalic = textItem?.fontStyle == FontStyle.italic;
+        final isUnderlined = textItem?.isUnderlined ?? false;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -194,6 +196,18 @@ class FontControls extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   _buildStyleButton(
+                    icon: Icons.format_underline,
+                    isSelected: isUnderlined,
+                    onPressed: isDisabled
+                        ? null
+                        : () {
+                            bool newUnderline = !isUnderlined;
+                            context.read<CanvasCubit>().changeTextUnderline(
+                                selectedIndex, newUnderline);
+                          },
+                  ),
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
                     icon: Icons.format_clear,
                     isSelected: false,
                     onPressed: isDisabled
@@ -203,6 +217,9 @@ class FontControls extends StatelessWidget {
                                 selectedIndex, FontStyle.normal);
                             context.read<CanvasCubit>().changeFontWeight(
                                 selectedIndex, FontWeight.normal);
+                            context
+                                .read<CanvasCubit>()
+                                .changeTextUnderline(selectedIndex, false);
                           },
                   ),
                 ],

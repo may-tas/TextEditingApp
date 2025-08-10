@@ -41,8 +41,12 @@ class EditableTextWidget extends StatelessWidget {
           fontStyle: textItem.fontStyle,
           fontWeight: textItem.fontWeight,
           fontSize: textItem.fontSize,
+          decoration: textItem.isUnderlined
+              ? TextDecoration.underline
+              : TextDecoration.none,
           color: textItem.color,
-          backgroundColor: isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
+          backgroundColor:
+              isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
         ),
       ),
     );
@@ -80,6 +84,7 @@ class EditTextDialog extends StatelessWidget {
             Form(
               key: formKey,
               child: TextFormField(
+                autofocus: true,
                 controller: controller,
                 validator: (value) => (value == null || value.trim().isEmpty)
                     ? 'Text cannot be empty'
