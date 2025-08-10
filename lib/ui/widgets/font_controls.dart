@@ -161,10 +161,6 @@ class FontControls extends StatelessWidget {
                         ? null
                         : () {
                             bool newUnderline = !isUnderlined;
-                            print('Debug: selectedIndex = $selectedIndex');
-                            print('Debug: current isUnderline = $isUnderlined');
-                            print('Debug: new underline = $newUnderline');
-
                             context.read<CanvasCubit>().changeTextUnderline(
                                 selectedIndex, newUnderline);
                           },
