@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 import '../models/text_item_model.dart';
 import 'canvas_state.dart';
 
@@ -181,5 +182,31 @@ class CanvasCubit extends Cubit<CanvasState> {
         history: [...state.history, state],
         future: [],
         deselect: true));
+  }
+
+  // copy with formatting
+  void copyText(int index, BuildContext context) async {
+    if (index < 0 || index >= state.textItems.length) return;
+    final itemToCopy = state.textItems[index];
+    final plainText = itemToCopy.text;
+    final htmlText = itemToCopy.toHTML();
+
+    final superClipboard = SystemClipboard.instance;
+    final items = DataWriterItem();
+
+    items.add(Formats.plainText(plainText));
+    items.add(Formats.htmlText(htmlText));
+
+    await superClipboard?.write([items]).then((_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Copied to clipboard')),
+      );
+    }).catchError((error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to copy: $error')),
+      );
+    });
   }
 }
