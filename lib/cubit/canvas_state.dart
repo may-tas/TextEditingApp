@@ -5,27 +5,34 @@ class CanvasState {
   final List<TextItem> textItems;
   final List<CanvasState> history;
   final List<CanvasState> future;
-  final Color backgroundColor; // Added background color
+  final Color backgroundColor;
   final int? selectedTextItemIndex;
-  final bool isTrayShown ;
+  final bool isTrayShown;
+  final String? message; // Added message field for save/load feedback
+  final String? currentPageName;
 
   const CanvasState({
     required this.textItems,
     required this.history,
     required this.future,
-    this.backgroundColor = const Color(0xFF1A1A1A), // Default value
+    this.backgroundColor = const Color(0xFF1A1A1A), // Default dark background
     this.selectedTextItemIndex,
     this.isTrayShown = false,
+    this.message, // Optional message field
+    this.currentPageName,
   });
 
   factory CanvasState.initial() {
     return const CanvasState(
-      textItems: [], 
-      history: [], 
+      textItems: [],
+      history: [],
       future: [],
       backgroundColor: Color(0xFF1A1A1A), // Default dark background
-      selectedTextItemIndex: null);
-
+      selectedTextItemIndex: null,
+      isTrayShown: false,
+      message: null,
+      currentPageName: null,
+    );
   }
 
   CanvasState copyWith({
@@ -35,15 +42,45 @@ class CanvasState {
     Color? backgroundColor,
     int? selectedTextItemIndex,
     bool deselect = false,
-    bool isTrayShown = false
+    bool? isTrayShown,
+    String? message,
+    String? currentPageName, // Fixed: Changed from bool to String?
+    bool clearCurrentPageName = false, // Fixed: Added this parameter
   }) {
     return CanvasState(
       textItems: textItems ?? this.textItems,
       history: history ?? this.history,
       future: future ?? this.future,
       backgroundColor: backgroundColor ?? this.backgroundColor,
-      selectedTextItemIndex: deselect ? null : selectedTextItemIndex ?? this.selectedTextItemIndex,
-      isTrayShown: deselect ? false : isTrayShown
+      selectedTextItemIndex: deselect ? null : (selectedTextItemIndex ?? this.selectedTextItemIndex),
+      isTrayShown: deselect ? false : (isTrayShown ?? this.isTrayShown),
+      message: message, // Allow message to be set to null explicitly
+      currentPageName: clearCurrentPageName ? null : (currentPageName ?? this.currentPageName),
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is CanvasState &&
+              runtimeType == other.runtimeType &&
+              textItems == other.textItems &&
+              backgroundColor == other.backgroundColor &&
+              selectedTextItemIndex == other.selectedTextItemIndex &&
+              history == other.history &&
+              future == other.future &&
+              isTrayShown == other.isTrayShown &&
+              message == other.message &&
+              currentPageName == other.currentPageName; // Fixed: Added missing field
+
+  @override
+  int get hashCode =>
+      textItems.hashCode ^
+      backgroundColor.hashCode ^
+      selectedTextItemIndex.hashCode ^
+      history.hashCode ^
+      future.hashCode ^
+      isTrayShown.hashCode ^
+      message.hashCode ^
+      currentPageName.hashCode; // Fixed: Added missing field
 }
