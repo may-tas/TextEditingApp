@@ -44,8 +44,8 @@ class CanvasState {
     bool deselect = false,
     bool? isTrayShown,
     String? message,
-    String? currentPageName, // Fixed: Changed from bool to String?
-    bool clearCurrentPageName = false, // Fixed: Added this parameter
+    String? currentPageName,
+    bool clearCurrentPageName = false,
   }) {
     return CanvasState(
       textItems: textItems ?? this.textItems,
@@ -59,7 +59,6 @@ class CanvasState {
     );
   }
 
-  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
           other is CanvasState &&
@@ -71,9 +70,8 @@ class CanvasState {
               future == other.future &&
               isTrayShown == other.isTrayShown &&
               message == other.message &&
-              currentPageName == other.currentPageName; // Fixed: Added missing field
+              currentPageName == other.currentPageName;
 
-  @override
   int get hashCode =>
       textItems.hashCode ^
       backgroundColor.hashCode ^
@@ -82,5 +80,5 @@ class CanvasState {
       future.hashCode ^
       isTrayShown.hashCode ^
       message.hashCode ^
-      currentPageName.hashCode; // Fixed: Added missing field
+      currentPageName.hashCode;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/canvas_cubit.dart';
+import '../../utils/custom_snackbar.dart';
 
 class SavedPagesScreen extends StatefulWidget {
   const SavedPagesScreen({super.key});
@@ -50,12 +51,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
     } catch (e) {
       // Handle error
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading saved pages: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackbar.showError('Error deleting page');
       }
     } finally {
       if (mounted) {
@@ -282,12 +278,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error loading page: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackbar.showError('Error deleting page');
       }
     }
   }
@@ -351,25 +342,11 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
       await _loadSavedPages(); // Refresh the list
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Page "$pageName" deleted successfully'),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
+        CustomSnackbar.showInfo('Page "$pageName" deleted successfully');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error deleting page: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackbar.showError('Error deleting page');
       }
     }
   }

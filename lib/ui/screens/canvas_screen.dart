@@ -60,61 +60,6 @@ class CanvasScreen extends StatelessWidget {
           },
         ),
         actions: <Widget>[
-          // New page button
-          IconButton(
-            tooltip: "New Page",
-            icon: const Icon(Icons.add, color: Colors.black54),
-            onPressed: () {
-              final cubit = context.read<CanvasCubit>();
-              cubit.createNewPage();
-              CustomSnackbar.showInfo('New page created');
-            },
-          ),
-          // Load saved pages button
-          IconButton(
-            tooltip: "Load Saved Pages",
-            icon: const Icon(Icons.folder_open, color: Colors.black54),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: context.read<CanvasCubit>(),
-                    child: const SavedPagesScreen(),
-                  ),
-                ),
-              );
-            },
-          ),
-          // Save page button
-          BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              return IconButton(
-                tooltip: state.currentPageName != null
-                    ? "Save '${state.currentPageName}'"
-                    : "Save Page",
-                icon: Icon(
-                  state.currentPageName != null ? Icons.save : Icons.save_as,
-                  color: Colors.black54,
-                ),
-                onPressed: () async {
-                  final cubit = context.read<CanvasCubit>();
-                  final wasHandled = await cubit.handleSaveAction();
-
-                  if (!wasHandled) {
-                    // Show dialog only if auto-save wasn't possible
-                    showDialog(
-                      context: context,
-                      builder: (context) => BlocProvider.value(
-                        value: cubit,
-                        child: const SavePageDialog(),
-                      ),
-                    );
-                  }
-                },
-              );
-            },
-          ),
           // Change background color button
           IconButton(
             tooltip: 'Change background color',
@@ -152,24 +97,106 @@ class CanvasScreen extends StatelessWidget {
               }
             },
           ),
+          // More options dropdown menu
+          BlocBuilder<CanvasCubit, CanvasState>(
+            builder: (context, state) {
+              return PopupMenuButton<String>(
+                tooltip: "More options",
+                icon: const Icon(Icons.more_vert, color: Colors.black54),
+                color: Colors.white, // White background for dropdown
+                onSelected: (value) async {
+                  final cubit = context.read<CanvasCubit>();
+
+                  switch (value) {
+                    case 'new_page':
+                      cubit.createNewPage();
+                      CustomSnackbar.showInfo('New page created');
+                      break;
+                    case 'load_pages':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: context.read<CanvasCubit>(),
+                            child: const SavedPagesScreen(),
+                          ),
+                        ),
+                      );
+                      break;
+                    case 'save_page':
+                      final wasHandled = await cubit.handleSaveAction();
+                      if (!wasHandled) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => BlocProvider.value(
+                            value: cubit,
+                            child: const SavePageDialog(),
+                          ),
+                        );
+                      }
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'new_page',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.add, color: Colors.black54, size: 20),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'New Page',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'load_pages',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.folder_open,
+                            color: Colors.black54, size: 20),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Saved Pages',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'save_page',
+                    child: Row(
+                      children: [
+                        Icon(
+                          state.currentPageName != null
+                              ? Icons.save
+                              : Icons.save_as,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          state.currentPageName != null
+                              ? "Save '${state.currentPageName}'"
+                              : "Save Page",
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
       body: BlocConsumer<CanvasCubit, CanvasState>(
         listener: (context, state) {
           // Show snackbar when there's a message from save/load operations
           if (state.message != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message!),
-                duration: const Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.only(
-                  bottom: 100,
-                  left: 16,
-                  right: 16,
-                ),
-              ),
-            );
+            CustomSnackbar.showInfo(state.message!);
             // Clear the message after showing
             context.read<CanvasCubit>().clearMessage();
           }
@@ -274,7 +301,6 @@ class _DraggableText extends StatefulWidget {
 class _DraggableTextState extends State<_DraggableText>
     with AutomaticKeepAliveClientMixin {
   late Offset localPosition;
-  bool _isDragging = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -288,54 +314,29 @@ class _DraggableTextState extends State<_DraggableText>
   @override
   void didUpdateWidget(covariant _DraggableText oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only update position if we're not currently dragging
-    if (!_isDragging &&
-        (oldWidget.textItem.x != widget.textItem.x ||
-            oldWidget.textItem.y != widget.textItem.y)) {
+    if (oldWidget.textItem.x != widget.textItem.x ||
+        oldWidget.textItem.y != widget.textItem.y) {
       localPosition = Offset(widget.textItem.x, widget.textItem.y);
     }
   }
 
-  void _safeUpdatePosition() {
-    if (!mounted) return; // Early exit if widget is unmounted
-
-    Future.microtask(() {
-      if (!mounted) return; // Check again after microtask delay
-
-      try {
-        final cubit = context.read<CanvasCubit>();
-        cubit.moveText(
-          widget.index,
-          localPosition.dx,
-          localPosition.dy,
-        );
-      } catch (e) {
-        debugPrint('Error during position update: $e');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    super.build(context); // Required for AutomaticKeepAliveClientMixin
-
     return Positioned(
       left: localPosition.dx,
       top: localPosition.dy,
       child: GestureDetector(
-        onPanStart: (_) {
-          _isDragging = true;
-        },
         onPanUpdate: (details) {
-          if (mounted) {
-            setState(() {
-              localPosition += details.delta;
-            });
-          }
+          setState(() {
+            localPosition += details.delta;
+          });
         },
         onPanEnd: (_) {
-          _isDragging = false;
-          _safeUpdatePosition();
+          context.read<CanvasCubit>().moveText(
+                widget.index,
+                localPosition.dx,
+                localPosition.dy,
+              );
         },
         child: EditableTextWidget(
           index: widget.index,

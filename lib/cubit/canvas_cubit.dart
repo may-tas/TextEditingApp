@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_clipboard/super_clipboard.dart';
+import 'package:texterra/utils/custom_snackbar.dart';
 import '../models/text_item_model.dart';
 import 'canvas_state.dart';
 
@@ -459,14 +460,10 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     await superClipboard?.write([items]).then((_) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Copied to clipboard')),
-      );
+      CustomSnackbar.showInfo('Copied to clipboard');
     }).catchError((error) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to copy: $error')),
-      );
+      CustomSnackbar.showError('Failed to copy: $error');
     });
   }
 }
