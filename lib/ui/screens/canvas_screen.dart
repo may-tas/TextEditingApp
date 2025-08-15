@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
+import 'package:texterra/ui/screens/save_page_dialog.dart';
+import 'package:texterra/ui/screens/saved_pages.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
@@ -18,13 +20,30 @@ class CanvasScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        title: const Text(
-          'Text Editor',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
+        title: BlocBuilder<CanvasCubit, CanvasState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                const Text(
+                  'Text Editor',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
+                ),
+                if (state.currentPageName != null)
+                  Text(
+                    state.currentPageName!,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
         centerTitle: true,
         leading: IconButton(
@@ -40,16 +59,17 @@ class CanvasScreen extends StatelessWidget {
             }
           },
         ),
-        actions:<Widget>[
-          //add icon to show or hide the background colors
+        actions: <Widget>[
+          // Change background color button
           IconButton(
-            tooltip :'change background color',
-            icon :const Icon(
+            tooltip: 'Change background color',
+            icon: const Icon(
               Icons.color_lens,
               color: Colors.black54,
             ),
             onPressed: () => context.read<CanvasCubit>().toggleTray(),
           ),
+          // Undo button
           IconButton(
             tooltip: "Undo",
             icon: const Icon(Icons.undo, color: Colors.black54),
@@ -63,6 +83,7 @@ class CanvasScreen extends StatelessWidget {
               }
             },
           ),
+          // Redo button
           IconButton(
             tooltip: "Redo",
             icon: const Icon(Icons.redo, color: Colors.black54),
@@ -76,9 +97,110 @@ class CanvasScreen extends StatelessWidget {
               }
             },
           ),
+          // More options dropdown menu
+          BlocBuilder<CanvasCubit, CanvasState>(
+            builder: (context, state) {
+              return PopupMenuButton<String>(
+                tooltip: "More options",
+                icon: const Icon(Icons.more_vert, color: Colors.black54),
+                color: Colors.white, // White background for dropdown
+                onSelected: (value) async {
+                  final cubit = context.read<CanvasCubit>();
+
+                  switch (value) {
+                    case 'new_page':
+                      cubit.createNewPage();
+                      CustomSnackbar.showInfo('New page created');
+                      break;
+                    case 'load_pages':
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: context.read<CanvasCubit>(),
+                            child: const SavedPagesScreen(),
+                          ),
+                        ),
+                      );
+                      break;
+                    case 'save_page':
+                      final wasHandled = await cubit.handleSaveAction();
+                      if (!wasHandled) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => BlocProvider.value(
+                            value: cubit,
+                            child: const SavePageDialog(),
+                          ),
+                        );
+                      }
+                      break;
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'new_page',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.add, color: Colors.black54, size: 20),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'New Page',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'load_pages',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.folder_open,
+                            color: Colors.black54, size: 20),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Saved Pages',
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'save_page',
+                    child: Row(
+                      children: [
+                        Icon(
+                          state.currentPageName != null
+                              ? Icons.save
+                              : Icons.save_as,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          state.currentPageName != null
+                              ? "Save '${state.currentPageName}'"
+                              : "Save Page",
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
-      body: BlocBuilder<CanvasCubit, CanvasState>(
+      body: BlocConsumer<CanvasCubit, CanvasState>(
+        listener: (context, state) {
+          // Show snackbar when there's a message from save/load operations
+          if (state.message != null) {
+            CustomSnackbar.showInfo(state.message!);
+            // Clear the message after showing
+            context.read<CanvasCubit>().clearMessage();
+          }
+        },
         builder: (context, state) {
           return GestureDetector(
             onTap: () => context.read<CanvasCubit>().deselectText(),
@@ -94,19 +216,25 @@ class CanvasScreen extends StatelessWidget {
                 ),
               ),
               child: Stack(
-                children: state.textItems.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final textItem = entry.value;
-                  final isSelected = state.selectedTextItemIndex == index;
-                  return _DraggableText(index: index, textItem: textItem, isSelected: isSelected);
-                }).toList(),
+                children: [
+                  ...List.generate(state.textItems.length, (index) {
+                    final textItem = state.textItems[index];
+                    final isSelected = state.selectedTextItemIndex == index;
+                    return _DraggableText(
+                      key: ValueKey('text_item_$index'),
+                      index: index,
+                      textItem: textItem,
+                      isSelected: isSelected,
+                    );
+                  }),
+                ],
               ),
             ),
           );
         },
       ),
       extendBody: true,
-    bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
+      bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
         builder: (context, state) {
           return Container(
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -135,10 +263,8 @@ class CanvasScreen extends StatelessWidget {
               ],
             ),
           );
-
         },
       ),
-
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -162,6 +288,7 @@ class _DraggableText extends StatefulWidget {
   final bool isSelected;
 
   const _DraggableText({
+    super.key,
     required this.index,
     required this.textItem,
     required this.isSelected,
@@ -171,8 +298,12 @@ class _DraggableText extends StatefulWidget {
   State<_DraggableText> createState() => _DraggableTextState();
 }
 
-class _DraggableTextState extends State<_DraggableText> {
+class _DraggableTextState extends State<_DraggableText>
+    with AutomaticKeepAliveClientMixin {
   late Offset localPosition;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
