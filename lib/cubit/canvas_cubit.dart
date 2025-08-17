@@ -16,13 +16,6 @@ class CanvasCubit extends Cubit<CanvasState> {
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
   }
 
-  // Toggle shadow on/off
-  void toggleShadow(int index, bool enabled) {
-    final updatedItems = List<TextItem>.from(state.textItems);
-    updatedItems[index] = updatedItems[index].copyWith(shadowEnabled: enabled);
-    _updateState(textItems: updatedItems);
-  }
-
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
@@ -172,7 +165,8 @@ class CanvasCubit extends Cubit<CanvasState> {
         future: [],
         selectedTextItemIndex: null,
         deselect: true,
-        clearCurrentPageName: true, // Clear the current page name when clearing canvas
+        clearCurrentPageName:
+            true, // Clear the current page name when clearing canvas
       ),
     );
   }
@@ -200,15 +194,6 @@ class CanvasCubit extends Cubit<CanvasState> {
       ),
     );
   }
-  final updatedItems = List<TextItem>.from(state.textItems);
-  updatedItems[index] = updatedItems[index].copyWith(
-    shadowOffsetX: offsetX ?? updatedItems[index].shadowOffsetX,
-    shadowOffsetY: offsetY ?? updatedItems[index].shadowOffsetY,
-    shadowBlur: blur ?? updatedItems[index].shadowBlur,
-    shadowColor: color ?? updatedItems[index].shadowColor,
-  );
-  _updateState(textItems: updatedItems);
-}
 
   // ==================== SAVE/LOAD FUNCTIONALITY ====================
 
@@ -221,17 +206,21 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       // Convert current state to JSON
       final pageData = {
-        'textItems': state.textItems.map((item) => {
-          'text': item.text,
-          'x': item.x,
-          'y': item.y,
-          'fontSize': item.fontSize,
-          'fontWeight': item.fontWeight.index,
-          'fontStyle': item.fontStyle.index,
-          'color': item.color.value,
-          'fontFamily': item.fontFamily,
-          'isUnderlined': item.isUnderlined,
-        }).toList(),
+        'textItems': state.textItems
+            .map(
+              (item) => {
+                'text': item.text,
+                'x': item.x,
+                'y': item.y,
+                'fontSize': item.fontSize,
+                'fontWeight': item.fontWeight.index,
+                'fontStyle': item.fontStyle.index,
+                'color': item.color.value,
+                'fontFamily': item.fontFamily,
+                'isUnderlined': item.isUnderlined,
+              },
+            )
+            .toList(),
         'backgroundColor': state.backgroundColor.value,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
@@ -239,7 +228,10 @@ class CanvasCubit extends Cubit<CanvasState> {
       print('📦 Page data: ${jsonEncode(pageData)}'); // Debug log
 
       // Save the page data
-      final saved = await prefs.setString('page_$pageName', jsonEncode(pageData));
+      final saved = await prefs.setString(
+        'page_$pageName',
+        jsonEncode(pageData),
+      );
       print('💾 Page saved successfully: $saved'); // Debug log
 
       // Update saved pages list
@@ -249,7 +241,9 @@ class CanvasCubit extends Cubit<CanvasState> {
       if (!savedPages.contains(pageName)) {
         savedPages.add(pageName);
         final listSaved = await prefs.setStringList('saved_pages', savedPages);
-        print('📝 Updated saved pages list: $listSaved -> $savedPages'); // Debug log
+        print(
+          '📝 Updated saved pages list: $listSaved -> $savedPages',
+        ); // Debug log
       }
 
       // Verify the save
@@ -257,16 +251,16 @@ class CanvasCubit extends Cubit<CanvasState> {
       print('✅ Verification - saved pages: $verification'); // Debug log
 
       // Set the current page name and emit success message
-      emit(state.copyWith(
-        currentPageName: pageName,
-        message: 'Page "$pageName" saved successfully!',
-      ));
+      emit(
+        state.copyWith(
+          currentPageName: pageName,
+          message: 'Page "$pageName" saved successfully!',
+        ),
+      );
     } catch (e, stackTrace) {
       print('❌ Error saving page: $e'); // Debug log
       print('Stack trace: $stackTrace'); // Debug log
-      emit(state.copyWith(
-        message: 'Error saving page: $e',
-      ));
+      emit(state.copyWith(message: 'Error saving page: $e'));
     }
   }
 
@@ -313,37 +307,41 @@ class CanvasCubit extends Cubit<CanvasState> {
         );
       }).toList();
 
-      print('✅ Successfully loaded ${textItems.length} text items'); // Debug log
+      print(
+        '✅ Successfully loaded ${textItems.length} text items',
+      ); // Debug log
 
-      emit(CanvasState(
-        textItems: textItems,
-        backgroundColor: Color(pageData['backgroundColor']),
-        selectedTextItemIndex: null,
-        message: 'Page "$pageName" loaded successfully!',
-        history: [],
-        future: [],
-        currentPageName: pageName, // Set the current page name
-      ));
+      emit(
+        CanvasState(
+          textItems: textItems,
+          backgroundColor: Color(pageData['backgroundColor']),
+          selectedTextItemIndex: null,
+          message: 'Page "$pageName" loaded successfully!',
+          history: [],
+          future: [],
+          currentPageName: pageName, // Set the current page name
+        ),
+      );
     } catch (e, stackTrace) {
       print('❌ Error loading page: $e'); // Debug log
       print('Stack trace: $stackTrace'); // Debug log
-      emit(state.copyWith(
-        message: 'Error loading page: $e',
-      ));
+      emit(state.copyWith(message: 'Error loading page: $e'));
     }
   }
 
   // Create new page (clears current page name)
   void createNewPage() {
-    emit(state.copyWith(
-      textItems: [],
-      backgroundColor: Colors.black,
-      selectedTextItemIndex: null,
-      history: [],
-      future: [],
-      clearCurrentPageName: true, // Clear the current page name
-      message: 'New page created',
-    ));
+    emit(
+      state.copyWith(
+        textItems: [],
+        backgroundColor: Colors.black,
+        selectedTextItemIndex: null,
+        history: [],
+        future: [],
+        clearCurrentPageName: true, // Clear the current page name
+        message: 'New page created',
+      ),
+    );
   }
 
   // Get list of saved pages
@@ -386,25 +384,25 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       savedPages.remove(pageName);
       final listUpdated = await prefs.setStringList('saved_pages', savedPages);
-      print('📝 Saved pages after removal: $savedPages, updated: $listUpdated'); // Debug log
+      print(
+        '📝 Saved pages after removal: $savedPages, updated: $listUpdated',
+      ); // Debug log
 
       // If the deleted page is the current page, clear the current page name
       if (state.currentPageName == pageName) {
-        emit(state.copyWith(
-          clearCurrentPageName: true,
-          message: 'Page "$pageName" deleted successfully!',
-        ));
+        emit(
+          state.copyWith(
+            clearCurrentPageName: true,
+            message: 'Page "$pageName" deleted successfully!',
+          ),
+        );
       } else {
-        emit(state.copyWith(
-          message: 'Page "$pageName" deleted successfully!',
-        ));
+        emit(state.copyWith(message: 'Page "$pageName" deleted successfully!'));
       }
     } catch (e, stackTrace) {
       print('❌ Error deleting page: $e'); // Debug log
       print('Stack trace: $stackTrace'); // Debug log
-      emit(state.copyWith(
-        message: 'Error deleting page: $e',
-      ));
+      emit(state.copyWith(message: 'Error deleting page: $e'));
     }
   }
 
@@ -427,10 +425,14 @@ class CanvasCubit extends Cubit<CanvasState> {
         'textCount': (pageData['textItems'] as List).length,
         'backgroundColor': Color(pageData['backgroundColor']),
         'timestamp': pageData['timestamp'],
-        'lastModified': DateTime.fromMillisecondsSinceEpoch(pageData['timestamp']),
+        'lastModified': DateTime.fromMillisecondsSinceEpoch(
+          pageData['timestamp'],
+        ),
       };
 
-      print('✅ Preview generated for $pageName: ${preview['textCount']} items'); // Debug log
+      print(
+        '✅ Preview generated for $pageName: ${preview['textCount']} items',
+      ); // Debug log
       return preview;
     } catch (e, stackTrace) {
       print('❌ Error getting preview for $pageName: $e'); // Debug log
@@ -449,7 +451,9 @@ class CanvasCubit extends Cubit<CanvasState> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final allKeys = prefs.getKeys();
-      final pageKeys = allKeys.where((key) => key.startsWith('page_') || key == 'saved_pages');
+      final pageKeys = allKeys.where(
+        (key) => key.startsWith('page_') || key == 'saved_pages',
+      );
 
       for (final key in pageKeys) {
         await prefs.remove(key);
@@ -457,10 +461,12 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       print('🧹 Cleared all saved data: $pageKeys'); // Debug log
 
-      emit(state.copyWith(
-        message: 'All saved data cleared!',
-        clearCurrentPageName: true,
-      ));
+      emit(
+        state.copyWith(
+          message: 'All saved data cleared!',
+          clearCurrentPageName: true,
+        ),
+      );
     } catch (e) {
       print('❌ Error clearing saved data: $e'); // Debug log
     }
@@ -479,29 +485,15 @@ class CanvasCubit extends Cubit<CanvasState> {
     items.add(Formats.plainText(plainText));
     items.add(Formats.htmlText(htmlText));
 
-<<<<<<< HEAD
-    await superClipboard?.write([items]).then((_) {
-      if (!context.mounted) return;
-      CustomSnackbar.showInfo('Copied to clipboard');
-    }).catchError((error) {
-      if (!context.mounted) return;
-      CustomSnackbar.showError('Failed to copy: $error');
-    });
-=======
     await superClipboard
         ?.write([items])
         .then((_) {
           if (!context.mounted) return;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+          CustomSnackbar.showInfo('Copied to clipboard');
         })
         .catchError((error) {
           if (!context.mounted) return;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to copy: $error')));
+          CustomSnackbar.showError('Failed to copy: $error');
         });
->>>>>>> 189d87e (committed)
   }
 }
