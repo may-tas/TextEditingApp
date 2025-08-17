@@ -10,6 +10,11 @@ class TextItem {
   final bool isUnderlined;
   final String fontFamily;
   final Color color;
+  final bool shadowEnabled;
+  final double shadowOffsetX;
+  final double shadowOffsetY;
+  final double shadowBlur;
+  final Color shadowColor;
 
   TextItem({
     required this.text,
@@ -21,6 +26,11 @@ class TextItem {
     required this.fontFamily,
     required this.isUnderlined,
     required this.color,
+    this.shadowEnabled = false,
+    this.shadowOffsetX = 0,
+    this.shadowOffsetY = 0,
+    this.shadowBlur = 0,
+    this.shadowColor = const Color(0xFF000000), // default black shadow
   });
 
   TextItem copyWith({
@@ -33,6 +43,11 @@ class TextItem {
     String? fontFamily,
     bool? isUnderlined,
     Color? color,
+    bool? shadowEnabled,
+    double? shadowOffsetX,
+    double? shadowOffsetY,
+    double? shadowBlur,
+    Color? shadowColor,
   }) {
     return TextItem(
       text: text ?? this.text,
@@ -44,14 +59,21 @@ class TextItem {
       fontFamily: fontFamily ?? this.fontFamily,
       isUnderlined: isUnderlined ?? this.isUnderlined,
       color: color ?? this.color,
+      shadowEnabled: shadowEnabled ?? this.shadowEnabled,
+      shadowOffsetX: shadowOffsetX ?? this.shadowOffsetX,
+      shadowOffsetY: shadowOffsetY ?? this.shadowOffsetY,
+      shadowBlur: shadowBlur ?? this.shadowBlur,
+      shadowColor: shadowColor ?? this.shadowColor,
     );
   }
 
   String toHTML() {
-    final cssColor = "#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}";
+    final cssColor =
+        "#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}";
     final cssFontWeight = fontWeight.value;
     final cssFontStyle = fontStyle == FontStyle.italic ? 'italic' : 'normal';
-    final style = 'font-size: ${fontSize}px; font-family: $fontFamily; color: $cssColor; font-weight: $cssFontWeight; font-style: $cssFontStyle;';
+    final style =
+        'font-size: ${fontSize}px; font-family: $fontFamily; color: $cssColor; font-weight: $cssFontWeight; font-style: $cssFontStyle;';
     return '<span style="$style">$text</span>';
   }
 }

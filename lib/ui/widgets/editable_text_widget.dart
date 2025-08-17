@@ -50,8 +50,23 @@ class EditableTextWidget extends StatelessWidget {
               ? TextDecoration.underline
               : TextDecoration.none,
           color: textItem.color,
-          backgroundColor:
-              isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
+          backgroundColor: isSelected
+              ? Colors.yellow.withAlpha((0.3 * 255).toInt())
+              : null,
+
+          // Added shadow/glow support
+          shadows: textItem.shadowEnabled
+              ? [
+                  Shadow(
+                    offset: Offset(
+                      textItem.shadowOffsetX,
+                      textItem.shadowOffsetY,
+                    ),
+                    blurRadius: textItem.shadowBlur,
+                    color: textItem.shadowColor,
+                  ),
+                ]
+              : [],
         ),
       ),
     );
@@ -69,9 +84,7 @@ class EditTextDialog extends StatelessWidget {
     final controller = TextEditingController(text: initialText);
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -80,10 +93,7 @@ class EditTextDialog extends StatelessWidget {
           children: [
             const Text(
               'Edit Text',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             Form(
@@ -100,8 +110,10 @@ class EditTextDialog extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide:
-                        const BorderSide(color: Colors.purple, width: 2),
+                    borderSide: const BorderSide(
+                      color: Colors.purple,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),

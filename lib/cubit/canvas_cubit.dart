@@ -16,6 +16,13 @@ class CanvasCubit extends Cubit<CanvasState> {
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
   }
 
+  // Toggle shadow on/off
+  void toggleShadow(int index, bool enabled) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(shadowEnabled: enabled);
+    _updateState(textItems: updatedItems);
+  }
+
   //method to select text
   void selectText(int index) {
     if (index >= 0 && index < state.textItems.length) {
@@ -115,8 +122,9 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   void changeTextUnderline(int index, bool isUnderlined) {
     final updatedItems = List<TextItem>.from(state.textItems);
-    updatedItems[index] =
-        updatedItems[index].copyWith(isUnderlined: isUnderlined);
+    updatedItems[index] = updatedItems[index].copyWith(
+      isUnderlined: isUnderlined,
+    );
     _updateState(textItems: updatedItems);
   }
 
@@ -132,10 +140,12 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.history.isNotEmpty) {
       final previousState = state.history.last;
       final newHistory = List<CanvasState>.from(state.history)..removeLast();
-      emit(previousState.copyWith(
-        history: newHistory,
-        future: [state, ...state.future],
-      ));
+      emit(
+        previousState.copyWith(
+          history: newHistory,
+          future: [state, ...state.future],
+        ),
+      );
     }
   }
 
@@ -144,10 +154,12 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (state.future.isNotEmpty) {
       final nextState = state.future.first;
       final newFuture = List<CanvasState>.from(state.future)..removeAt(0);
-      emit(nextState.copyWith(
-        future: newFuture,
-        history: [...state.history, state],
-      ));
+      emit(
+        nextState.copyWith(
+          future: newFuture,
+          history: [...state.history, state],
+        ),
+      );
     }
   }
 
@@ -166,10 +178,7 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // update state with this
-  void _updateState({
-    List<TextItem>? textItems,
-    Color? backgroundColor,
-  }) {
+  void _updateState({List<TextItem>? textItems, Color? backgroundColor}) {
     final newState = state.copyWith(
       textItems: textItems ?? state.textItems,
       backgroundColor: backgroundColor,
@@ -181,13 +190,25 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   void deleteText(int index) {
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         textItems: updatedList,
         selectedTextItemIndex: null,
         history: [...state.history, state],
         future: [],
-        deselect: true));
+        deselect: true,
+      ),
+    );
   }
+  final updatedItems = List<TextItem>.from(state.textItems);
+  updatedItems[index] = updatedItems[index].copyWith(
+    shadowOffsetX: offsetX ?? updatedItems[index].shadowOffsetX,
+    shadowOffsetY: offsetY ?? updatedItems[index].shadowOffsetY,
+    shadowBlur: blur ?? updatedItems[index].shadowBlur,
+    shadowColor: color ?? updatedItems[index].shadowColor,
+  );
+  _updateState(textItems: updatedItems);
+}
 
   // ==================== SAVE/LOAD FUNCTIONALITY ====================
 
@@ -458,6 +479,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     items.add(Formats.plainText(plainText));
     items.add(Formats.htmlText(htmlText));
 
+<<<<<<< HEAD
     await superClipboard?.write([items]).then((_) {
       if (!context.mounted) return;
       CustomSnackbar.showInfo('Copied to clipboard');
@@ -465,5 +487,21 @@ class CanvasCubit extends Cubit<CanvasState> {
       if (!context.mounted) return;
       CustomSnackbar.showError('Failed to copy: $error');
     });
+=======
+    await superClipboard
+        ?.write([items])
+        .then((_) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Copied to clipboard')));
+        })
+        .catchError((error) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to copy: $error')));
+        });
+>>>>>>> 189d87e (committed)
   }
 }
