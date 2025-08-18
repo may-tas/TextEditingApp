@@ -30,10 +30,13 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to add the text
   void addText(String text) {
+    // Calculate offset based on the number of existing text items
+    final offset = state.textItems.length * 20.0; // 20px offset for each item
+    
     final newTextItem = TextItem(
       text: text,
-      x: 50,
-      y: 50,
+      x: 50 + offset,
+      y: 50 + offset,
       fontSize: 16,
       fontStyle: FontStyle.normal,
       fontWeight: FontWeight.normal,
