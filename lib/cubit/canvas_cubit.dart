@@ -1,6 +1,10 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+part 'canvas_state.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_clipboard/super_clipboard.dart';
@@ -9,8 +13,59 @@ import '../models/text_item_model.dart';
 import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
-  CanvasCubit() : super(CanvasState.initial());
+CanvasCubit()
+      : super(
+          const CanvasState(
+            texts: [],
+            backgroundColor: Colors.white,
+            backgroundImage: null,
+          ),
+        );
+  void addText(String text) {
+    final updatedTexts = List<TextItem>.from(state.texts)
+      ..add(TextItem(
+        text: text,
+        position: const Offset(100, 100),
+        style: const TextStyle(fontSize: 24, color: Colors.black),
+      ));
+    emit(state.copyWith(texts: updatedTexts));
+  }
 
+  /// Update position of a text item
+  void updateTextPosition(int index, Offset newPosition) {
+    final updatedTexts = List<TextItem>.from(state.texts);
+    updatedTexts[index] = updatedTexts[index].copyWith(position: newPosition);
+    emit(state.copyWith(texts: updatedTexts));
+  }
+
+  /// Update style of a text item
+  void updateTextStyle(int index, TextStyle style) {
+    final updatedTexts = List<TextItem>.from(state.texts);
+    updatedTexts[index] = updatedTexts[index].copyWith(style: style);
+    emit(state.copyWith(texts: updatedTexts));
+  }
+
+  /// Change solid background color
+  void changeBackgroundColor(Color color) {
+    emit(state.copyWith(
+      backgroundColor: color,
+      backgroundImage: null, // remove image if color is set
+    ));
+  }
+
+  /// Set background image (from gallery or camera)
+  void setBackgroundImage(File imageFile) {
+    emit(state.copyWith(
+      backgroundImage: imageFile,
+      backgroundColor: Colors.transparent, // remove color if image is set
+    ));
+  }
+
+  /// Remove background image and fallback to color
+  void clearBackgroundImage() {
+    emit(state.copyWith(backgroundImage: null));
+  }
+}
   //method to toggle the color tray
   void toggleTray() {
     emit(state.copyWith(isTrayShown: !state.isTrayShown));
@@ -496,4 +551,30 @@ class CanvasCubit extends Cubit<CanvasState> {
           CustomSnackbar.showError('Failed to copy: $error');
         });
   }
+}
+class TextItem extends Equatable {
+  final String text;
+  final Offset position;
+  final TextStyle style;
+
+  const TextItem({
+    required this.text,
+    required this.position,
+    required this.style,
+  });
+
+  TextItem copyWith({
+    String? text,
+    Offset? position,
+    TextStyle? style,
+  }) {
+    return TextItem(
+      text: text ?? this.text,
+      position: position ?? this.position,
+      style: style ?? this.style,
+    );
+  }
+
+  @override
+  List<Object?> get props => [text, position, style];
 }
