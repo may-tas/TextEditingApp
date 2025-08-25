@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
@@ -12,6 +13,97 @@ import '../../utils/custom_snackbar.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
+
+  // NEW: Method to show background options
+  void _showBackgroundOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Background Options',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: _BackgroundOptionTile(
+                    icon: Icons.photo_library,
+                    title: 'Upload Image',
+                    subtitle: 'From gallery',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.read<CanvasCubit>().uploadBackgroundImage();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _BackgroundOptionTile(
+                    icon: Icons.camera_alt,
+                    title: 'Take Photo',
+                    subtitle: 'Use camera',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.read<CanvasCubit>().takePhotoForBackground();
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _BackgroundOptionTile(
+                    icon: Icons.color_lens,
+                    title: 'Solid Color',
+                    subtitle: 'Pick a color',
+                    onTap: () {
+                      Navigator.pop(context);
+                      context.read<CanvasCubit>().toggleTray();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                BlocBuilder<CanvasCubit, CanvasState>(
+                  builder: (context, state) {
+                    return Expanded(
+                      child: _BackgroundOptionTile(
+                        icon: Icons.clear,
+                        title: 'Remove Image',
+                        subtitle: 'Clear background',
+                        enabled: state.backgroundImagePath != null,
+                        onTap: state.backgroundImagePath != null
+                            ? () {
+                                Navigator.pop(context);
+                                context.read<CanvasCubit>().removeBackgroundImage();
+                              }
+                            : null,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +143,7 @@ class CanvasScreen extends StatelessWidget {
           icon: const Icon(Icons.delete, color: Colors.black54),
           onPressed: () {
             final cubit = context.read<CanvasCubit>();
-            if (cubit.state.textItems.isNotEmpty) {
+            if (cubit.state.textItems.isNotEmpty || cubit.state.backgroundImagePath != null) {
               cubit.clearCanvas();
               CustomSnackbar.showInfo('Canvas cleared');
             } else {
@@ -60,14 +152,14 @@ class CanvasScreen extends StatelessWidget {
           },
         ),
         actions: <Widget>[
-          // Change background color button
+          // UPDATED: Change background button (now opens background options)
           IconButton(
-            tooltip: 'Change background color',
+            tooltip: 'Background options',
             icon: const Icon(
-              Icons.color_lens,
+              Icons.wallpaper,
               color: Colors.black54,
             ),
-            onPressed: () => context.read<CanvasCubit>().toggleTray(),
+            onPressed: () => _showBackgroundOptions(context),
           ),
           // Undo button
           IconButton(
@@ -205,16 +297,7 @@ class CanvasScreen extends StatelessWidget {
           return GestureDetector(
             onTap: () => context.read<CanvasCubit>().deselectText(),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    state.backgroundColor,
-                    state.backgroundColor.withAlpha((0.95 * 255).toInt()),
-                  ],
-                ),
-              ),
+              decoration: _buildBackgroundDecoration(state),
               child: Stack(
                 children: [
                   ...List.generate(state.textItems.length, (index) {
@@ -276,6 +359,98 @@ class CanvasScreen extends StatelessWidget {
             context.read<CanvasCubit>().addText('New Text');
           },
           child: const Icon(Icons.add, color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  // Helper method to build background decoration
+  BoxDecoration _buildBackgroundDecoration(CanvasState state) {
+    if (state.backgroundImagePath != null) {
+      // Show background image with overlay gradient
+      return BoxDecoration(
+        image: DecorationImage(
+          image: FileImage(File(state.backgroundImagePath!)),
+          fit: BoxFit.cover,
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withAlpha((0.1 * 255).toInt()),
+            Colors.black.withAlpha((0.2 * 255).toInt()),
+          ],
+        ),
+      );
+    } else {
+      // Show solid color gradient
+      return BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            state.backgroundColor,
+            state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+          ],
+        ),
+      );
+    }
+  }
+}
+
+// Custom widget for background option tiles
+class _BackgroundOptionTile extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+  final bool enabled;
+
+  const _BackgroundOptionTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    this.onTap,
+    this.enabled = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: enabled ? Colors.grey[50] : Colors.grey[200],
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: enabled ? onTap : null,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: enabled ? Colors.black87 : Colors.grey,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: enabled ? Colors.black87 : Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: enabled ? Colors.grey[600] : Colors.grey,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
