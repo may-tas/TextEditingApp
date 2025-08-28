@@ -6,7 +6,7 @@ class CanvasState {
   final List<CanvasState> history;
   final List<CanvasState> future;
   final Color backgroundColor;
-  final String? backgroundImagePath; // New field for background image
+  final String? backgroundImagePath; 
   final int? selectedTextItemIndex;
   final bool isTrayShown;
   final String? message;
@@ -17,7 +17,7 @@ class CanvasState {
     required this.history,
     required this.future,
     this.backgroundColor = const Color(0xFF1A1A1A),
-    this.backgroundImagePath, // Optional background image path
+    this.backgroundImagePath, 
     this.selectedTextItemIndex,
     this.isTrayShown = false,
     this.message,

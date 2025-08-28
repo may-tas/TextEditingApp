@@ -61,7 +61,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
   }
 
-  // FIX: Reset all formatting
+  // Reset all formatting
   void resetFormatting(int index) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(
@@ -87,7 +87,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     _updateState(backgroundColor: color);
   }
 
-  // NEW: Method to upload background image from gallery
+  // Method to upload background image from gallery
   Future<void> uploadBackgroundImage() async {
     try {
       final XFile? image = await _imagePicker.pickImage(
@@ -110,7 +110,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
-  // NEW: Method to take photo for background
+  // Method to take photo for background
   Future<void> takePhotoForBackground() async {
     try {
       final XFile? image = await _imagePicker.pickImage(
@@ -133,7 +133,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
-  // NEW: Method to remove background image
+  // Method to remove background image
   void removeBackgroundImage() {
     // Delete the old image file if it exists
     if (state.backgroundImagePath != null) {
@@ -144,7 +144,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     emit(state.copyWith(message: 'Background image removed'));
   }
 
-  // NEW: Helper method to save image to app directory
+  // Helper method to save image to app directory
   Future<String?> _saveImageToAppDirectory(XFile image) async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
@@ -163,7 +163,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
-  // NEW: Helper method to delete image file
+  // Helper method to delete image file
   Future<void> _deleteImageFile(String imagePath) async {
     try {
       final file = File(imagePath);
@@ -269,7 +269,6 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
   }
 
-  // update state with this
   void _updateState({
     List<TextItem>? textItems,
     Color? backgroundColor,
@@ -297,16 +296,12 @@ class CanvasCubit extends Cubit<CanvasState> {
         deselect: true));
   }
 
-  // ==================== SAVE/LOAD FUNCTIONALITY ====================
-
-  // UPDATED: Save current canvas state (now includes background image)
   Future<void> savePage(String pageName) async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
       print('🔄 Saving page: $pageName');
 
-      // Convert current state to JSON
       final pageData = {
         'textItems': state.textItems.map((item) => {
           'text': item.text,
@@ -368,7 +363,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     return false; // Indicates that dialog should be shown
   }
 
-  // UPDATED: Load a saved page (now includes background image)
+  // Load a saved page (now includes background image)
   Future<void> loadPage(String pageName) async {
     try {
       print('🔄 Loading page: $pageName');
@@ -436,7 +431,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
-  // UPDATED: Create new page (clears current page name and background image)
+  // Create new page (clears current page name and background image)
   void createNewPage() {
     // Delete the current background image if it exists
     if (state.backgroundImagePath != null) {
@@ -478,7 +473,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
-  // UPDATED: Delete a saved page (now also cleans up background image files)
+  // Delete a saved page (now also cleans up background image files)
   Future<void> deletePage(String pageName) async {
     try {
       print('🗑️ Deleting page: $pageName');
@@ -570,7 +565,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     emit(state.copyWith(message: null));
   }
 
-  // UPDATED: Debug method to clear all saved data (now also cleans up image files)
+  // Debug method to clear all saved data (now also cleans up image files)
   Future<void> clearAllSavedData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
