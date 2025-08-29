@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
@@ -8,10 +9,23 @@ import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
 import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
+import '../widgets/background_options_sheet.dart';
 import '../../utils/custom_snackbar.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
+
+  // Method to show background options
+  void _showBackgroundOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => const BackgroundOptionsSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +65,7 @@ class CanvasScreen extends StatelessWidget {
           icon: const Icon(Icons.delete, color: Colors.black54),
           onPressed: () {
             final cubit = context.read<CanvasCubit>();
-            if (cubit.state.textItems.isNotEmpty) {
+            if (cubit.state.textItems.isNotEmpty || cubit.state.backgroundImagePath != null) {
               cubit.clearCanvas();
               CustomSnackbar.showInfo('Canvas cleared');
             } else {
@@ -60,14 +74,14 @@ class CanvasScreen extends StatelessWidget {
           },
         ),
         actions: <Widget>[
-          // Change background color button
+          // Background options button
           IconButton(
-            tooltip: 'Change background color',
+            tooltip: 'Background options',
             icon: const Icon(
-              Icons.color_lens,
+              Icons.wallpaper,
               color: Colors.black54,
             ),
-            onPressed: () => context.read<CanvasCubit>().toggleTray(),
+            onPressed: () => _showBackgroundOptions(context),
           ),
           // Undo button
           IconButton(
@@ -205,16 +219,7 @@ class CanvasScreen extends StatelessWidget {
           return GestureDetector(
             onTap: () => context.read<CanvasCubit>().deselectText(),
             child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    state.backgroundColor,
-                    state.backgroundColor.withAlpha((0.95 * 255).toInt()),
-                  ],
-                ),
-              ),
+              decoration: _buildBackgroundDecoration(state),
               child: Stack(
                 children: [
                   ...List.generate(state.textItems.length, (index) {
@@ -279,6 +284,39 @@ class CanvasScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Helper method to build background decoration
+  BoxDecoration _buildBackgroundDecoration(CanvasState state) {
+    if (state.backgroundImagePath != null) {
+      // Show background image with overlay gradient
+      return BoxDecoration(
+        image: DecorationImage(
+          image: FileImage(File(state.backgroundImagePath!)),
+          fit: BoxFit.cover,
+        ),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.black.withAlpha((0.1 * 255).toInt()),
+            Colors.black.withAlpha((0.2 * 255).toInt()),
+          ],
+        ),
+      );
+    } else {
+      // Show solid color gradient
+      return BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            state.backgroundColor,
+            state.backgroundColor.withAlpha((0.95 * 255).toInt()),
+          ],
+        ),
+      );
+    }
   }
 }
 

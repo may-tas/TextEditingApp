@@ -6,19 +6,21 @@ class CanvasState {
   final List<CanvasState> history;
   final List<CanvasState> future;
   final Color backgroundColor;
+  final String? backgroundImagePath; 
   final int? selectedTextItemIndex;
   final bool isTrayShown;
-  final String? message; // Added message field for save/load feedback
+  final String? message;
   final String? currentPageName;
 
   const CanvasState({
     required this.textItems,
     required this.history,
     required this.future,
-    this.backgroundColor = const Color(0xFF1A1A1A), // Default dark background
+    this.backgroundColor = const Color(0xFF1A1A1A),
+    this.backgroundImagePath, 
     this.selectedTextItemIndex,
     this.isTrayShown = false,
-    this.message, // Optional message field
+    this.message,
     this.currentPageName,
   });
 
@@ -27,7 +29,8 @@ class CanvasState {
       textItems: [],
       history: [],
       future: [],
-      backgroundColor: Color(0xFF1A1A1A), // Default dark background
+      backgroundColor: Color(0xFF1A1A1A),
+      backgroundImagePath: null,
       selectedTextItemIndex: null,
       isTrayShown: false,
       message: null,
@@ -40,6 +43,8 @@ class CanvasState {
     List<CanvasState>? history,
     List<CanvasState>? future,
     Color? backgroundColor,
+    String? backgroundImagePath,
+    bool clearBackgroundImage = false,
     int? selectedTextItemIndex,
     bool deselect = false,
     bool? isTrayShown,
@@ -52,9 +57,12 @@ class CanvasState {
       history: history ?? this.history,
       future: future ?? this.future,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      backgroundImagePath: clearBackgroundImage 
+          ? null 
+          : (backgroundImagePath ?? this.backgroundImagePath),
       selectedTextItemIndex: deselect ? null : (selectedTextItemIndex ?? this.selectedTextItemIndex),
       isTrayShown: deselect ? false : (isTrayShown ?? this.isTrayShown),
-      message: message, // Allow message to be set to null explicitly
+      message: message,
       currentPageName: clearCurrentPageName ? null : (currentPageName ?? this.currentPageName),
     );
   }
@@ -65,6 +73,7 @@ class CanvasState {
               runtimeType == other.runtimeType &&
               textItems == other.textItems &&
               backgroundColor == other.backgroundColor &&
+              backgroundImagePath == other.backgroundImagePath &&
               selectedTextItemIndex == other.selectedTextItemIndex &&
               history == other.history &&
               future == other.future &&
@@ -75,6 +84,7 @@ class CanvasState {
   int get hashCode =>
       textItems.hashCode ^
       backgroundColor.hashCode ^
+      backgroundImagePath.hashCode ^
       selectedTextItemIndex.hashCode ^
       history.hashCode ^
       future.hashCode ^
