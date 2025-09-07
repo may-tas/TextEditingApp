@@ -108,165 +108,180 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
       ),
       body: isLoading
           ? const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(
-              color: Colors.black54,
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Loading saved pages...',
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 16,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    color: Colors.black54,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Loading saved pages...',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      )
+            )
           : savedPages.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.description_outlined,
-              size: 80,
-              color: Colors.grey[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'No saved pages yet',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Create and save your first page!',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      )
-          : RefreshIndicator(
-        onRefresh: _loadSavedPages,
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: pagesPreviews.length,
-          itemBuilder: (context, index) {
-            final preview = pagesPreviews[index];
-            final pageName = preview['name'] as String;
-            final textCount = preview['textCount'] as int;
-            final backgroundColor = preview['backgroundColor'] as Color;
-            final lastModified = preview['lastModified'] as DateTime;
-
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () => _loadPage(pageName),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Page preview/thumbnail
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: backgroundColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: Colors.grey[300]!,
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.description,
-                            color: Colors.white.withOpacity(0.8),
-                            size: 28,
-                          ),
+                      Icon(
+                        Icons.description_outlined,
+                        size: 80,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No saved pages yet',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      // Page info
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              pageName,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '$textCount text item${textCount != 1 ? 's' : ''}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Modified ${_formatDateTime(lastModified)}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[500],
-                              ),
-                            ),
-                          ],
+                      const SizedBox(height: 8),
+                      Text(
+                        'Create and save your first page!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[500],
                         ),
-                      ),
-                      // Action buttons
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.open_in_new,
-                              color: Colors.blue,
-                              size: 20,
-                            ),
-                            onPressed: () => _loadPage(pageName),
-                            tooltip: 'Open',
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.red,
-                              size: 20,
-                            ),
-                            onPressed: () => _showDeleteConfirmation(pageName),
-                            tooltip: 'Delete',
-                          ),
-                        ],
                       ),
                     ],
                   ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _loadSavedPages,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: pagesPreviews.length,
+                    itemBuilder: (context, index) {
+                      final preview = pagesPreviews[index];
+                      final pageName = preview['name'] as String;
+                      final textCount = preview['textCount'] as int? ?? 0;
+                      final backgroundColor =
+                          preview['backgroundColor'] as Color? ?? Colors.grey;
+                      final lastModified = preview['lastModified'] as DateTime;
+                      final label = (preview['label'] as String?) ?? '';
+
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => _loadPage(pageName),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                // Page preview/thumbnail
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: backgroundColor,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: Colors.grey[300]!,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: label.isNotEmpty
+                                        ? Text(
+                                            label,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        : Icon(
+                                            Icons.description,
+                                            color:
+                                                Colors.white.withOpacity(0.8),
+                                            size: 28,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                // Page info
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        pageName,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '$textCount text item${textCount != 1 ? 's' : ''}',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Modified ${_formatDateTime(lastModified)}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey[500],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Action buttons
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.open_in_new,
+                                        color: Colors.blue,
+                                        size: 20,
+                                      ),
+                                      onPressed: () => _loadPage(pageName),
+                                      tooltip: 'Open',
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.red,
+                                        size: 20,
+                                      ),
+                                      onPressed: () =>
+                                          _showDeleteConfirmation(pageName),
+                                      tooltip: 'Delete',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 

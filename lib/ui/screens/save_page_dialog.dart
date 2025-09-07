@@ -13,6 +13,8 @@ class SavePageDialog extends StatefulWidget {
 
 class _SavePageDialogState extends State<SavePageDialog> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _labelController = TextEditingController();
+  Color _selectedColor = Colors.blue;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
   List<String> _existingPages = [];
@@ -72,6 +74,8 @@ class _SavePageDialogState extends State<SavePageDialog> {
     }
 
     final pageName = _controller.text.trim();
+    final label = _labelController.text.trim();
+    final color = _selectedColor;
 
     // Check if page already exists and show confirmation
     if (_pageExists(pageName)) {
@@ -86,7 +90,9 @@ class _SavePageDialogState extends State<SavePageDialog> {
     });
 
     try {
-      await context.read<CanvasCubit>().savePage(pageName);
+      await context
+          .read<CanvasCubit>()
+          .savePage(pageName, label: label, color: color.value);
 
       if (mounted) {
         Navigator.of(context).pop();
@@ -107,53 +113,55 @@ class _SavePageDialogState extends State<SavePageDialog> {
 
   Future<bool> _showOverwriteConfirmation(String pageName) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        title: const Row(
-          children: [
-            Icon(Icons.warning, color: Colors.orange),
-            SizedBox(width: 8),
-            Text('Page Already Exists'),
-          ],
-        ),
-        content: RichText(
-          text: TextSpan(
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
+          context: context,
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            children: [
-              const TextSpan(text: 'A page named '),
-              TextSpan(
-                text: '"$pageName"',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+            title: const Row(
+              children: [
+                Icon(Icons.warning, color: Colors.orange),
+                SizedBox(width: 8),
+                Text('Page Already Exists'),
+              ],
+            ),
+            content: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+                children: [
+                  const TextSpan(text: 'A page named '),
+                  TextSpan(
+                    text: '"$pageName"',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const TextSpan(
+                      text: ' already exists. Do you want to overwrite it?'),
+                ],
               ),
-              const TextSpan(text: ' already exists. Do you want to overwrite it?'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Overwrite'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Overwrite'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   @override
@@ -202,12 +210,70 @@ class _SavePageDialogState extends State<SavePageDialog> {
                 ),
                 prefixIcon: const Icon(Icons.description),
                 counterText: '', // Hide character counter
+                suffixIcon: (_controller.text.isNotEmpty)
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _controller.clear();
+                          });
+                        },
+                      )
+                    : null,
               ),
               autofocus: true,
               maxLength: 50,
               validator: _validatePageName,
               onFieldSubmitted: (_) => _savePage(),
               textInputAction: TextInputAction.done,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _labelController,
+              decoration: InputDecoration(
+                hintText: 'Add a label (optional)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                prefixIcon: const Icon(Icons.label),
+              ),
+              maxLength: 30,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text('Choose a color: ', style: TextStyle(fontSize: 14)),
+                ...[
+                  Colors.black,
+                  Colors.red,
+                  Colors.green,
+                  Colors.orange,
+                  Colors.purple,
+                  Colors.blue,
+                ].map((color) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedColor = color;
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: _selectedColor == color
+                                ? Colors.black
+                                : Colors.grey,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ))
+              ],
             ),
             if (_existingPages.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -242,17 +308,17 @@ class _SavePageDialogState extends State<SavePageDialog> {
           onPressed: _isSaving ? null : _savePage,
           child: _isSaving
               ? const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
-          )
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
               : const Text(
-            'Save',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
+                  'Save',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
         ),
       ],
     );
