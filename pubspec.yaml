@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^6.3.0
   super_clipboard: ^0.9.1
   shared_preferences: ^2.5.3
+  image_picker: ^1.2.0
 
 dev_dependencies:
   flutter_test:
