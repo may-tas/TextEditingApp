@@ -33,6 +33,8 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 25),
             _buildFontStyleControls(context),
             const SizedBox(width: 25),
+            _buildHighlightControls(context), 
+            const SizedBox(width: 25),
             _buildFontFamilyControls(context),
             const SizedBox(width: 25),
             _buildColorControls(context),
@@ -75,8 +77,103 @@ class FontControls extends StatelessWidget {
                 onPressed: isDisabled
                     ? null
                     : () {
-                        context.read<CanvasCubit>().copyText(selectedIndex, context);
+                        context
+                            .read<CanvasCubit>()
+                            .copyText(selectedIndex, context);
                       },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildHighlightControls(BuildContext context) {
+    final highlightColors = [
+      Colors.yellow,
+      Colors.lime,
+      Colors.orange,
+      Colors.pink[100]!,
+      Colors.cyan[100]!,
+    ];
+
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) {
+        if (previous.selectedTextItemIndex != current.selectedTextItemIndex) {
+          return true;
+        }
+        if (current.selectedTextItemIndex != null) {
+          final pItem = previous.textItems[current.selectedTextItemIndex!];
+          final cItem = current.textItems[current.selectedTextItemIndex!];
+          return pItem.isHighlighted != cItem.isHighlighted ||
+              pItem.highlightColor != cItem.highlightColor;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
+        final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
+        final isHighlighted = textItem?.isHighlighted ?? false;
+        final currentHighlightColor = textItem?.highlightColor ?? Colors.yellow;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Highlight',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            const SizedBox(width: 12),
+            Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                children: [
+                  _buildStyleButton(
+                    icon: Icons.highlight,
+                    isSelected: isHighlighted,
+                    onPressed: isDisabled
+                        ? null
+                        : () {
+                            context
+                                .read<CanvasCubit>()
+                                .toggleTextHighlight(selectedIndex);
+                          },
+                  ),
+                  const SizedBox(width: 8),
+                  ...highlightColors.map((color) {
+                    final isSelected =
+                        isHighlighted && currentHighlightColor == color;
+                    return GestureDetector(
+                      onTap: isDisabled
+                          ? null
+                          : () => context
+                              .read<CanvasCubit>()
+                              .changeHighlightColor(selectedIndex, color),
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected
+                                ? Colors.blueAccent
+                                : Colors.grey[400]!,
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
               ),
             ),
           ],
