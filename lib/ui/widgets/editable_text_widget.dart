@@ -51,7 +51,11 @@ class EditableTextWidget extends StatelessWidget {
               : TextDecoration.none,
           color: textItem.color,
           backgroundColor:
-              isSelected ? Colors.yellow.withAlpha((0.3 * 255).toInt()) : null,
+              textItem.isHighlighted && textItem.highlightColor != null
+                  ? textItem.highlightColor
+                  : (isSelected
+                      ? Colors.yellow.withAlpha((0.3 * 255).toInt())
+                      : null),
         ),
       ),
     );

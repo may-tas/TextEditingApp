@@ -10,6 +10,8 @@ class TextItem {
   final bool isUnderlined;
   final String fontFamily;
   final Color color;
+  final bool isHighlighted;
+  final Color? highlightColor;
 
   TextItem({
     required this.text,
@@ -21,6 +23,8 @@ class TextItem {
     required this.fontFamily,
     required this.isUnderlined,
     required this.color,
+    this.isHighlighted = false,
+    this.highlightColor,
   });
 
   TextItem copyWith({
@@ -33,6 +37,8 @@ class TextItem {
     String? fontFamily,
     bool? isUnderlined,
     Color? color,
+    bool? isHighlighted,
+    Color? highlightColor,
   }) {
     return TextItem(
       text: text ?? this.text,
@@ -44,14 +50,23 @@ class TextItem {
       fontFamily: fontFamily ?? this.fontFamily,
       isUnderlined: isUnderlined ?? this.isUnderlined,
       color: color ?? this.color,
+      isHighlighted: isHighlighted ?? this.isHighlighted,
+      highlightColor: highlightColor ?? this.highlightColor,
     );
   }
 
   String toHTML() {
-    final cssColor = "#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}";
+    final cssColor =
+        "#${color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}";
     final cssFontWeight = fontWeight.value;
     final cssFontStyle = fontStyle == FontStyle.italic ? 'italic' : 'normal';
-    final style = 'font-size: ${fontSize}px; font-family: $fontFamily; color: $cssColor; font-weight: $cssFontWeight; font-style: $cssFontStyle;';
+    final textDecoration = isUnderlined ? 'text-decoration: underline; ' : '';
+    final backgroundColor = isHighlighted && highlightColor != null
+        ? 'background-color: #${highlightColor!.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}; '
+        : '';
+
+    final style =
+        'font-size: ${fontSize}px; font-family: $fontFamily; color: $cssColor; font-weight: $cssFontWeight; font-style: $cssFontStyle; $textDecoration$backgroundColor';
     return '<span style="$style">$text</span>';
   }
 }

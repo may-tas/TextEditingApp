@@ -61,7 +61,29 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
   }
 
-  // Reset all formatting
+  // Method to toggle text highlighting
+  void toggleTextHighlight(int index, {Color? highlightColor}) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    final currentItem = updatedItems[index];
+
+    updatedItems[index] = currentItem.copyWith(
+      isHighlighted: !currentItem.isHighlighted,
+      highlightColor: highlightColor ?? Colors.yellow,
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Method to set specific highlight color
+  void changeHighlightColor(int index, Color color) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      isHighlighted: true,
+      highlightColor: color,
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Update your resetFormatting method to include highlighting
   void resetFormatting(int index) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(
@@ -70,7 +92,9 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
       isUnderlined: false,
-      color: Colors.white, // Reset to default color
+      isHighlighted: false, // Add this line
+      highlightColor: null, // Add this line
+      color: Colors.white,
     );
     _updateState(textItems: updatedItems);
   }
