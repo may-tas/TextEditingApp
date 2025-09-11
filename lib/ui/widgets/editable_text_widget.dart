@@ -21,16 +21,13 @@ class EditableTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // 1. Select the text item
         context.read<CanvasCubit>().selectText(index);
 
-        // 2. Open the EditTextDialog immediately
         final result = await showDialog<String>(
           context: context,
           builder: (context) => EditTextDialog(initialText: textItem.text),
         );
 
-        // 3. Handle the result from the dialog
         if (!context.mounted) return;
         if (result == '_delete_') {
           context.read<CanvasCubit>().deleteText(index);
@@ -38,24 +35,27 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-      // 4. onDoubleTap handler is now gone
-      child: Text(
-        textItem.text,
-        style: GoogleFonts.getFont(
-          textItem.fontFamily,
-          fontStyle: textItem.fontStyle,
-          fontWeight: textItem.fontWeight,
-          fontSize: textItem.fontSize,
-          decoration: textItem.isUnderlined
-              ? TextDecoration.underline
-              : TextDecoration.none,
-          color: textItem.color,
-          backgroundColor:
-              textItem.isHighlighted && textItem.highlightColor != null
-                  ? textItem.highlightColor
-                  : (isSelected
-                      ? Colors.yellow.withAlpha((0.3 * 255).toInt())
-                      : null),
+      child: SizedBox(
+        width: 600, // 👈 fixed width (try adjusting this)
+        child: Text(
+          textItem.text,
+          textAlign: textItem.textAlign, // 👈 alignment will work now
+          style: GoogleFonts.getFont(
+            textItem.fontFamily,
+            fontStyle: textItem.fontStyle,
+            fontWeight: textItem.fontWeight,
+            fontSize: textItem.fontSize,
+            decoration: textItem.isUnderlined
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            color: textItem.color,
+            backgroundColor:
+                textItem.isHighlighted && textItem.highlightColor != null
+                    ? textItem.highlightColor
+                    : (isSelected
+                        ? Colors.yellow.withAlpha((0.3 * 255).toInt())
+                        : null),
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 class TextItem {
   final String text;
@@ -12,8 +13,9 @@ class TextItem {
   final Color color;
   final bool isHighlighted;
   final Color? highlightColor;
+  final TextAlign textAlign; // 🔹 New
 
-  TextItem({
+   TextItem({
     required this.text,
     required this.x,
     required this.y,
@@ -25,9 +27,11 @@ class TextItem {
     required this.color,
     this.isHighlighted = false,
     this.highlightColor,
+    this.textAlign = TextAlign.left, // 🔹 Default
   });
 
-  TextItem copyWith({
+
+    TextItem copyWith({
     String? text,
     double? x,
     double? y,
@@ -39,6 +43,7 @@ class TextItem {
     Color? color,
     bool? isHighlighted,
     Color? highlightColor,
+    TextAlign? textAlign, // 🔹 New
   }) {
     return TextItem(
       text: text ?? this.text,
@@ -52,8 +57,10 @@ class TextItem {
       color: color ?? this.color,
       isHighlighted: isHighlighted ?? this.isHighlighted,
       highlightColor: highlightColor ?? this.highlightColor,
+      textAlign: textAlign ?? this.textAlign, // 🔹 New
     );
   }
+
 
   String toHTML() {
     final cssColor =

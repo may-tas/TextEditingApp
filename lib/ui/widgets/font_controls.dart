@@ -6,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../constants/font_family_list.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
+import 'package:flutter/material.dart';  
+
+
 
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
@@ -32,6 +35,10 @@ class FontControls extends StatelessWidget {
             _buildFontSizeWheel(context),
             const SizedBox(width: 25),
             _buildFontStyleControls(context),
+            const SizedBox(width: 25),
+                _buildFontStyleControls(context),
+            const SizedBox(width: 25),
+                _buildAlignmentControls(context), // ✅ New
             const SizedBox(width: 25),
             _buildHighlightControls(context), 
             const SizedBox(width: 25),
@@ -327,6 +334,100 @@ class FontControls extends StatelessWidget {
       },
     );
   }
+
+ Widget _buildAlignmentControls(BuildContext context) {
+  return BlocBuilder<CanvasCubit, CanvasState>(
+    buildWhen: (previous, current) {
+      // Only rebuild if selection changed or textAlign changed
+      final prevIndex = previous.selectedTextItemIndex;
+      final currIndex = current.selectedTextItemIndex;
+
+      if (prevIndex != currIndex) return true;
+
+      if (currIndex != null &&
+          currIndex < previous.textItems.length &&
+          currIndex < current.textItems.length) {
+        final prevItem = previous.textItems[currIndex];
+        final currItem = current.textItems[currIndex];
+        return prevItem.textAlign != currItem.textAlign;
+      }
+
+      return false;
+    },
+    builder: (context, state) {
+      final selectedIndex = state.selectedTextItemIndex;
+      final isDisabled =
+          selectedIndex == null || selectedIndex >= state.textItems.length;
+
+      final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
+      final currentAlign = textItem?.textAlign ?? TextAlign.left;
+
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Align',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: Row(
+              children: [
+                _buildStyleButton(
+                  icon: Icons.format_align_left,
+                  isSelected: currentAlign == TextAlign.left,
+                  onPressed: isDisabled
+                      ? null
+                      : () => context
+                          .read<CanvasCubit>()
+                          .changeTextAlignment(selectedIndex, TextAlign.left),
+                ),
+                const SizedBox(width: 8),
+                _buildStyleButton(
+                  icon: Icons.format_align_center,
+                  isSelected: currentAlign == TextAlign.center,
+                  onPressed: isDisabled
+                      ? null
+                      : () => context
+                          .read<CanvasCubit>()
+                          .changeTextAlignment(selectedIndex, TextAlign.center),
+                ),
+                const SizedBox(width: 8),
+                _buildStyleButton(
+                  icon: Icons.format_align_right,
+                  isSelected: currentAlign == TextAlign.right,
+                  onPressed: isDisabled
+                      ? null
+                      : () => context
+                          .read<CanvasCubit>()
+                          .changeTextAlignment(selectedIndex, TextAlign.right),
+                ),
+                const SizedBox(width: 8),
+                _buildStyleButton(
+                  icon: Icons.format_align_justify,
+                  isSelected: currentAlign == TextAlign.justify,
+                  onPressed: isDisabled
+                      ? null
+                      : () => context
+                          .read<CanvasCubit>()
+                          .changeTextAlignment(selectedIndex, TextAlign.justify),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 
   Widget _buildFontFamilyControls(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
