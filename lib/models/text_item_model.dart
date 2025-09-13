@@ -13,7 +13,7 @@ class TextItem {
   final Color color;
   final bool isHighlighted;
   final Color? highlightColor;
-  final TextAlign textAlign; // 🔹 New
+  final TextAlign textAlign; 
 
    TextItem({
     required this.text,
@@ -27,7 +27,7 @@ class TextItem {
     required this.color,
     this.isHighlighted = false,
     this.highlightColor,
-    this.textAlign = TextAlign.left, // 🔹 Default
+    this.textAlign = TextAlign.left, 
   });
 
 
@@ -43,7 +43,7 @@ class TextItem {
     Color? color,
     bool? isHighlighted,
     Color? highlightColor,
-    TextAlign? textAlign, // 🔹 New
+    TextAlign? textAlign, 
   }) {
     return TextItem(
       text: text ?? this.text,
@@ -57,7 +57,7 @@ class TextItem {
       color: color ?? this.color,
       isHighlighted: isHighlighted ?? this.isHighlighted,
       highlightColor: highlightColor ?? this.highlightColor,
-      textAlign: textAlign ?? this.textAlign, // 🔹 New
+      textAlign: textAlign ?? this.textAlign, 
     );
   }
 

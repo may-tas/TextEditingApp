@@ -253,6 +253,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     _updateState(textItems: updatedItems);
   }
 
+  // method to change text alignment
   void changeTextAlignment(int index, TextAlign align) {
     if (index < 0 || index >= state.textItems.length) return;
 
@@ -261,9 +262,6 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     emit(state.copyWith(textItems: updatedItems));
   }
-
-
-
 
   // method to undo changes and emit it
   void undo() {

@@ -35,11 +35,9 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-      child: SizedBox(
-        width: 600, // 👈 fixed width (try adjusting this)
         child: Text(
           textItem.text,
-          textAlign: textItem.textAlign, // 👈 alignment will work now
+          textAlign: textItem.textAlign, // alignment will work now
           style: GoogleFonts.getFont(
             textItem.fontFamily,
             fontStyle: textItem.fontStyle,
@@ -58,7 +56,6 @@ class EditableTextWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
   }
 }
 

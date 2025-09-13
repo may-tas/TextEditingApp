@@ -9,7 +9,6 @@ import '../../cubit/canvas_state.dart';
 import 'package:flutter/material.dart';  
 
 
-
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
 
@@ -38,17 +37,17 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 25),
                 _buildFontStyleControls(context),
             const SizedBox(width: 25),
-                _buildAlignmentControls(context), // ✅ New
+                _buildAlignmentControls(context), 
             const SizedBox(width: 25),
             _buildHighlightControls(context), 
             const SizedBox(width: 25),
             _buildFontFamilyControls(context),
             const SizedBox(width: 25),
             _buildColorControls(context),
-            const SizedBox(width: 25), // Add spacing for the new button
+            const SizedBox(width: 25), 
             _buildCopyButton(context),
             const SizedBox(width: 25),
-            _buildClearFormatButton(context), // Call your new function here
+            _buildClearFormatButton(context), 
           ],
         ),
       ),
@@ -426,8 +425,6 @@ class FontControls extends StatelessWidget {
     },
   );
 }
-
-
 
   Widget _buildFontFamilyControls(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
