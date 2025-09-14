@@ -62,7 +62,7 @@ class CanvasState {
           : (backgroundImagePath ?? this.backgroundImagePath),
       selectedTextItemIndex: deselect ? null : (selectedTextItemIndex ?? this.selectedTextItemIndex),
       isTrayShown: deselect ? false : (isTrayShown ?? this.isTrayShown),
-      message: message,
+       message: message ?? this.message,
       currentPageName: clearCurrentPageName ? null : (currentPageName ?? this.currentPageName),
     );
   }

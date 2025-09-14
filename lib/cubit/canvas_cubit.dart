@@ -252,6 +252,16 @@ class CanvasCubit extends Cubit<CanvasState> {
     _updateState(textItems: updatedItems);
   }
 
+  // method to change text alignment
+  void changeTextAlignment(int index, TextAlign align) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(textAlign: align);
+
+    emit(state.copyWith(textItems: updatedItems));
+  }
+
   // method to undo changes and emit it
   void undo() {
     if (state.history.isNotEmpty) {
@@ -341,6 +351,7 @@ class CanvasCubit extends Cubit<CanvasState> {
                   'color': item.color.value,
                   'fontFamily': item.fontFamily,
                   'isUnderlined': item.isUnderlined,
+                  'textAlign': item.textAlign.index, // Save alignment as integer
                 })
             .toList(),
         'backgroundColor': state.backgroundColor.value,
@@ -426,6 +437,7 @@ class CanvasCubit extends Cubit<CanvasState> {
           color: Color(item['color']),
           fontFamily: item['fontFamily'],
           isUnderlined: item['isUnderlined'] ?? false,
+           textAlign: TextAlign.values[item['textAlign'] ?? 0], // Default to left if missing
         );
       }).toList();
 

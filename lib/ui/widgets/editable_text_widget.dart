@@ -39,8 +39,11 @@ class EditableTextWidget extends StatelessWidget {
         }
       },
       // 4. onDoubleTap handler is now gone
-      child: Text(
+      child:SizedBox(
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: Text(
         textItem.text,
+        textAlign: textItem.textAlign,
         style: GoogleFonts.getFont(
           textItem.fontFamily,
           fontStyle: textItem.fontStyle,
@@ -57,7 +60,7 @@ class EditableTextWidget extends StatelessWidget {
                       ? Colors.yellow.withAlpha((0.3 * 255).toInt())
                       : null),
         ),
-      ),
+      ),)
     );
   }
 }
