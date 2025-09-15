@@ -31,6 +31,53 @@ migrate_working_dir/
 .pub/
 /build/
 
+
+
+
+# All idea files
+.idea/
+
+# Gradle and Maven with auto-import
+# When using Gradle or Maven with auto-import, you should exclude module files,
+# since they will be recreated, and may cause churn.  Uncomment if using
+# auto-import.
+*.iml
+*.ipr
+
+# CMake
+cmake-build-*/
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+###############################################################################
+# Generic Flutter Exclusions (Provided by GitHub)
+#
+# Created by https://www.gitignore.io/api/flutter which redirects to:
+# Created by https://www.toptal.com/developers/gitignore/api/flutter
+# Edit at https://www.toptal.com/developers/gitignore?templates=flutter
+###############################################################################
+
+# Flutter/Dart/Pub related
+.fvm/
+.fvmrc
+.packages
+temporaryPath/
+build/
+coverage/
+lib/generated_plugin_registrant.dart
 # Symbolication related
 app.*.symbols
 
@@ -41,3 +88,20 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Platform-specific generated files
+# Windows
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugin_registrant.h
+/windows/flutter/generated_plugins.cmake
+/windows/flutter/ephemeral/
+
+# Linux
+/linux/flutter/generated_plugin_registrant.cc
+/linux/flutter/generated_plugin_registrant.h
+/linux/flutter/generated_plugins.cmake
+/linux/flutter/ephemeral/
+
+# macOS
+/macos/Flutter/GeneratedPluginRegistrant.swift
+/macos/Flutter/ephemeral/
