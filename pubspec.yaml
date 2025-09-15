@@ -40,6 +40,8 @@ dependencies:
   super_clipboard: ^0.9.1
   shared_preferences: ^2.5.3
   image_picker: ^1.2.0
+  path_provider: ^2.1.5
+  path: ^1.9.1
 
 dev_dependencies:
   flutter_test:

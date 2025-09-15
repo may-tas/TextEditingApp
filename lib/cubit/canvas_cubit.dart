@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -130,7 +132,7 @@ class CanvasCubit extends Cubit<CanvasState> {
             state.copyWith(message: 'Background image uploaded successfully!'));
       }
     } catch (e) {
-      print('Error uploading background image: $e');
+      log('Error uploading background image: $e');
       emit(state.copyWith(message: 'Error uploading image: $e'));
     }
   }
@@ -154,7 +156,7 @@ class CanvasCubit extends Cubit<CanvasState> {
             state.copyWith(message: 'Background photo captured successfully!'));
       }
     } catch (e) {
-      print('Error taking photo for background: $e');
+      log('Error taking photo for background: $e');
       emit(state.copyWith(message: 'Error taking photo: $e'));
     }
   }
@@ -173,19 +175,27 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Helper method to save image to app directory
   Future<String?> _saveImageToAppDirectory(XFile image) async {
     try {
-      final appDir = await getApplicationDocumentsDirectory();
-      final fileName =
-          'bg_${DateTime.now().millisecondsSinceEpoch}${path.extension(image.path)}';
-      final savedPath = path.join(appDir.path, fileName);
+      if (kIsWeb) {
+        final bytes = await image.readAsBytes();
+        final base64String = base64Encode(bytes);
+        final mimeType = image.mimeType ?? 'image/png';
+        final dataUrl = 'data:$mimeType;base64,$base64String';
+        log('Image saved as data URL');
+        return dataUrl;
+      } else {
+        final appDir = await getApplicationDocumentsDirectory();
+        final fileName =
+            'bg_${DateTime.now().millisecondsSinceEpoch}${path.extension(image.path)}';
+        final savedPath = path.join(appDir.path, fileName);
 
-      // Copy the file to app directory
-      final File imageFile = File(image.path);
-      await imageFile.copy(savedPath);
-
-      print('Image saved to: $savedPath');
-      return savedPath;
+        // Copy the file to app directory
+        final File imageFile = File(image.path);
+        await imageFile.copy(savedPath);
+        log('Image saved to: $savedPath');
+        return savedPath;
+      }
     } catch (e) {
-      print('Error saving image: $e');
+      log('Error saving image: $e');
       return null;
     }
   }
@@ -193,13 +203,19 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Helper method to delete image file
   Future<void> _deleteImageFile(String imagePath) async {
     try {
+      if (kIsWeb && imagePath.startsWith('data:')) {
+        // On web, data URLs don't need to be deleted from storage
+        log('Cleared data URL from memory');
+        return;
+      }
+
       final file = File(imagePath);
       if (await file.exists()) {
         await file.delete();
-        print('Deleted image file: $imagePath');
+        log('Deleted image file: $imagePath');
       }
     } catch (e) {
-      print('Error deleting image file: $e');
+      log('Error deleting image file: $e');
     }
   }
 
@@ -337,7 +353,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     try {
       final prefs = await SharedPreferences.getInstance();
 
-      print('🔄 Saving page: $pageName');
+      log('🔄 Saving page: $pageName');
 
       final pageData = {
         'textItems': state.textItems
@@ -351,7 +367,8 @@ class CanvasCubit extends Cubit<CanvasState> {
                   'color': item.color.value,
                   'fontFamily': item.fontFamily,
                   'isUnderlined': item.isUnderlined,
-                  'textAlign': item.textAlign.index, // Save alignment as integer
+                  'textAlign':
+                      item.textAlign.index, // Save alignment as integer
                 })
             .toList(),
         'backgroundColor': state.backgroundColor.value,
@@ -362,26 +379,26 @@ class CanvasCubit extends Cubit<CanvasState> {
         if (color != null) 'pageColor': color,
       };
 
-      print('📦 Page data: ${jsonEncode(pageData)}');
+      log('📦 Page data: ${jsonEncode(pageData)}');
 
       // Save the page data
       final saved =
           await prefs.setString('page_$pageName', jsonEncode(pageData));
-      print('💾 Page saved successfully: $saved');
+      log('💾 Page saved successfully: $saved');
 
       // Update saved pages list
       List<String> savedPages = prefs.getStringList('saved_pages') ?? [];
-      print('📋 Current saved pages before: $savedPages');
+      log('📋 Current saved pages before: $savedPages');
 
       if (!savedPages.contains(pageName)) {
         savedPages.add(pageName);
         final listSaved = await prefs.setStringList('saved_pages', savedPages);
-        print('📝 Updated saved pages list: $listSaved -> $savedPages');
+        log('📝 Updated saved pages list: $listSaved -> $savedPages');
       }
 
       // Verify the save
       final verification = prefs.getStringList('saved_pages');
-      print('✅ Verification - saved pages: $verification');
+      log('✅ Verification - saved pages: $verification');
 
       // Set the current page name and emit success message
       emit(state.copyWith(
@@ -389,8 +406,8 @@ class CanvasCubit extends Cubit<CanvasState> {
         message: 'Page "$pageName" saved successfully!',
       ));
     } catch (e, stackTrace) {
-      print('❌ Error saving page: $e');
-      print('Stack trace: $stackTrace');
+      log('❌ Error saving page: $e');
+      log('Stack trace: $stackTrace');
       emit(state.copyWith(
         message: 'Error saving page: $e',
       ));
@@ -410,21 +427,21 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Load a saved page (now includes background image)
   Future<void> loadPage(String pageName) async {
     try {
-      print('🔄 Loading page: $pageName');
+      log('🔄 Loading page: $pageName');
 
       final prefs = await SharedPreferences.getInstance();
       final pageDataString = prefs.getString('page_$pageName');
 
-      print('📦 Raw page data: $pageDataString');
+      log('📦 Raw page data: $pageDataString');
 
       if (pageDataString == null) {
-        print('❌ Page not found: $pageName');
+        log('❌ Page not found: $pageName');
         emit(state.copyWith(message: 'Page "$pageName" not found'));
         return;
       }
 
       final pageData = jsonDecode(pageDataString);
-      print('📋 Decoded page data: $pageData');
+      log('📋 Decoded page data: $pageData');
 
       final textItems = (pageData['textItems'] as List).map((item) {
         return TextItem(
@@ -437,25 +454,32 @@ class CanvasCubit extends Cubit<CanvasState> {
           color: Color(item['color']),
           fontFamily: item['fontFamily'],
           isUnderlined: item['isUnderlined'] ?? false,
-           textAlign: TextAlign.values[item['textAlign'] ?? 0], // Default to left if missing
+          textAlign: TextAlign
+              .values[item['textAlign'] ?? 0], // Default to left if missing
         );
       }).toList();
 
       // Load background image path if it exists
       final backgroundImagePath = pageData['backgroundImagePath'] as String?;
 
-      // Verify the background image file still exists
+      // Verify the background image file still exists or is valid
       String? validImagePath;
       if (backgroundImagePath != null) {
-        final imageFile = File(backgroundImagePath);
-        if (await imageFile.exists()) {
+        if (kIsWeb && backgroundImagePath.startsWith('data:')) {
+          // On web, data URLs are always valid if they exist
           validImagePath = backgroundImagePath;
         } else {
-          print('⚠ Background image file not found: $backgroundImagePath');
+          // On mobile, check if the file exists
+          final imageFile = File(backgroundImagePath);
+          if (await imageFile.exists()) {
+            validImagePath = backgroundImagePath;
+          } else {
+            log('⚠ Background image file not found: $backgroundImagePath');
+          }
         }
       }
 
-      print('✅ Successfully loaded ${textItems.length} text items');
+      log('✅ Successfully loaded ${textItems.length} text items');
 
       emit(CanvasState(
         textItems: textItems,
@@ -468,8 +492,8 @@ class CanvasCubit extends Cubit<CanvasState> {
         currentPageName: pageName,
       ));
     } catch (e, stackTrace) {
-      print('❌ Error loading page: $e');
-      print('Stack trace: $stackTrace');
+      log('❌ Error loading page: $e');
+      log('Stack trace: $stackTrace');
       emit(state.copyWith(
         message: 'Error loading page: $e',
       ));
@@ -498,22 +522,22 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Get list of saved pages
   Future<List<String>> getSavedPages() async {
     try {
-      print('🔄 Getting saved pages...');
+      log('🔄 Getting saved pages...');
 
       final prefs = await SharedPreferences.getInstance();
       final savedPages = prefs.getStringList('saved_pages') ?? [];
 
-      print('📋 Found saved pages: $savedPages');
+      log('📋 Found saved pages: $savedPages');
 
       // Also check what keys exist in SharedPreferences
       final allKeys = prefs.getKeys();
       final pageKeys = allKeys.where((key) => key.startsWith('page_')).toList();
-      print('🔑 All page keys in storage: $pageKeys');
+      log('🔑 All page keys in storage: $pageKeys');
 
       return savedPages;
     } catch (e, stackTrace) {
-      print('❌ Error getting saved pages: $e');
-      print('Stack trace: $stackTrace');
+      log('❌ Error getting saved pages: $e');
+      log('Stack trace: $stackTrace');
       return [];
     }
   }
@@ -521,7 +545,7 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Delete a saved page (now also cleans up background image files)
   Future<void> deletePage(String pageName) async {
     try {
-      print('🗑 Deleting page: $pageName');
+      log('🗑 Deleting page: $pageName');
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -538,21 +562,21 @@ class CanvasCubit extends Cubit<CanvasState> {
             await _deleteImageFile(backgroundImagePath);
           }
         } catch (e) {
-          print('⚠ Error reading page data for cleanup: $e');
+          log('⚠ Error reading page data for cleanup: $e');
         }
       }
 
       // Remove the page data
       final dataRemoved = await prefs.remove('page_$pageName');
-      print('📦 Page data removed: $dataRemoved');
+      log('📦 Page data removed: $dataRemoved');
 
       // Update the saved pages list
       List<String> savedPages = prefs.getStringList('saved_pages') ?? [];
-      print('📋 Saved pages before removal: $savedPages');
+      log('📋 Saved pages before removal: $savedPages');
 
       savedPages.remove(pageName);
       final listUpdated = await prefs.setStringList('saved_pages', savedPages);
-      print('📝 Saved pages after removal: $savedPages, updated: $listUpdated');
+      log('📝 Saved pages after removal: $savedPages, updated: $listUpdated');
 
       // If the deleted page is the current page, clear the current page name
       if (state.currentPageName == pageName) {
@@ -566,8 +590,8 @@ class CanvasCubit extends Cubit<CanvasState> {
         ));
       }
     } catch (e, stackTrace) {
-      print('❌ Error deleting page: $e');
-      print('Stack trace: $stackTrace');
+      log('❌ Error deleting page: $e');
+      log('Stack trace: $stackTrace');
       emit(state.copyWith(
         message: 'Error deleting page: $e',
       ));
@@ -577,13 +601,13 @@ class CanvasCubit extends Cubit<CanvasState> {
   // Get page preview data (for thumbnails or previews)
   Future<Map<String, dynamic>?> getPagePreview(String pageName) async {
     try {
-      print('🔍 Getting preview for page: $pageName');
+      log('🔍 Getting preview for page: $pageName');
 
       final prefs = await SharedPreferences.getInstance();
       final pageDataString = prefs.getString('page_$pageName');
 
       if (pageDataString == null) {
-        print('❌ No preview data found for: $pageName');
+        log('❌ No preview data found for: $pageName');
         return null;
       }
 
@@ -601,11 +625,11 @@ class CanvasCubit extends Cubit<CanvasState> {
         'label': pageData['label'] ?? '',
       };
 
-      print('✅ Preview generated for $pageName: ${preview['textCount']} items');
+      log('✅ Preview generated for $pageName: ${preview['textCount']} items');
       return preview;
     } catch (e, stackTrace) {
-      print('❌ Error getting preview for $pageName: $e');
-      print('Stack trace: $stackTrace');
+      log('❌ Error getting preview for $pageName: $e');
+      log('Stack trace: $stackTrace');
       return null;
     }
   }
@@ -634,7 +658,7 @@ class CanvasCubit extends Cubit<CanvasState> {
               await _deleteImageFile(backgroundImagePath);
             }
           } catch (e) {
-            print('⚠ Error cleaning up image for $key: $e');
+            log('⚠ Error cleaning up image for $key: $e');
           }
         }
       }
@@ -651,7 +675,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         await _deleteImageFile(state.backgroundImagePath!);
       }
 
-      print('🧹 Cleared all saved data: $keysToRemove');
+      log('🧹 Cleared all saved data: $keysToRemove');
 
       emit(state.copyWith(
         message: 'All saved data cleared!',
@@ -659,7 +683,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         clearBackgroundImage: true,
       ));
     } catch (e) {
-      print('❌ Error clearing saved data: $e');
+      log('❌ Error clearing saved data: $e');
     }
   }
 

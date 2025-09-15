@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
@@ -65,7 +67,8 @@ class CanvasScreen extends StatelessWidget {
           icon: const Icon(Icons.delete, color: Colors.black54),
           onPressed: () {
             final cubit = context.read<CanvasCubit>();
-            if (cubit.state.textItems.isNotEmpty || cubit.state.backgroundImagePath != null) {
+            if (cubit.state.textItems.isNotEmpty ||
+                cubit.state.backgroundImagePath != null) {
               cubit.clearCanvas();
               CustomSnackbar.showInfo('Canvas cleared');
             } else {
@@ -140,6 +143,7 @@ class CanvasScreen extends StatelessWidget {
                     case 'save_page':
                       final wasHandled = await cubit.handleSaveAction();
                       if (!wasHandled) {
+                        if (!context.mounted) return;
                         showDialog(
                           context: context,
                           builder: (context) => BlocProvider.value(
@@ -152,27 +156,27 @@ class CanvasScreen extends StatelessWidget {
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  PopupMenuItem<String>(
+                  const PopupMenuItem<String>(
                     value: 'new_page',
                     child: Row(
                       children: [
-                        const Icon(Icons.add, color: Colors.black54, size: 20),
-                        const SizedBox(width: 12),
-                        const Text(
+                        Icon(Icons.add, color: Colors.black54, size: 20),
+                        SizedBox(width: 12),
+                        Text(
                           'New Page',
                           style: TextStyle(color: Colors.black87),
                         ),
                       ],
                     ),
                   ),
-                  PopupMenuItem<String>(
+                  const PopupMenuItem<String>(
                     value: 'load_pages',
                     child: Row(
                       children: [
-                        const Icon(Icons.folder_open,
+                        Icon(Icons.folder_open,
                             color: Colors.black54, size: 20),
-                        const SizedBox(width: 12),
-                        const Text(
+                        SizedBox(width: 12),
+                        Text(
                           'Saved Pages',
                           style: TextStyle(color: Colors.black87),
                         ),
@@ -292,7 +296,7 @@ class CanvasScreen extends StatelessWidget {
       // Show background image with overlay gradient
       return BoxDecoration(
         image: DecorationImage(
-          image: FileImage(File(state.backgroundImagePath!)),
+          image: _getImageProvider(state.backgroundImagePath!),
           fit: BoxFit.cover,
         ),
         gradient: LinearGradient(
@@ -316,6 +320,19 @@ class CanvasScreen extends StatelessWidget {
           ],
         ),
       );
+    }
+  }
+
+  // Helper method to get appropriate image provider for web and mobile
+  ImageProvider _getImageProvider(String imagePath) {
+    if (kIsWeb && imagePath.startsWith('data:')) {
+      // On web, if it's a data URL, decode it and use MemoryImage
+      final String base64String = imagePath.split(',')[1];
+      final Uint8List bytes = base64Decode(base64String);
+      return MemoryImage(bytes);
+    } else {
+      // On mobile or if it's a file path, use FileImage
+      return FileImage(File(imagePath));
     }
   }
 }
@@ -360,6 +377,7 @@ class _DraggableTextState extends State<_DraggableText>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Positioned(
       left: localPosition.dx,
       top: localPosition.dy,
