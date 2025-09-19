@@ -140,9 +140,9 @@ It helps others discover the project and motivates us to keep improving. Your su
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Maintainers
-- **Sarthak Patil**
-[github](https://github.com/sarthaksahu03)
-[linkedIn](https://www.linkedin.com/in/sarthaknpatil/)
+- **Satyam Jha**
+  - [github](https://github.com/may-tas)
+  - [linkedIn](linkedin.com/in/satyam-jha-7746201a4/)
 
 ## Contact
 
@@ -150,4 +150,3 @@ For questions or suggestions, feel free to contact:
 
 - **Author:** Satyam Jha
 - **Email:** satyamj210@gmail.com
-- **GitHub:** [may-tas](https://github.com/may-tas)
