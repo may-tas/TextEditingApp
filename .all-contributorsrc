@@ -93,6 +93,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "debasmitaas",
+      "name": "Debasmita C",
+      "avatar_url": "https://avatars.githubusercontent.com/u/189460298?v=4",
+      "profile": "https://debasmitas-portfolio.netlify.app/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
