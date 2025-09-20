@@ -21,6 +21,15 @@
         "maintenance",
         "design"
       ]
+    },
+    {
+      "login": "PearlGrell",
+      "name": "Aryan Trivedi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/185500672?v=4",
+      "profile": "https://github.com/PearlGrell",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
