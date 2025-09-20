@@ -1,0 +1,28 @@
+{
+  "projectName": "TextEditingApp",
+  "projectOwner": "may-tas",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "may-tas",
+      "name": "Satyam Jha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135056339?v=4",
+      "profile": "https://github.com/may-tas",
+      "contributions": [
+        "code",
+        "doc",
+        "maintenance",
+        "design"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true
+}
