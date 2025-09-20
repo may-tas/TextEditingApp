@@ -93,7 +93,7 @@ class FontControls extends StatelessWidget {
   }
 
   Widget _buildHighlightControls(BuildContext context) {
-    final highlightColors = ColorConstants.highlightColors;
+    const highlightColors = ColorConstants.highlightColors;
 
     return BlocBuilder<CanvasCubit, CanvasState>(
       buildWhen: (previous, current) {

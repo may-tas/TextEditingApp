@@ -65,7 +65,7 @@ class BackgroundColorTray extends StatelessWidget {
                       child: isSelected
                           ? const Icon(
                               Icons.check,
-                              color: Color.fromARGB(255, 255, 248, 248),
+                              color: ColorConstants.checkIconWhite,
                               size: 20,
                             )
                           : null,

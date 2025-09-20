@@ -60,14 +60,14 @@ class ColorConstants {
   /// Black color with opacity for shadows and overlays
   static const Color uiBlackOverlay = Colors.black; // Used with withAlpha/withValues
   
-  /// Light gray for containers and backgrounds
-  static const Color uiGrayLight = Colors.grey; // [100] shade
+  /// Light gray for disabled buttons and light backgrounds
+  static const Color uiGrayLight = gray100; // Semantic reference to gray100
   
-  /// Medium gray for borders
-  static const Color uiGrayMedium = Colors.grey; // [300] shade
+  /// Medium gray for borders and dividers
+  static const Color uiGrayMedium = gray300; // Semantic reference to gray300
   
-  /// Dark gray for text and icons
-  static const Color uiGrayDark = Colors.grey; // [400], [600], [800] shades
+  /// Dark gray for secondary text and icons
+  static const Color uiGrayDark = gray600; // Semantic reference to gray600
   
   /// Blue accent color for selections and highlights
   static const Color uiBlueAccent = Colors.blueAccent;
@@ -81,6 +81,9 @@ class ColorConstants {
   // Missing Gray[200] equivalent  
   static const Color gray200 = Color(0xFFEEEEEE);
 
+  /// White color for check icons and selected states
+  static const Color checkIconWhite = Color(0xFFFFF8F8);
+
   // ===== Highlight Colors =====
   /// Default yellow highlight color
   static const Color highlightYellow = Colors.yellow;
@@ -92,18 +95,18 @@ class ColorConstants {
   static const Color highlightOrange = Colors.orange;
   
   /// Light pink highlight color
-  static const Color highlightPink = Colors.pink; // [100] shade
+  static const Color highlightPink = Color(0xFFF8BBD9); // pink[100] equivalent
   
   /// Light cyan highlight color
-  static const Color highlightCyan = Colors.cyan; // [100] shade
+  static const Color highlightCyan = Color(0xFFB2EBF2); // cyan[100] equivalent
 
   /// List of all available highlight colors
-  static List<Color> get highlightColors => [
+  static const List<Color> highlightColors = [
     highlightYellow,
     highlightLime,
     highlightOrange,
-    Colors.pink[100]!,
-    Colors.cyan[100]!,
+    highlightPink,
+    highlightCyan,
   ];
 
   // ===== App Specific Colors =====
