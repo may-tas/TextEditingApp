@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/text_item_model.dart';
+import '../constants/color_constants.dart';
 
 class CanvasState {
   final List<TextItem> textItems;
@@ -16,7 +17,7 @@ class CanvasState {
     required this.textItems,
     required this.history,
     required this.future,
-    this.backgroundColor = const Color(0xFF1A1A1A),
+    this.backgroundColor = ColorConstants.backgroundDarkGray,
     this.backgroundImagePath, 
     this.selectedTextItemIndex,
     this.isTrayShown = false,
@@ -29,7 +30,7 @@ class CanvasState {
       textItems: [],
       history: [],
       future: [],
-      backgroundColor: Color(0xFF1A1A1A),
+      backgroundColor: ColorConstants.backgroundDarkGray,
       backgroundImagePath: null,
       selectedTextItemIndex: null,
       isTrayShown: false,

@@ -13,6 +13,7 @@ import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
 import '../../utils/custom_snackbar.dart';
+import '../../constants/color_constants.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -21,7 +22,7 @@ class CanvasScreen extends StatelessWidget {
   void _showBackgroundOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorConstants.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
@@ -32,9 +33,9 @@ class CanvasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorConstants.uiWhite,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorConstants.uiWhite,
         elevation: 0.5,
         title: BlocBuilder<CanvasCubit, CanvasState>(
           builder: (context, state) {
@@ -43,7 +44,7 @@ class CanvasScreen extends StatelessWidget {
                 const Text(
                   'Text Editor',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: ColorConstants.dialogTextBlack,
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ),
@@ -52,7 +53,7 @@ class CanvasScreen extends StatelessWidget {
                   Text(
                     state.currentPageName!,
                     style: const TextStyle(
-                      color: Colors.grey,
+                      color: ColorConstants.uiGrayMedium,
                       fontSize: 12,
                       fontWeight: FontWeight.normal,
                     ),
@@ -64,7 +65,7 @@ class CanvasScreen extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           tooltip: "Clear Canvas",
-          icon: const Icon(Icons.delete, color: Colors.black54),
+          icon: const Icon(Icons.delete, color: ColorConstants.uiIconBlack),
           onPressed: () {
             final cubit = context.read<CanvasCubit>();
             if (cubit.state.textItems.isNotEmpty ||
@@ -82,14 +83,14 @@ class CanvasScreen extends StatelessWidget {
             tooltip: 'Background options',
             icon: const Icon(
               Icons.wallpaper,
-              color: Colors.black54,
+              color: ColorConstants.uiIconBlack,
             ),
             onPressed: () => _showBackgroundOptions(context),
           ),
           // Undo button
           IconButton(
             tooltip: "Undo",
-            icon: const Icon(Icons.undo, color: Colors.black54),
+            icon: const Icon(Icons.undo, color: ColorConstants.uiIconBlack),
             onPressed: () {
               final cubit = context.read<CanvasCubit>();
               if (cubit.state.history.isNotEmpty) {
@@ -103,7 +104,7 @@ class CanvasScreen extends StatelessWidget {
           // Redo button
           IconButton(
             tooltip: "Redo",
-            icon: const Icon(Icons.redo, color: Colors.black54),
+            icon: const Icon(Icons.redo, color: ColorConstants.uiIconBlack),
             onPressed: () {
               final cubit = context.read<CanvasCubit>();
               if (cubit.state.future.isNotEmpty) {
@@ -119,8 +120,8 @@ class CanvasScreen extends StatelessWidget {
             builder: (context, state) {
               return PopupMenuButton<String>(
                 tooltip: "More options",
-                icon: const Icon(Icons.more_vert, color: Colors.black54),
-                color: Colors.white, // White background for dropdown
+                icon: const Icon(Icons.more_vert, color: ColorConstants.uiIconBlack),
+                color: ColorConstants.uiWhite, // White background for dropdown
                 onSelected: (value) async {
                   final cubit = context.read<CanvasCubit>();
 

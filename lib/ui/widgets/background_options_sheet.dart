@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
+import '../../constants/color_constants.dart';
 
 class BackgroundOptionsSheet extends StatelessWidget {
   const BackgroundOptionsSheet({super.key});
@@ -11,7 +12,7 @@ class BackgroundOptionsSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: ColorConstants.uiWhite,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -22,7 +23,7 @@ class BackgroundOptionsSheet extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: ColorConstants.uiTextBlack,
             ),
           ),
           const SizedBox(height: 16),
@@ -113,7 +114,7 @@ class _BackgroundOptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: enabled ? Colors.grey[50] : Colors.grey[200],
+      color: enabled ? ColorConstants.gray50 : ColorConstants.gray200,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -125,7 +126,7 @@ class _BackgroundOptionTile extends StatelessWidget {
               Icon(
                 icon,
                 size: 32,
-                color: enabled ? Colors.black87 : Colors.grey,
+                color: enabled ? ColorConstants.uiTextBlack : ColorConstants.uiGrayDark,
               ),
               const SizedBox(height: 8),
               Text(
@@ -133,7 +134,7 @@ class _BackgroundOptionTile extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: enabled ? Colors.black87 : Colors.grey,
+                  color: enabled ? ColorConstants.uiTextBlack : ColorConstants.uiGrayDark,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -141,7 +142,7 @@ class _BackgroundOptionTile extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                   fontSize: 12,
-                  color: enabled ? Colors.grey[600] : Colors.grey,
+                  color: enabled ? ColorConstants.gray600 : ColorConstants.uiGrayDark,
                 ),
                 textAlign: TextAlign.center,
               ),

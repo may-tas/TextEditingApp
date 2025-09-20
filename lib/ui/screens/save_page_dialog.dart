@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/utils/custom_snackbar.dart';
 
 import '../../cubit/canvas_cubit.dart';
+import '../../constants/color_constants.dart';
 
 class SavePageDialog extends StatefulWidget {
   const SavePageDialog({super.key});
@@ -14,7 +15,7 @@ class SavePageDialog extends StatefulWidget {
 class _SavePageDialogState extends State<SavePageDialog> {
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _labelController = TextEditingController();
-  Color _selectedColor = Colors.blue;
+  Color _selectedColor = ColorConstants.dialogButtonBlue;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isSaving = false;
   List<String> _existingPages = [];
@@ -120,7 +121,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
             ),
             title: const Row(
               children: [
-                Icon(Icons.warning, color: Colors.orange),
+                Icon(Icons.warning, color: ColorConstants.dialogWarningOrange),
                 SizedBox(width: 8),
                 Text('Page Already Exists'),
               ],
@@ -129,7 +130,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
               text: TextSpan(
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Colors.black87,
+                  color: ColorConstants.uiTextBlack,
                 ),
                 children: [
                   const TextSpan(text: 'A page named '),
@@ -149,8 +150,8 @@ class _SavePageDialogState extends State<SavePageDialog> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
+                  backgroundColor: ColorConstants.dialogWarningOrange,
+                  foregroundColor: ColorConstants.dialogWhite,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -172,7 +173,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
       ),
       title: const Row(
         children: [
-          Icon(Icons.save, color: Colors.blue),
+          Icon(Icons.save, color: ColorConstants.dialogButtonBlue),
           SizedBox(width: 8),
           Text(
             'Save Page',
@@ -193,7 +194,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
               'Enter a name for this page:',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black87,
+                color: ColorConstants.uiTextBlack,
               ),
             ),
             const SizedBox(height: 16),
@@ -206,7 +207,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.blue, width: 2),
+                  borderSide: const BorderSide(color: ColorConstants.dialogButtonBlue, width: 2),
                 ),
                 prefixIcon: const Icon(Icons.description),
                 counterText: '', // Hide character counter
@@ -245,12 +246,12 @@ class _SavePageDialogState extends State<SavePageDialog> {
               children: [
                 const Text('Choose a color: ', style: TextStyle(fontSize: 14)),
                 ...[
-                  Colors.black,
-                  Colors.red,
-                  Colors.green,
-                  Colors.orange,
-                  Colors.purple,
-                  Colors.blue,
+                  ColorConstants.dialogTextBlack,
+                  ColorConstants.dialogRed,
+                  ColorConstants.dialogGreen,
+                  ColorConstants.dialogWarningOrange,
+                  ColorConstants.dialogPurple,
+                  ColorConstants.dialogButtonBlue,
                 ].map((color) => GestureDetector(
                       onTap: () {
                         setState(() {
@@ -266,8 +267,8 @@ class _SavePageDialogState extends State<SavePageDialog> {
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: _selectedColor == color
-                                ? Colors.black
-                                : Colors.grey,
+                                ? ColorConstants.dialogTextBlack
+                                : ColorConstants.dialogGray,
                             width: 2,
                           ),
                         ),
@@ -281,7 +282,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                 'Existing pages: ${_existingPages.length}',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  color: ColorConstants.gray600,
                 ),
               ),
             ],
@@ -293,13 +294,13 @@ class _SavePageDialogState extends State<SavePageDialog> {
           onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
           child: const Text(
             'Cancel',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: ColorConstants.dialogGray),
           ),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
+            backgroundColor: ColorConstants.dialogButtonBlue,
+            foregroundColor: ColorConstants.dialogWhite,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -312,7 +313,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: ColorConstants.dialogWhite,
                   ),
                 )
               : const Text(
