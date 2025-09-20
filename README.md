@@ -1,6 +1,6 @@
 # Text Editing App
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.
@@ -171,6 +171,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Atomic-Shadow7002"><img src="https://avatars.githubusercontent.com/u/191123414?v=4?s=100" width="100px;" alt="Abhishek Kumar Ray"/><br /><sub><b>Abhishek Kumar Ray</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Atomic-Shadow7002" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Elwin-p"><img src="https://avatars.githubusercontent.com/u/150349344?v=4?s=100" width="100px;" alt="Elwin"/><br /><sub><b>Elwin</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Elwin-p" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/preetidas60"><img src="https://avatars.githubusercontent.com/u/112088836?v=4?s=100" width="100px;" alt="Preeti Das"/><br /><sub><b>Preeti Das</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=preetidas60" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AnanyaSingh456"><img src="https://avatars.githubusercontent.com/u/184369984?v=4?s=100" width="100px;" alt="Ananya Singh"/><br /><sub><b>Ananya Singh</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=AnanyaSingh456" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
