@@ -1,6 +1,6 @@
 # Text Editing App
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.
@@ -183,6 +183,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ishita051"><img src="https://avatars.githubusercontent.com/u/183702036?v=4?s=100" width="100px;" alt="Ishita Srivastava &#124; Contributor"/><br /><sub><b>Ishita Srivastava &#124; Contributor</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=ishita051" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pranayshl"><img src="https://avatars.githubusercontent.com/u/163889726?v=4?s=100" width="100px;" alt="pranayshl"/><br /><sub><b>pranayshl</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=pranayshl" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
