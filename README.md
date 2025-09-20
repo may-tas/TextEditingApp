@@ -1,6 +1,6 @@
 # Text Editing App
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.
@@ -176,6 +176,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/AnanyaSingh456"><img src="https://avatars.githubusercontent.com/u/184369984?v=4?s=100" width="100px;" alt="Ananya Singh"/><br /><sub><b>Ananya Singh</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=AnanyaSingh456" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/DMounas"><img src="https://avatars.githubusercontent.com/u/212203186?v=4?s=100" width="100px;" alt="DMounas"/><br /><sub><b>DMounas</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=DMounas" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://debasmitas-portfolio.netlify.app/"><img src="https://avatars.githubusercontent.com/u/189460298?v=4?s=100" width="100px;" alt="Debasmita C"/><br /><sub><b>Debasmita C</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=debasmitaas" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/GauriRocksies"><img src="https://avatars.githubusercontent.com/u/178488305?v=4?s=100" width="100px;" alt="GAURI"/><br /><sub><b>GAURI</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=GauriRocksies" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
