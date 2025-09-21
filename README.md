@@ -165,6 +165,19 @@ It helps others discover the project and motivates us to keep improving. Your su
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
+
+## Acknowledgments
+
+Special thanks to:
+
+- [Flutter Team](https://flutter.dev/) for the amazing framework
+- [Bloc Library](https://bloclibrary.dev/) for state management
+- [Material Design](https://material.io/) for design guidelines
+- All our [contributors](#contributors) for making this project better
+- The open-source community for inspiration and support
+
+
+
 ## Contributors
 
 <table>
@@ -194,6 +207,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
   </tbody>
   <tfoot>
 </table>
+
+
 
 
 
