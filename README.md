@@ -25,21 +25,38 @@ This project provides an interactive user interface to control font properties s
 - **Dart:** Programming language.
 - **Material Design:** For sleek and intuitive UI components.
 
+
+## Platform Support
+
+| Platform | Status | Version |
+|----------|--------|---------|
+| <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/android/android-original.svg" alt="Android" width="20"/> Android | ✅ Supported | API 33+ |
+| <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apple/apple-original.svg" alt="iOS" width="20"/> iOS | ✅ Supported | iOS 17+ |
+| <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/chrome/chrome-original.svg" alt="Web" width="20"/> Web | ✅ Supported | Modern Browsers |
+
+
 ## How to Run
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    ```
+
 2. Navigate to the project directory:
+
    ```bash
    cd project directory
    ```
+
 3. Install dependencies:
+
    ```bash
    flutter pub get
    ```
+
 4. Run the app:
+
    ```bash
    flutter run
    ```
@@ -106,7 +123,7 @@ lib/
 
 ## Demo Video
 
-https://github.com/user-attachments/assets/518765d8-d2f0-4491-9385-69f1281c051c
+https://github.com/user-attachments/assets/7ca08eff-dcbe-45c6-b0f1-502829ae8ffd
 
 ### Font Controls UI
 
@@ -120,29 +137,68 @@ Contributions are welcome! Please follow these steps:
 
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix:
+
    ```bash
    git checkout -b feature-name
    ```
+
 3. Commit your changes:
+
    ```bash
    git commit -m "Add some feature"
    ```
+
 4. Push to your branch:
+
    ```bash
    git push origin feature-name
    ```
+
 5. Open a pull request.
 
 ## Support
 
 🌟 If you find this project helpful, please consider giving it a star! \
-It helps others discover the project and motivates us to keep improving. Your support means a lot! 🙌 
+It helps others discover the project and motivates us to keep improving. Your support means a lot! 🙌
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
+## Contributors
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/may-tas"><img src="https://avatars.githubusercontent.com/u/135056339?v=4?s=100" width="100px;" alt="Satyam Jha"/><br /><sub><b>Satyam Jha</b></sub></a><br /> </td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PearlGrell"><img src="https://avatars.githubusercontent.com/u/185500672?v=4?s=100" width="100px;" alt="Aryan Trivedi"/><br /><sub><b>Aryan Trivedi</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MannemSumanaSri"><img src="https://avatars.githubusercontent.com/u/204357939?v=4?s=100" width="100px;" alt="Mannem Sumana Sri"/><br /><sub><b>Mannem Sumana Sri</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Manar-Elhabbal7"><img src="https://avatars.githubusercontent.com/u/172148857?v=4?s=100" width="100px;" alt="Manar ELhabbal"/><br /><sub><b>Manar ELhabbal</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Atomic-Shadow7002"><img src="https://avatars.githubusercontent.com/u/191123414?v=4?s=100" width="100px;" alt="Abhishek Kumar Ray"/><br /><sub><b>Abhishek Kumar Ray</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Elwin-p"><img src="https://avatars.githubusercontent.com/u/150349344?v=4?s=100" width="100px;" alt="Elwin"/><br /><sub><b>Elwin</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/preetidas60"><img src="https://avatars.githubusercontent.com/u/112088836?v=4?s=100" width="100px;" alt="Preeti Das"/><br /><sub><b>Preeti Das</b></sub></a><br /></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AnanyaSingh456"><img src="https://avatars.githubusercontent.com/u/184369984?v=4?s=100" width="100px;" alt="Ananya Singh"/><br /><sub><b>Ananya Singh</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/DMounas"><img src="https://avatars.githubusercontent.com/u/212203186?v=4?s=100" width="100px;" alt="DMounas"/><br /><sub><b>DMounas</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://debasmitas-portfolio.netlify.app/"><img src="https://avatars.githubusercontent.com/u/189460298?v=4?s=100" width="100px;" alt="Debasmita C"/><br /><sub><b>Debasmita C</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/GauriRocksies"><img src="https://avatars.githubusercontent.com/u/178488305?v=4?s=100" width="100px;" alt="GAURI"/><br /><sub><b>GAURI</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rishi-1512"><img src="https://avatars.githubusercontent.com/u/122536214?v=4?s=100" width="100px;" alt="Ritam Sen"/><br /><sub><b>Ritam Sen</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rudraksha-git"><img src="https://avatars.githubusercontent.com/u/175207612?v=4?s=100" width="100px;" alt="Rudraksha kumar"/><br /><sub><b>Rudraksha kumar</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/zxnb01"><img src="https://avatars.githubusercontent.com/u/141150925?v=4?s=100" width="100px;" alt="Shaik Zainab"/><br /><sub><b>Shaik Zainab</b></sub></a><br /></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ishita051"><img src="https://avatars.githubusercontent.com/u/183702036?v=4?s=100" width="100px;" alt="Ishita Srivastava &#124; Contributor"/><br /><sub><b>Ishita Srivastava &#124; Contributor</b></sub></a><br /></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pranayshl"><img src="https://avatars.githubusercontent.com/u/163889726?v=4?s=100" width="100px;" alt="pranayshl"/><br /><sub><b>pranayshl</b></sub></a><br /></td>
+    </tr>
+  </tbody>
+  <tfoot>
+</table>
+
+
+
 ## Maintainers
+
 - **Satyam Jha**
   - [github](https://github.com/may-tas)
   - [linkedIn](linkedin.com/in/satyam-jha-7746201a4/)
@@ -152,54 +208,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For questions or suggestions, feel free to contact:
 
 - **Author:** Satyam Jha
-- **Email:** satyamj210@gmail.com
-
-## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/may-tas"><img src="https://avatars.githubusercontent.com/u/135056339?v=4?s=100" width="100px;" alt="Satyam Jha"/><br /><sub><b>Satyam Jha</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=may-tas" title="Code">💻</a> <a href="https://github.com/may-tas/TextEditingApp/commits?author=may-tas" title="Documentation">📖</a> <a href="#maintenance-may-tas" title="Maintenance">🚧</a> <a href="#design-may-tas" title="Design">🎨</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PearlGrell"><img src="https://avatars.githubusercontent.com/u/185500672?v=4?s=100" width="100px;" alt="Aryan Trivedi"/><br /><sub><b>Aryan Trivedi</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=PearlGrell" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MannemSumanaSri"><img src="https://avatars.githubusercontent.com/u/204357939?v=4?s=100" width="100px;" alt="Mannem Sumana Sri"/><br /><sub><b>Mannem Sumana Sri</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=MannemSumanaSri" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Manar-Elhabbal7"><img src="https://avatars.githubusercontent.com/u/172148857?v=4?s=100" width="100px;" alt="Manar ELhabbal"/><br /><sub><b>Manar ELhabbal</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Manar-Elhabbal7" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Atomic-Shadow7002"><img src="https://avatars.githubusercontent.com/u/191123414?v=4?s=100" width="100px;" alt="Abhishek Kumar Ray"/><br /><sub><b>Abhishek Kumar Ray</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Atomic-Shadow7002" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Elwin-p"><img src="https://avatars.githubusercontent.com/u/150349344?v=4?s=100" width="100px;" alt="Elwin"/><br /><sub><b>Elwin</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Elwin-p" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/preetidas60"><img src="https://avatars.githubusercontent.com/u/112088836?v=4?s=100" width="100px;" alt="Preeti Das"/><br /><sub><b>Preeti Das</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=preetidas60" title="Code">💻</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AnanyaSingh456"><img src="https://avatars.githubusercontent.com/u/184369984?v=4?s=100" width="100px;" alt="Ananya Singh"/><br /><sub><b>Ananya Singh</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=AnanyaSingh456" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/DMounas"><img src="https://avatars.githubusercontent.com/u/212203186?v=4?s=100" width="100px;" alt="DMounas"/><br /><sub><b>DMounas</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=DMounas" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://debasmitas-portfolio.netlify.app/"><img src="https://avatars.githubusercontent.com/u/189460298?v=4?s=100" width="100px;" alt="Debasmita C"/><br /><sub><b>Debasmita C</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=debasmitaas" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/GauriRocksies"><img src="https://avatars.githubusercontent.com/u/178488305?v=4?s=100" width="100px;" alt="GAURI"/><br /><sub><b>GAURI</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=GauriRocksies" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rishi-1512"><img src="https://avatars.githubusercontent.com/u/122536214?v=4?s=100" width="100px;" alt="Ritam Sen"/><br /><sub><b>Ritam Sen</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Rishi-1512" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rudraksha-git"><img src="https://avatars.githubusercontent.com/u/175207612?v=4?s=100" width="100px;" alt="Rudraksha kumar"/><br /><sub><b>Rudraksha kumar</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=Rudraksha-git" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/zxnb01"><img src="https://avatars.githubusercontent.com/u/141150925?v=4?s=100" width="100px;" alt="Shaik Zainab"/><br /><sub><b>Shaik Zainab</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=zxnb01" title="Code">💻</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ishita051"><img src="https://avatars.githubusercontent.com/u/183702036?v=4?s=100" width="100px;" alt="Ishita Srivastava &#124; Contributor"/><br /><sub><b>Ishita Srivastava &#124; Contributor</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=ishita051" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pranayshl"><img src="https://avatars.githubusercontent.com/u/163889726?v=4?s=100" width="100px;" alt="pranayshl"/><br /><sub><b>pranayshl</b></sub></a><br /><a href="https://github.com/may-tas/TextEditingApp/commits?author=pranayshl" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td align="center" size="13px" colspan="7">
-        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
-          <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
-        </img>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+- **Email:** <satyamj210@gmail.com>
