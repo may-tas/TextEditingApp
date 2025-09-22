@@ -217,6 +217,8 @@ Special thanks to:
 
 ## Contributors
 
+<!-- readme: contributors -start -->
+
 <table>
   <tbody>
     <tr>
@@ -244,6 +246,8 @@ Special thanks to:
   </tbody>
   <tfoot>
 </table>
+
+<!-- readme: contributors -end -->
 
 
 
