@@ -113,5 +113,3 @@ flutter_native_splash:
   android_12: 
     color: "#ffffff"
     image: assets/icons/whitebg.png
-
-# Color centralization improvements implemented
