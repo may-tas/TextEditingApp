@@ -1,0 +1,163 @@
+{
+  "projectName": "TextEditingApp",
+  "projectOwner": "may-tas",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "may-tas",
+      "name": "Satyam Jha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135056339?v=4",
+      "profile": "https://github.com/may-tas",
+      "contributions": [
+        "code",
+        "doc",
+        "maintenance",
+        "design"
+      ]
+    },
+    {
+      "login": "PearlGrell",
+      "name": "Aryan Trivedi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/185500672?v=4",
+      "profile": "https://github.com/PearlGrell",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "MannemSumanaSri",
+      "name": "Mannem Sumana Sri",
+      "avatar_url": "https://avatars.githubusercontent.com/u/204357939?v=4",
+      "profile": "https://github.com/MannemSumanaSri",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Manar-Elhabbal7",
+      "name": "Manar ELhabbal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/172148857?v=4",
+      "profile": "https://github.com/Manar-Elhabbal7",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Atomic-Shadow7002",
+      "name": "Abhishek Kumar Ray",
+      "avatar_url": "https://avatars.githubusercontent.com/u/191123414?v=4",
+      "profile": "https://github.com/Atomic-Shadow7002",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Elwin-p",
+      "name": "Elwin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/150349344?v=4",
+      "profile": "https://github.com/Elwin-p",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "preetidas60",
+      "name": "Preeti Das",
+      "avatar_url": "https://avatars.githubusercontent.com/u/112088836?v=4",
+      "profile": "https://github.com/preetidas60",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AnanyaSingh456",
+      "name": "Ananya Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/184369984?v=4",
+      "profile": "https://github.com/AnanyaSingh456",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "DMounas",
+      "name": "DMounas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/212203186?v=4",
+      "profile": "https://github.com/DMounas",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "debasmitaas",
+      "name": "Debasmita C",
+      "avatar_url": "https://avatars.githubusercontent.com/u/189460298?v=4",
+      "profile": "https://debasmitas-portfolio.netlify.app/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "GauriRocksies",
+      "name": "GAURI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/178488305?v=4",
+      "profile": "https://github.com/GauriRocksies",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Rishi-1512",
+      "name": "Ritam Sen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/122536214?v=4",
+      "profile": "https://github.com/Rishi-1512",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Rudraksha-git",
+      "name": "Rudraksha kumar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/175207612?v=4",
+      "profile": "https://github.com/Rudraksha-git",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "zxnb01",
+      "name": "Shaik Zainab",
+      "avatar_url": "https://avatars.githubusercontent.com/u/141150925?v=4",
+      "profile": "https://github.com/zxnb01",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ishita051",
+      "name": "Ishita Srivastava | Contributor",
+      "avatar_url": "https://avatars.githubusercontent.com/u/183702036?v=4",
+      "profile": "https://github.com/ishita051",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "pranayshl",
+      "name": "pranayshl",
+      "avatar_url": "https://avatars.githubusercontent.com/u/163889726?v=4",
+      "profile": "https://github.com/pranayshl",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true
+}

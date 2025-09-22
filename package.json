@@ -1,0 +1,28 @@
+{
+  "name": "texteditingapp",
+  "version": "1.0.0",
+  "description": "This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/may-tas/TextEditingApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/may-tas/TextEditingApp/issues"
+  },
+  "homepage": "https://github.com/may-tas/TextEditingApp#readme",
+  "devDependencies": {
+    "all-contributors-cli": "^6.26.1"
+  }
+}
