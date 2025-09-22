@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:texterra/utils/custom_snackbar.dart';
 import '../models/text_item_model.dart';
+import '../models/draw_model.dart';
 import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
@@ -29,6 +30,27 @@ class CanvasCubit extends Cubit<CanvasState> {
     if (index >= 0 && index < state.textItems.length) {
       emit(state.copyWith(selectedTextItemIndex: index));
     }
+  }
+
+  // Add to your CanvasCubit class
+  void fillCanvas(Color fillColor) {
+    // Create a special "fill" path that covers the entire canvas
+    final paint = Paint()
+      ..color = fillColor
+      ..style = PaintingStyle.fill;
+
+    // Create a single point path with a special flag indicating it's a fill
+    final fillPath = DrawPath(
+      points: [DrawingPoint(offset: Offset.zero, paint: paint)],
+      color: fillColor,
+      strokeWidth: 1.0,
+      isFill: true, // New flag to indicate this is a fill operation
+    );
+
+    // Add this to the beginning of paths so it appears as a background
+    final updatedPaths = [fillPath, ...state.drawPaths];
+
+    emit(state.copyWith(drawPaths: updatedPaths));
   }
 
   // method to deselect text
@@ -312,10 +334,12 @@ class CanvasCubit extends Cubit<CanvasState> {
     emit(
       state.copyWith(
         textItems: [],
+        drawPaths: [],
         history: [...state.history, state],
         future: [],
         selectedTextItemIndex: null,
         deselect: true,
+        isDrawingMode: false, // Exit drawing mode when clearing
         clearCurrentPageName: true,
         clearBackgroundImage: true,
       ),
@@ -364,14 +388,17 @@ class CanvasCubit extends Cubit<CanvasState> {
                   'fontSize': item.fontSize,
                   'fontWeight': item.fontWeight.index,
                   'fontStyle': item.fontStyle.index,
-                  'color': item.color.value,
+                  'color': item.color.toARGB32(),
                   'fontFamily': item.fontFamily,
                   'isUnderlined': item.isUnderlined,
                   'textAlign':
                       item.textAlign.index, // Save alignment as integer
                 })
             .toList(),
-        'backgroundColor': state.backgroundColor.value,
+        'drawPaths': state.drawPaths
+            .map((path) => path.toJson())
+            .toList(), // Save drawing paths
+        'backgroundColor': state.backgroundColor.toARGB32(),
         'backgroundImagePath':
             state.backgroundImagePath, // Save background image path
         'timestamp': DateTime.now().millisecondsSinceEpoch,
@@ -459,6 +486,15 @@ class CanvasCubit extends Cubit<CanvasState> {
         );
       }).toList();
 
+      // Load drawing paths if they exist
+      List<DrawPath> drawPaths = [];
+      if (pageData.containsKey('drawPaths')) {
+        final drawPathsData = pageData['drawPaths'] as List<dynamic>;
+        drawPaths = drawPathsData.map((pathData) {
+          return DrawPath.fromJson(pathData);
+        }).toList();
+      }
+
       // Load background image path if it exists
       final backgroundImagePath = pageData['backgroundImagePath'] as String?;
 
@@ -479,10 +515,11 @@ class CanvasCubit extends Cubit<CanvasState> {
         }
       }
 
-      log('✅ Successfully loaded ${textItems.length} text items');
+      log('✅ Successfully loaded ${textItems.length} text items and ${drawPaths.length} drawing paths');
 
       emit(CanvasState(
         textItems: textItems,
+        drawPaths: drawPaths,
         backgroundColor: Color(pageData['backgroundColor']),
         backgroundImagePath: validImagePath,
         selectedTextItemIndex: null,
@@ -509,10 +546,12 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     emit(state.copyWith(
       textItems: [],
+      drawPaths: [], // Clear drawing paths too
       backgroundColor: ColorConstants.dialogTextBlack,
       selectedTextItemIndex: null,
       history: [],
       future: [],
+      isDrawingMode: false, // Exit drawing mode when creating new page
       clearCurrentPageName: true,
       clearBackgroundImage: true,
       message: 'New page created',
@@ -707,5 +746,182 @@ class CanvasCubit extends Cubit<CanvasState> {
       if (!context.mounted) return;
       CustomSnackbar.showError('Failed to copy: $error');
     });
+  }
+
+  // Drawing related methods
+
+  // Toggle between drawing mode and text mode
+  void toggleDrawingMode() {
+    emit(state.copyWith(
+      isDrawingMode: !state.isDrawingMode,
+      selectedTextItemIndex: null,
+      deselect: true,
+    ));
+  }
+
+  // Set drawing mode explicitly
+  void setDrawingMode(bool isDrawing) {
+    if (state.isDrawingMode != isDrawing) {
+      emit(state.copyWith(
+        isDrawingMode: isDrawing,
+        selectedTextItemIndex: null,
+        deselect: true,
+      ));
+    }
+  }
+
+  // Set the current drawing color
+  void setDrawColor(Color color) {
+    emit(state.copyWith(currentDrawColor: color));
+  }
+
+  // Set the current stroke width
+  void setStrokeWidth(double width) {
+    emit(state.copyWith(currentStrokeWidth: width));
+  }
+
+  // Set the current brush type
+  void setBrushType(BrushType brushType) {
+    emit(state.copyWith(currentBrushType: brushType));
+  }
+
+  // Create paint for different brush types
+  Paint _createPaintForBrush(
+      BrushType brushType, Color color, double strokeWidth) {
+    final paint = Paint()
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+
+    switch (brushType) {
+      case BrushType.brush:
+        paint
+          ..color = color
+          ..strokeWidth = strokeWidth
+          ..filterQuality = FilterQuality.high;
+        break;
+      case BrushType.marker:
+        paint
+          ..color = color.withValues(alpha: 0.7)
+          ..strokeWidth = strokeWidth * 1.5
+          ..filterQuality = FilterQuality.medium;
+        break;
+      case BrushType.highlighter:
+        paint
+          ..color = color.withValues(alpha: 0.3)
+          ..strokeWidth = strokeWidth * 2.0
+          ..blendMode = BlendMode.multiply;
+        break;
+      case BrushType.pencil:
+        paint
+          ..color = color
+          ..strokeWidth = strokeWidth * 0.8
+          ..filterQuality = FilterQuality.low;
+        break;
+    }
+    return paint;
+  }
+
+  // Add a new drawing path
+  void startNewDrawPath(Offset point) {
+    if (!state.isDrawingMode) return;
+
+    final paint = _createPaintForBrush(
+      state.currentBrushType,
+      state.currentDrawColor,
+      state.currentStrokeWidth,
+    );
+
+    final drawingPoint = DrawingPoint(
+      offset: point,
+      paint: paint,
+    );
+
+    final newPath = DrawPath(
+      points: [drawingPoint],
+      color: state.currentDrawColor,
+      strokeWidth: state.currentStrokeWidth,
+      brushType: state.currentBrushType,
+    );
+
+    final newPaths = List<DrawPath>.from(state.drawPaths)..add(newPath);
+
+    // Save current state to history
+    final historyState = state.copyWith();
+    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
+
+    emit(state.copyWith(
+      drawPaths: newPaths,
+      history: newHistory,
+      future: [], // Clear future as we've made a new action
+    ));
+  }
+
+  // Update the current drawing path with a new point
+  void updateDrawPath(Offset point) {
+    if (!state.isDrawingMode || state.drawPaths.isEmpty) return;
+
+    final paint = _createPaintForBrush(
+      state.currentBrushType,
+      state.currentDrawColor,
+      state.currentStrokeWidth,
+    );
+
+    final drawingPoint = DrawingPoint(
+      offset: point,
+      paint: paint,
+    );
+
+    final currentPaths = List<DrawPath>.from(state.drawPaths);
+    final currentPath = currentPaths.last;
+    final updatedPoints = List<DrawingPoint>.from(currentPath.points)
+      ..add(drawingPoint);
+
+    currentPaths[currentPaths.length - 1] = DrawPath(
+      points: updatedPoints,
+      color: currentPath.color,
+      strokeWidth: currentPath.strokeWidth,
+      brushType: currentPath.brushType,
+    );
+
+    emit(state.copyWith(drawPaths: currentPaths));
+  }
+
+  // Clear all drawing paths
+  void clearDrawings() {
+    if (state.drawPaths.isEmpty) return;
+
+    // Save current state to history
+    final historyState = state.copyWith();
+    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
+
+    emit(state.copyWith(
+      drawPaths: [],
+      history: newHistory,
+      future: [], // Clear future as we've made a new action
+    ));
+
+    CustomSnackbar.showInfo('All drawings cleared');
+  }
+
+  // Undo the last drawing stroke
+  void undoLastDrawing() {
+    if (state.drawPaths.isEmpty) return;
+
+    // Save current state to history
+    final historyState = state.copyWith();
+    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
+
+    // Remove the last path
+    final newPaths = List<DrawPath>.from(state.drawPaths);
+    newPaths.removeLast();
+
+    emit(state.copyWith(
+      drawPaths: newPaths,
+      history: newHistory,
+      future: [], // Clear future as we've made a new action
+    ));
+
+    CustomSnackbar.showInfo('Last stroke undone');
   }
 }
