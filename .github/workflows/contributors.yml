@@ -9,27 +9,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  contributors:
+  contrib-readme-job:
     runs-on: ubuntu-latest
     if: |
       github.event_name == 'push' || 
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || 
       github.event_name == 'schedule' || 
       github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: All Contributors Auto Action
-        uses: JoshuaKGoldberg/all-contributors-auto-action@v0.3.2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Comment on recent activity
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            console.log('Contributors workflow completed successfully');
+      - name: Contribute List
+        uses: akhilmhdh/contributors-readme-action@v2.3.10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
