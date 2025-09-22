@@ -74,10 +74,17 @@ lib/
 │   └── text_item_model.dart
 ├── ui/
 │   ├── screens/
-│   │   └── canvas_screen.dart
-│   ├── widgets/
-│   │   ├── editable_text_widget.dart
-│   │   └── font_controls.dart
+│   │   ├── canvas_screen.dart
+│   │   ├── save_page_dialog.dart
+│   │   ├── saved_pages.dart
+│   │   └── splash_screen.dart
+│   └── widgets/
+│       ├── background_color_tray.dart
+│       ├── background_options_sheet.dart
+│       ├── editable_text_widget.dart
+│       └── font_controls.dart
+├──utils/
+│    └──custom_snackbar.dart
 ├── main.dart
 ```
 
@@ -121,15 +128,45 @@ lib/
 
 - Add bold, italic styles to your text using additional controls.
 
+### Text Alignment 
+
+- Lets you control how your text is positioned horizontally
+
+### Highlight 
+
+- Add highlighted colors to your text for dynamic view
+
+### Copy 
+
+- Copy the text
+
+### Restore Default
+
+- Lets user to go back to the default view for the text
+
 ## Demo Video
 
 https://github.com/user-attachments/assets/7ca08eff-dcbe-45c6-b0f1-502829ae8ffd
 
+
+https://github.com/user-attachments/assets/4ed54a04-b887-42a3-a0a4-dd3dbdcf9320
+
+
+
 ### Font Controls UI
 
-<img src="https://github.com/user-attachments/assets/abaca11c-81b8-4931-ba63-2b9ee7212c82" alt="Screenshot" width="200" height="400">
+<img  src="https://github.com/user-attachments/assets/b575b132-6d9c-4983-9b83-66b915d1526f" alt="image"  width="200" height="400"/>
 
-<img src="https://github.com/user-attachments/assets/08072113-6459-4874-980c-e9cf61fd9ea1" alt="Screenshot" width="200" height="400">
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/043cbb05-51c1-452c-9c34-737251df0553" />
+
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/11549c45-9fae-4be9-90ba-49596a8e7b45" />
+
+<img width="362" height="759" alt="image" src="https://github.com/user-attachments/assets/47c7f46e-25f3-4f01-a41c-7566c8e3633d" />
+
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/e0bda0a2-e7e8-4941-85ce-1679cfbbac51" />
+
+<img width="200" height="400" alt="image" src="https://github.com/user-attachments/assets/f302a0e4-0128-40a4-a330-08d12814ccd5" />
+
 
 ## Contributing
 
