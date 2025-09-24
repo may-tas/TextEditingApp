@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants/font_family_list.dart';
+import '../../constants/color_constants.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 
@@ -16,10 +17,10 @@ class FontControls extends StatelessWidget {
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorConstants.uiWhite,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha((0.1 * 255).toInt()),
+            color: ColorConstants.getBlackWithAlpha((0.1 * 255).toInt()),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -68,9 +69,9 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 12),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: ColorConstants.gray100,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: ColorConstants.gray300),
               ),
               child: _buildStyleButton(
                 icon: Icons.copy,
@@ -92,13 +93,7 @@ class FontControls extends StatelessWidget {
   }
 
   Widget _buildHighlightControls(BuildContext context) {
-    final highlightColors = [
-      Colors.yellow,
-      Colors.lime,
-      Colors.orange,
-      Colors.pink[100]!,
-      Colors.cyan[100]!,
-    ];
+    const highlightColors = ColorConstants.highlightColors;
 
     return BlocBuilder<CanvasCubit, CanvasState>(
       buildWhen: (previous, current) {
@@ -119,7 +114,7 @@ class FontControls extends StatelessWidget {
             selectedIndex == null || selectedIndex >= state.textItems.length;
         final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
         final isHighlighted = textItem?.isHighlighted ?? false;
-        final currentHighlightColor = textItem?.highlightColor ?? Colors.yellow;
+        final currentHighlightColor = textItem?.highlightColor ?? ColorConstants.highlightYellow;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -131,9 +126,9 @@ class FontControls extends StatelessWidget {
               height: 40,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: ColorConstants.gray100,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: ColorConstants.gray300),
               ),
               child: Row(
                 children: [
@@ -167,8 +162,8 @@ class FontControls extends StatelessWidget {
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: isSelected
-                                ? Colors.blueAccent
-                                : Colors.grey[400]!,
+                                ? ColorConstants.uiBlueAccent
+                                : ColorConstants.gray400,
                             width: isSelected ? 2 : 1,
                           ),
                         ),
@@ -202,9 +197,9 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 12),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: ColorConstants.gray100,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: ColorConstants.gray300),
               ),
               // re-using Button-style for consistent UI
               child: _buildStyleButton(
@@ -260,9 +255,9 @@ class FontControls extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: ColorConstants.gray100,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: ColorConstants.gray300),
               ),
               child: Row(
                 children: [
@@ -368,9 +363,9 @@ Widget _buildAlignmentControls(BuildContext context) {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: ColorConstants.gray100,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(color: ColorConstants.gray300),
             ),
             child: Row(
               children: [
@@ -460,12 +455,12 @@ Widget _buildAlignmentControls(BuildContext context) {
                 style: GoogleFonts.getFont(currentFont, fontSize: 14),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[100],
-                foregroundColor: Colors.grey[800],
+                backgroundColor: ColorConstants.gray100,
+                foregroundColor: ColorConstants.gray800,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey[300]!),
+                  side: const BorderSide(color: ColorConstants.gray300),
                 ),
               ),
             ),
@@ -506,15 +501,7 @@ Widget _buildAlignmentControls(BuildContext context) {
   }
 
   Widget _buildColorControls(BuildContext context) {
-    final colors = [
-      Colors.white,
-      Colors.black,
-      Colors.red,
-      Colors.blue,
-      Colors.green,
-      Colors.purple,
-      Colors.orange,
-    ];
+    const colors = ColorConstants.textColors;
 
     return BlocBuilder<CanvasCubit, CanvasState>(
       builder: (context, state) {
@@ -522,7 +509,7 @@ Widget _buildAlignmentControls(BuildContext context) {
         final isDisabled =
             selectedIndex == null || selectedIndex >= state.textItems.length;
         final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
-        final selectedColor = textItem?.color ?? Colors.black;
+        final selectedColor = textItem?.color ?? ColorConstants.dialogTextBlack;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -534,9 +521,9 @@ Widget _buildAlignmentControls(BuildContext context) {
               height: 40,
               padding: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: ColorConstants.gray100,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: ColorConstants.gray300),
               ),
               child: Row(
                 children: [
@@ -557,9 +544,9 @@ Widget _buildAlignmentControls(BuildContext context) {
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: isSelected
-                                ? Colors.blueAccent
-                                : (color == Colors.white
-                                    ? Colors.grey[400]!
+                                ? ColorConstants.uiBlueAccent
+                                : (color == ColorConstants.uiWhite
+                                    ? ColorConstants.gray400
                                     : Colors.transparent),
                             width: isSelected ? 3 : 1,
                           ),
@@ -569,7 +556,7 @@ Widget _buildAlignmentControls(BuildContext context) {
                   }),
                   //More Colors Button ^_^
                   IconButton(
-                    icon: const Icon(Icons.more_horiz, color: Colors.black54),
+                    icon: const Icon(Icons.more_horiz, color: ColorConstants.gray600),
                     tooltip: 'More colors',
                     onPressed: isDisabled
                         ? null
@@ -580,7 +567,7 @@ Widget _buildAlignmentControls(BuildContext context) {
                               title: const Text('Pick a color'),
                               showColorCode: true,
                               showRecentColors: false,
-                              backgroundColor: Colors.white,
+                              backgroundColor: ColorConstants.uiWhite,
                               constraints: const BoxConstraints(
                                 minHeight: 400,
                                 minWidth: 300,
@@ -644,9 +631,9 @@ Widget _buildAlignmentControls(BuildContext context) {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: ColorConstants.gray100,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: ColorConstants.gray300),
                   ),
                   child: Row(
                     children: [
@@ -720,7 +707,7 @@ Widget _buildAlignmentControls(BuildContext context) {
     required VoidCallback? onPressed,
   }) {
     return Material(
-      color: Colors.transparent,
+      color: ColorConstants.transparent,
       borderRadius: BorderRadius.circular(4),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
@@ -730,7 +717,7 @@ Widget _buildAlignmentControls(BuildContext context) {
           child: Icon(
             icon,
             size: 20,
-            color: Colors.grey[700],
+            color: ColorConstants.gray700,
           ),
         ),
       ),
@@ -744,8 +731,8 @@ Widget _buildAlignmentControls(BuildContext context) {
   }) {
     return Material(
       color: isSelected
-          ? Colors.blue.withAlpha((0.2 * 255).toInt())
-          : Colors.transparent,
+          ? ColorConstants.uiBlueAccent.withAlpha((0.2 * 255).toInt())
+          : ColorConstants.transparent,
       borderRadius: BorderRadius.circular(4),
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
@@ -755,7 +742,7 @@ Widget _buildAlignmentControls(BuildContext context) {
           child: Icon(
             icon,
             size: 20,
-            color: isSelected ? Colors.blueAccent : Colors.grey[700],
+            color: isSelected ? ColorConstants.uiBlueAccent : ColorConstants.gray700,
           ),
         ),
       ),
@@ -815,10 +802,10 @@ class _FontPickerContentState extends State<_FontPickerContent> {
               prefixIcon: const Icon(Icons.search),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey[300]!),
+                borderSide: const BorderSide(color: ColorConstants.gray300),
               ),
               filled: true,
-              fillColor: Colors.grey[100],
+              fillColor: ColorConstants.gray100,
             ),
           ),
         ),
@@ -836,7 +823,7 @@ class _FontPickerContentState extends State<_FontPickerContent> {
                   style: GoogleFonts.getFont(font, fontSize: 16),
                 ),
                 trailing: isSelected
-                    ? const Icon(Icons.check, color: Colors.blue)
+                    ? const Icon(Icons.check, color: ColorConstants.dialogButtonBlue)
                     : null,
                 onTap: () {
                   context

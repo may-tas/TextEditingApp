@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'canvas_screen.dart';
 import '../../cubit/canvas_cubit.dart';
+import '../../constants/color_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -50,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorConstants.uiWhite,
       body: FadeTransition(
         opacity: _fadeAnimation,
         child: Center(
@@ -68,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF2C2C2C),
+                  color: ColorConstants.appTitleColor,
                 ),
               ),
             ],

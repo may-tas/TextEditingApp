@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/color_constants.dart';
 
 enum SnackbarType { success, info, error }
 
@@ -127,23 +128,23 @@ class _SnackbarWidgetState extends State<_SnackbarWidget>
 
   Color _getBackgroundColor() {
     // Dark grey background for all types
-    return const Color(0xFF3C3C3C);
+    return ColorConstants.snackbarBackground;
   }
 
   Color _getAccentColor() {
     switch (widget.type) {
       case SnackbarType.success:
-        return const Color(0xFF4CAF50); // Simple green
+        return ColorConstants.snackbarSuccess; // Simple green
       case SnackbarType.info:
-        return const Color(0xFF2196F3); // Simple blue  
+        return ColorConstants.snackbarInfo; // Simple blue  
       case SnackbarType.error:
-        return const Color(0xFFF44336); // Simple red
+        return ColorConstants.snackbarError; // Simple red
     }
   }
 
   Color _getTextColor() {
     // White text for better contrast on dark background
-    return Colors.white;
+    return ColorConstants.snackbarText;
   }
 
   IconData _getIcon() {
@@ -168,14 +169,14 @@ class _SnackbarWidgetState extends State<_SnackbarWidget>
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Material(
-            color: Colors.transparent,
+            color: ColorConstants.transparent,
             child: Container(
               decoration: BoxDecoration(
                 color: _getBackgroundColor(),
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: ColorConstants.getBlackWithValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -206,7 +207,7 @@ class _SnackbarWidgetState extends State<_SnackbarWidget>
                       onTap: _dismiss,
                       child: Icon(
                         Icons.close,
-                        color: Colors.grey[600],
+                        color: ColorConstants.gray600,
                         size: 16,
                       ),
                     ),

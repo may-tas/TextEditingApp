@@ -4,17 +4,12 @@ import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../../utils/custom_snackbar.dart';
 
+import '../../constants/color_constants.dart';
+
 class BackgroundColorTray extends StatelessWidget {
   const BackgroundColorTray({super.key});
 
-  static const List<Color> backgroundColors = [
-    Color(0xFF1A1A1A), // Dark Gray (default)
-    Color(0xFF2E1065), // Deep Purple
-    Color(0xFF1E3A8A), // Deep Blue
-    Color(0xFF166534), // Deep Green
-    Color(0xFF7C2D12), // Deep Brown/Orange
-    Color.fromARGB(255, 255, 255, 255) // White
-  ];
+  static const List<Color> backgroundColors = ColorConstants.backgroundColors;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +18,7 @@ class BackgroundColorTray extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
-            color: Color.fromARGB(163, 187, 223, 243),
+            color: ColorConstants.backgroundTrayOverlay,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -34,7 +29,7 @@ class BackgroundColorTray extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: ColorConstants.uiTextBlack,
                 ),
               ),
               const SizedBox(height: 8),
@@ -55,13 +50,13 @@ class BackgroundColorTray extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color:
-                              isSelected ? Colors.black : Colors.grey.shade300,
+                              isSelected ? ColorConstants.dialogTextBlack : ColorConstants.gray300,
                           width: isSelected ? 3 : 1,
                         ),
                         boxShadow: [
                           if (isSelected)
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
+                              color: ColorConstants.getBlackWithValues(alpha: 0.3),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -70,7 +65,7 @@ class BackgroundColorTray extends StatelessWidget {
                       child: isSelected
                           ? const Icon(
                               Icons.check,
-                              color: Color.fromARGB(255, 255, 248, 248),
+                              color: ColorConstants.checkIconWhite,
                               size: 20,
                             )
                           : null,

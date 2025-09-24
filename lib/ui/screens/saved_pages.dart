@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../utils/custom_snackbar.dart';
+import '../../constants/color_constants.dart';
 
 class SavedPagesScreen extends StatefulWidget {
   const SavedPagesScreen({super.key});
@@ -42,7 +42,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
           pagesPreviews.add({
             'name': pageName,
             'textCount': 0,
-            'backgroundColor': Colors.black,
+            'backgroundColor': ColorConstants.dialogTextBlack,
             'timestamp': DateTime.now().millisecondsSinceEpoch,
             'lastModified': DateTime.now(),
           });
@@ -82,25 +82,25 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: ColorConstants.gray50,
       appBar: AppBar(
         title: const Text(
           'Saved Pages',
           style: TextStyle(
-            color: Colors.black,
+            color: ColorConstants.dialogTextBlack,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: ColorConstants.dialogWhite,
+        foregroundColor: ColorConstants.dialogTextBlack,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: ColorConstants.dialogTextBlack),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black54),
+            icon: const Icon(Icons.refresh, color: ColorConstants.gray600),
             onPressed: _loadSavedPages,
             tooltip: 'Refresh',
           ),
@@ -112,13 +112,13 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(
-                    color: Colors.black54,
+                    color: ColorConstants.gray600,
                   ),
                   SizedBox(height: 16),
                   Text(
                     'Loading saved pages...',
                     style: TextStyle(
-                      color: Colors.black54,
+                      color: ColorConstants.gray600,
                       fontSize: 16,
                     ),
                   ),
@@ -126,30 +126,30 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
               ),
             )
           : savedPages.isEmpty
-              ? Center(
+              ? const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.description_outlined,
                         size: 80,
-                        color: Colors.grey[400],
+                        color: ColorConstants.gray400,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16),
                       Text(
                         'No saved pages yet',
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.grey[600],
+                          color: ColorConstants.gray600,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         'Create and save your first page!',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[500],
+                          color: ColorConstants.gray500,
                         ),
                       ),
                     ],
@@ -165,7 +165,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                       final pageName = preview['name'] as String;
                       final textCount = preview['textCount'] as int? ?? 0;
                       final backgroundColor =
-                          preview['backgroundColor'] as Color? ?? Colors.grey;
+                          preview['backgroundColor'] as Color? ?? ColorConstants.uiGrayMedium;
                       final lastModified = preview['lastModified'] as DateTime;
                       final label = (preview['label'] as String?) ?? '';
 
@@ -190,7 +190,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                     color: backgroundColor,
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
-                                      color: Colors.grey[300]!,
+                                      color: ColorConstants.gray300,
                                       width: 1,
                                     ),
                                   ),
@@ -199,7 +199,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                         ? Text(
                                             label,
                                             style: const TextStyle(
-                                              color: Colors.white,
+                                              color: ColorConstants.dialogWhite,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,
                                             ),
@@ -208,7 +208,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                         : Icon(
                                             Icons.description,
                                             color:
-                                                Colors.white.withOpacity(0.8),
+                                                ColorConstants.dialogWhite.withOpacity(0.8),
                                             size: 28,
                                           ),
                                   ),
@@ -225,7 +225,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
-                                          color: Colors.black87,
+                                          color: ColorConstants.dialogTextBlack87,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -233,17 +233,17 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                       const SizedBox(height: 4),
                                       Text(
                                         '$textCount text item${textCount != 1 ? 's' : ''}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 14,
-                                          color: Colors.grey[600],
+                                          color: ColorConstants.gray600,
                                         ),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
                                         'Modified ${_formatDateTime(lastModified)}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey[500],
+                                          color: ColorConstants.gray500,
                                         ),
                                       ),
                                     ],
@@ -256,7 +256,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                     IconButton(
                                       icon: const Icon(
                                         Icons.open_in_new,
-                                        color: Colors.blue,
+                                        color: ColorConstants.dialogButtonBlue,
                                         size: 20,
                                       ),
                                       onPressed: () => _loadPage(pageName),
@@ -265,7 +265,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                     IconButton(
                                       icon: const Icon(
                                         Icons.delete_outline,
-                                        color: Colors.red,
+                                        color: ColorConstants.dialogRed,
                                         size: 20,
                                       ),
                                       onPressed: () =>
@@ -315,7 +315,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
           text: TextSpan(
             style: const TextStyle(
               fontSize: 16,
-              color: Colors.black87,
+              color: ColorConstants.dialogTextBlack87,
             ),
             children: [
               const TextSpan(text: 'Are you sure you want to delete '),
@@ -334,8 +334,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: ColorConstants.dialogRed,
+              foregroundColor: ColorConstants.dialogWhite,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:image_picker/image_picker.dart';
+import '../constants/color_constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:texterra/utils/custom_snackbar.dart';
@@ -50,7 +50,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
       isUnderlined: false,
-      color: Colors.white, // My Default color for the text
+      color: ColorConstants.uiWhite, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
     emit(
@@ -70,7 +70,7 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     updatedItems[index] = currentItem.copyWith(
       isHighlighted: !currentItem.isHighlighted,
-      highlightColor: highlightColor ?? Colors.yellow,
+      highlightColor: highlightColor ?? ColorConstants.highlightYellow,
     );
     _updateState(textItems: updatedItems);
   }
@@ -96,7 +96,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       isUnderlined: false,
       isHighlighted: false, // Add this line
       highlightColor: null, // Add this line
-      color: Colors.white,
+      color: ColorConstants.uiWhite,
     );
     _updateState(textItems: updatedItems);
   }
@@ -509,7 +509,7 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     emit(state.copyWith(
       textItems: [],
-      backgroundColor: Colors.black,
+      backgroundColor: ColorConstants.dialogTextBlack,
       selectedTextItemIndex: null,
       history: [],
       future: [],

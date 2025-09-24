@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../cubit/canvas_cubit.dart';
 import '../../models/text_item_model.dart';
+import '../../constants/color_constants.dart';
 
 class EditableTextWidget extends StatelessWidget {
   final int index;
@@ -57,7 +58,7 @@ class EditableTextWidget extends StatelessWidget {
               textItem.isHighlighted && textItem.highlightColor != null
                   ? textItem.highlightColor
                   : (isSelected
-                      ? Colors.yellow.withAlpha((0.3 * 255).toInt())
+                      ? ColorConstants.highlightYellow.withAlpha((0.3 * 255).toInt())
                       : null),
         ),
       ),)
@@ -108,7 +109,7 @@ class EditTextDialog extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide:
-                        const BorderSide(color: Colors.purple, width: 2),
+                        const BorderSide(color: ColorConstants.dialogPurple, width: 2),
                   ),
                 ),
               ),
@@ -121,7 +122,7 @@ class EditTextDialog extends StatelessWidget {
                   onPressed: () => Navigator.pop(context, '_delete_'),
                   child: Text(
                     'Remove',
-                    style: TextStyle(color: Colors.grey[600]),
+                    style: TextStyle(color: ColorConstants.gray600),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -136,8 +137,8 @@ class EditTextDialog extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple[100],
-                    foregroundColor: Colors.deepPurple,
+                    backgroundColor: ColorConstants.dialogPurple.withAlpha((0.2 * 255).toInt()),
+                    foregroundColor: ColorConstants.dialogPurple,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
