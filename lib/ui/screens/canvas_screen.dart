@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/models/text_item_model.dart';
 import 'package:texterra/ui/screens/save_page_dialog.dart';
 import 'package:texterra/ui/screens/saved_pages.dart';
+import '../../constants/color_constants.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/editable_text_widget.dart';
@@ -14,7 +15,6 @@ import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
 import '../widgets/drawing_canvas.dart';
 import '../../utils/custom_snackbar.dart';
-import '../../constants/color_constants.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -163,11 +163,13 @@ class CanvasScreen extends StatelessWidget {
                     value: 'new_page',
                     child: Row(
                       children: [
-                        Icon(Icons.add, color: Colors.black54, size: 20),
+                        Icon(Icons.add,
+                            color: ColorConstants.uiIconBlack, size: 20),
                         SizedBox(width: 12),
                         Text(
                           'New Page',
-                          style: TextStyle(color: Colors.black87),
+                          style: TextStyle(
+                              color: ColorConstants.dialogTextBlack87),
                         ),
                       ],
                     ),
@@ -177,11 +179,12 @@ class CanvasScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(Icons.folder_open,
-                            color: Colors.black54, size: 20),
+                            color: ColorConstants.uiIconBlack, size: 20),
                         SizedBox(width: 12),
                         Text(
                           'Saved Pages',
-                          style: TextStyle(color: Colors.black87),
+                          style: TextStyle(
+                              color: ColorConstants.dialogTextBlack87),
                         ),
                       ],
                     ),
@@ -194,7 +197,7 @@ class CanvasScreen extends StatelessWidget {
                           state.currentPageName != null
                               ? Icons.save
                               : Icons.save_as,
-                          color: Colors.black54,
+                          color: ColorConstants.uiIconBlack,
                           size: 20,
                         ),
                         const SizedBox(width: 12),
@@ -202,7 +205,8 @@ class CanvasScreen extends StatelessWidget {
                           state.currentPageName != null
                               ? "Save '${state.currentPageName}'"
                               : "Save Page",
-                          style: const TextStyle(color: Colors.black87),
+                          style: const TextStyle(
+                              color: ColorConstants.dialogTextBlack87),
                         ),
                       ],
                     ),
@@ -290,7 +294,7 @@ class CanvasScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
+                          color: ColorConstants.getBlackWithValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -301,8 +305,9 @@ class CanvasScreen extends StatelessWidget {
                             const SizedBox(width: 8),
                             const Text(
                               'Drawing Mode',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
+                              style: TextStyle(
+                                  color: ColorConstants.dialogWhite,
+                                  fontSize: 12),
                             ),
                           ],
                         ),
@@ -324,7 +329,7 @@ class CanvasScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withAlpha((0.05 * 255).toInt()),
+                  color: ColorConstants.getBlackWithAlpha((0.05 * 255).toInt()),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -336,7 +341,7 @@ class CanvasScreen extends StatelessWidget {
                 Visibility(
                   visible: state.isTrayShown,
                   child: Container(
-                    color: Colors.white,
+                    color: ColorConstants.dialogWhite,
                     child: const BackgroundColorTray(),
                   ),
                 ),
@@ -353,14 +358,14 @@ class CanvasScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: FloatingActionButton(
-              backgroundColor: Colors.white,
+              backgroundColor: ColorConstants.dialogWhite,
               elevation: 0.5,
               onPressed: () {
                 // Show options for text or drawing
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
-                  backgroundColor: Colors.white,
+                  backgroundColor: ColorConstants.dialogWhite,
                   shape: const RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(16)),
@@ -376,11 +381,12 @@ class CanvasScreen extends StatelessWidget {
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.blue.withValues(alpha: 0.1),
+                                color: ColorConstants.dialogButtonBlue
+                                    .withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.text_fields,
-                                  color: Colors.blue),
+                                  color: ColorConstants.dialogButtonBlue),
                             ),
                             title: const Text('Add Text'),
                             subtitle:
@@ -402,11 +408,12 @@ class CanvasScreen extends StatelessWidget {
                             leading: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.green.withValues(alpha: 0.1),
+                                color: ColorConstants.dialogGreen
+                                    .withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child:
-                                  const Icon(Icons.brush, color: Colors.green),
+                              child: const Icon(Icons.brush,
+                                  color: ColorConstants.dialogGreen),
                             ),
                             title: const Text('Draw'),
                             subtitle: Text(state.isDrawingMode
@@ -427,11 +434,12 @@ class CanvasScreen extends StatelessWidget {
                               leading: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.withValues(alpha: 0.1),
+                                  color: ColorConstants.dialogButtonBlue
+                                      .withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
-                                child:
-                                    const Icon(Icons.undo, color: Colors.blue),
+                                child: const Icon(Icons.undo,
+                                    color: ColorConstants.dialogButtonBlue),
                               ),
                               title: const Text('Undo Last Drawing'),
                               subtitle: const Text(
@@ -447,11 +455,12 @@ class CanvasScreen extends StatelessWidget {
                               leading: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.red.withValues(alpha: 0.1),
+                                  color: ColorConstants.dialogRed
+                                      .withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(Icons.delete_outline,
-                                    color: Colors.red),
+                                    color: ColorConstants.dialogRed),
                               ),
                               title: const Text('Clear Drawings'),
                               subtitle:
@@ -468,7 +477,9 @@ class CanvasScreen extends StatelessWidget {
                 );
               },
               child: Icon(state.isDrawingMode ? Icons.brush : Icons.add,
-                  color: state.isDrawingMode ? Colors.blue : Colors.black),
+                  color: state.isDrawingMode
+                      ? ColorConstants.dialogButtonBlue
+                      : ColorConstants.dialogTextBlack),
             ),
           );
         },
@@ -489,8 +500,8 @@ class CanvasScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.black.withAlpha((0.1 * 255).toInt()),
-            Colors.black.withAlpha((0.2 * 255).toInt()),
+            ColorConstants.getBlackWithAlpha((0.1 * 255).toInt()),
+            ColorConstants.getBlackWithAlpha((0.2 * 255).toInt()),
           ],
         ),
       );

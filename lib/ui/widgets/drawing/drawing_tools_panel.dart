@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import '../../../constants/color_constants.dart';
 
 class DrawingToolsPanel extends StatelessWidget {
   final Color currentColor;
@@ -66,31 +67,31 @@ class DrawingToolsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define available colors for drawing
     final colors = [
-      Color(0xFF000000), // Black
-      Color(0xFFFFFFFF), // White
-      Color(0xFFFF0000), // Red
-      Color(0xFF0000FF), // Blue
-      Color(0xFF00FF00), // Green
-      Color(0xFFFFFF00), // Yellow
-      Color(0xFF800080), // Purple
-      Color(0xFFFF8000), // Orange
+      ColorConstants.dialogTextBlack, // Black
+      ColorConstants.dialogWhite, // White
+      ColorConstants.dialogRed, // Red
+      ColorConstants.dialogButtonBlue, // Blue
+      ColorConstants.dialogGreen, // Green
+      ColorConstants.highlightYellow, // Yellow
+      ColorConstants.dialogPurple, // Purple
+      ColorConstants.dialogWarningOrange, // Orange
     ];
 
     return Container(
       width: 120, // Increased width to accommodate brush size controls
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorConstants.dialogWhite,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black,
+            color: ColorConstants.dialogTextBlack,
             blurRadius: 10,
             spreadRadius: 1,
             offset: const Offset(0, 3),
           ),
         ],
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: ColorConstants.gray300),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -101,7 +102,7 @@ class DrawingToolsPanel extends StatelessWidget {
             height: 4,
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: ColorConstants.gray300,
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -125,10 +126,10 @@ class DrawingToolsPanel extends StatelessWidget {
               decoration: BoxDecoration(
                 color: currentColor,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300, width: 1),
+                border: Border.all(color: ColorConstants.gray300, width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: ColorConstants.getBlackWithValues(alpha: 0.1),
                     blurRadius: 2,
                     offset: const Offset(0, 1),
                   ),
@@ -142,8 +143,8 @@ class DrawingToolsPanel extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 8,
                       color: currentColor.computeLuminance() > 0.5
-                          ? Colors.black
-                          : Colors.white,
+                          ? ColorConstants.dialogTextBlack
+                          : ColorConstants.dialogWhite,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -152,8 +153,8 @@ class DrawingToolsPanel extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 8,
                       color: currentColor.computeLuminance() > 0.5
-                          ? Colors.black54
-                          : Colors.white70,
+                          ? ColorConstants.uiIconBlack
+                          : ColorConstants.dialogWhite.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -165,7 +166,7 @@ class DrawingToolsPanel extends StatelessWidget {
           const SizedBox(height: 8),
 
           Material(
-            color: Colors.transparent,
+            color: ColorConstants.transparent,
             child: Wrap(
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 8.0, // gap between lines
@@ -183,13 +184,13 @@ class DrawingToolsPanel extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
-                        color: isSelected ? Colors.blue : Colors.grey.shade300,
+                        color: isSelected ? ColorConstants.dialogButtonBlue : ColorConstants.gray300,
                         width: isSelected ? 2 : 1,
                       ),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: Colors.blue.withValues(alpha: 0.5),
+                                color: ColorConstants.dialogButtonBlue.withValues(alpha: 0.5),
                                 blurRadius: 4,
                                 spreadRadius: 2,
                               ),
@@ -224,9 +225,9 @@ class DrawingToolsPanel extends StatelessWidget {
             width: 80,
             height: 30,
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: ColorConstants.gray50,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade200, width: 1),
+              border: Border.all(color: ColorConstants.gray200, width: 1),
             ),
             child: Center(
               child: AnimatedContainer(
@@ -257,7 +258,7 @@ class DrawingToolsPanel extends StatelessWidget {
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 activeTrackColor: currentColor.withValues(alpha: 0.8),
-                inactiveTrackColor: Colors.grey.shade200,
+                inactiveTrackColor: ColorConstants.gray200,
                 thumbColor: currentColor,
                 trackHeight: 3.0,
                 thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8.0),
@@ -283,7 +284,7 @@ class DrawingToolsPanel extends StatelessWidget {
             '${currentStrokeWidth.round()}px',
             style: TextStyle(
               fontSize: 10,
-              color: Colors.grey.shade600,
+              color: ColorConstants.gray600,
               fontWeight: FontWeight.w500,
             ),
           ),

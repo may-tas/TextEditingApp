@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/draw_model.dart';
+import '../../constants/color_constants.dart';
 import 'drawing/drawing_painter.dart';
 import 'drawing/drawing_tools_panel.dart';
 
@@ -79,14 +80,14 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
             child: IgnorePointer(
               ignoring: false, // Always accept pointer events for the toolbar
               child: Material(
-                color: Colors.transparent,
+                color: ColorConstants.transparent,
                 child: LongPressDraggable<String>(
                   data: "toolbarDrag",
                   delay: Duration(
                       milliseconds:
                           500), // Require long press to start dragging
                   feedback: Material(
-                    color: Colors.transparent,
+                    color: ColorConstants.transparent,
                     elevation: 8.0,
                     child: Opacity(
                       opacity: 0.85,

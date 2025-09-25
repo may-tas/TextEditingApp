@@ -31,7 +31,7 @@ class CanvasState {
     this.message,
     this.currentPageName,
     this.isDrawingMode = false,
-    this.currentDrawColor = Colors.black,
+    this.currentDrawColor = ColorConstants.dialogTextBlack,
     this.currentStrokeWidth = 5.0,
     this.currentBrushType = BrushType.brush,
   });
@@ -49,7 +49,7 @@ class CanvasState {
       message: null,
       currentPageName: null,
       isDrawingMode: false,
-      currentDrawColor: Colors.black,
+      currentDrawColor: ColorConstants.dialogTextBlack,
       currentStrokeWidth: 5.0,
       currentBrushType: BrushType.brush,
     );

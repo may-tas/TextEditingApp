@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../constants/color_constants.dart';
 
 // Painter for showing MS Paint style brush size preview
 class BrushSizePreviewPainter extends CustomPainter {
@@ -45,7 +46,7 @@ class BrushSizePreviewPainter extends CustomPainter {
     final double currentX = startX +
         ((currentWidth - minWidth) / (maxWidth - minWidth)) * (endX - startX);
     final Paint indicatorPaint = Paint()
-      ..color = Colors.blue
+      ..color = ColorConstants.dialogButtonBlue
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
