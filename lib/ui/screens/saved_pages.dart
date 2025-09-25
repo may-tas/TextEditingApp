@@ -95,7 +95,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
         foregroundColor: ColorConstants.dialogTextBlack,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: ColorConstants.dialogTextBlack),
+          icon: const Icon(Icons.arrow_back,
+              color: ColorConstants.dialogTextBlack),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
@@ -165,7 +166,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                       final pageName = preview['name'] as String;
                       final textCount = preview['textCount'] as int? ?? 0;
                       final backgroundColor =
-                          preview['backgroundColor'] as Color? ?? ColorConstants.uiGrayMedium;
+                          preview['backgroundColor'] as Color? ??
+                              ColorConstants.uiGrayMedium;
                       final lastModified = preview['lastModified'] as DateTime;
                       final label = (preview['label'] as String?) ?? '';
 
@@ -207,8 +209,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                           )
                                         : Icon(
                                             Icons.description,
-                                            color:
-                                                ColorConstants.dialogWhite.withOpacity(0.8),
+                                            color: ColorConstants.dialogWhite
+                                                .withOpacity(0.8),
                                             size: 28,
                                           ),
                                   ),
@@ -225,7 +227,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
-                                          color: ColorConstants.dialogTextBlack87,
+                                          color:
+                                              ColorConstants.dialogTextBlack87,
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
