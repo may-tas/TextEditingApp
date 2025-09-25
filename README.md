@@ -280,6 +280,13 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/zxnb01">
+                    <img src="https://avatars.githubusercontent.com/u/141150925?v=4" width="100;" alt="zxnb01"/>
+                    <br />
+                    <sub><b>Shaik Zainab</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/AnanyaSingh456">
                     <img src="https://avatars.githubusercontent.com/u/184369984?v=4" width="100;" alt="AnanyaSingh456"/>
                     <br />
@@ -300,6 +307,8 @@ Special thanks to:
                     <sub><b>Debasmita C</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/GauriRocksies">
                     <img src="https://avatars.githubusercontent.com/u/178488305?v=4" width="100;" alt="GauriRocksies"/>
@@ -307,8 +316,6 @@ Special thanks to:
                     <sub><b>GAURI</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/Rishi-1512">
                     <img src="https://avatars.githubusercontent.com/u/122536214?v=4" width="100;" alt="Rishi-1512"/>
@@ -328,13 +335,6 @@ Special thanks to:
                     <img src="https://avatars.githubusercontent.com/u/157686006?v=4" width="100;" alt="Charmiseera"/>
                     <br />
                     <sub><b>Seera charmi</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/zxnb01">
-                    <img src="https://avatars.githubusercontent.com/u/141150925?v=4" width="100;" alt="zxnb01"/>
-                    <br />
-                    <sub><b>Shaik Zainab</b></sub>
                 </a>
             </td>
             <td align="center">
