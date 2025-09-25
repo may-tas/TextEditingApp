@@ -93,7 +93,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
     try {
       await context
           .read<CanvasCubit>()
-          .savePage(pageName, label: label, color: color.value);
+          .savePage(pageName, label: label, color: color.toARGB32());
 
       if (mounted) {
         Navigator.of(context).pop();
