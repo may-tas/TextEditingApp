@@ -210,7 +210,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
                                         : Icon(
                                             Icons.description,
                                             color: ColorConstants.dialogWhite
-                                                .withOpacity(0.8),
+                                                .withAlpha((0.8 * 255).toInt()),
                                             size: 28,
                                           ),
                                   ),
@@ -360,7 +360,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
       await _loadSavedPages(); // Refresh the list
 
       if (mounted) {
-        CustomSnackbar.showInfo('Page "$pageName" deleted successfully');
+        CustomSnackbar.showSuccess('Page "$pageName" deleted successfully');
       }
     } catch (e) {
       if (mounted) {

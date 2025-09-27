@@ -184,13 +184,16 @@ class DrawingToolsPanel extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
-                        color: isSelected ? ColorConstants.dialogButtonBlue : ColorConstants.gray300,
+                        color: isSelected
+                            ? ColorConstants.dialogButtonBlue
+                            : ColorConstants.gray300,
                         width: isSelected ? 2 : 1,
                       ),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: ColorConstants.dialogButtonBlue.withValues(alpha: 0.5),
+                                color: ColorConstants.dialogButtonBlue
+                                    .withValues(alpha: 0.5),
                                 blurRadius: 4,
                                 spreadRadius: 2,
                               ),
@@ -253,7 +256,7 @@ class DrawingToolsPanel extends StatelessWidget {
           const SizedBox(height: 8),
 
           // Size slider
-          Container(
+          SizedBox(
             width: 100,
             child: SliderTheme(
               data: SliderTheme.of(context).copyWith(

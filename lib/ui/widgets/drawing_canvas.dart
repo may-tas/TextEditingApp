@@ -113,11 +113,13 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
 
                     // Keep toolbar on screen
                     if (newX < 0) newX = 0;
-                    if (newX > screenSize.width - 100)
+                    if (newX > screenSize.width - 100) {
                       newX = screenSize.width - 100;
+                    }
                     if (newY < 0) newY = 0;
-                    if (newY > screenSize.height - 300)
+                    if (newY > screenSize.height - 300) {
                       newY = screenSize.height - 300;
+                    }
 
                     setState(() {
                       _toolbarPosition = Offset(newX, newY);

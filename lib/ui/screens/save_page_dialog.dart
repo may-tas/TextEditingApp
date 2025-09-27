@@ -91,15 +91,17 @@ class _SavePageDialogState extends State<SavePageDialog> {
     });
 
     try {
-      await context
-          .read<CanvasCubit>()
-          .savePage(pageName, label: label, color: color.toARGB32());
+      if (mounted) {
+        await context
+            .read<CanvasCubit>()
+            .savePage(pageName, label: label, color: color.toARGB32());
+      }
 
       if (mounted) {
         Navigator.of(context).pop();
 
         // Show success message
-        CustomSnackbar.showInfo('Page "$pageName" saved successfully!');
+        CustomSnackbar.showSuccess('Page "$pageName" saved successfully!');
       }
     } catch (e) {
       if (mounted) {
@@ -207,7 +209,8 @@ class _SavePageDialogState extends State<SavePageDialog> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: ColorConstants.dialogButtonBlue, width: 2),
+                  borderSide: const BorderSide(
+                      color: ColorConstants.dialogButtonBlue, width: 2),
                 ),
                 prefixIcon: const Icon(Icons.description),
                 counterText: '', // Hide character counter

@@ -1,11 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../constants/color_constants.dart';
 
 enum SnackbarType { success, info, error }
 
 class CustomSnackbar {
-  static final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  
+  static final GlobalKey<NavigatorState> _navigatorKey =
+      GlobalKey<NavigatorState>();
+
   static GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
   static void show({
@@ -51,6 +54,7 @@ class CustomSnackbar {
   }
 
   static void showInfo(String message, {Duration? duration}) {
+    log("CLEARED");
     show(
       message: message,
       type: SnackbarType.info,
@@ -136,7 +140,7 @@ class _SnackbarWidgetState extends State<_SnackbarWidget>
       case SnackbarType.success:
         return ColorConstants.snackbarSuccess; // Simple green
       case SnackbarType.info:
-        return ColorConstants.snackbarInfo; // Simple blue  
+        return ColorConstants.snackbarInfo; // Simple blue
       case SnackbarType.error:
         return ColorConstants.snackbarError; // Simple red
     }
@@ -183,7 +187,8 @@ class _SnackbarWidgetState extends State<_SnackbarWidget>
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
                     Icon(

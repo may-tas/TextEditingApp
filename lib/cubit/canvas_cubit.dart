@@ -900,8 +900,6 @@ class CanvasCubit extends Cubit<CanvasState> {
       history: newHistory,
       future: [], // Clear future as we've made a new action
     ));
-
-    CustomSnackbar.showInfo('All drawings cleared');
   }
 
   // Undo the last drawing stroke

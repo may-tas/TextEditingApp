@@ -73,6 +73,9 @@ class CanvasScreen extends StatelessWidget {
                 cubit.state.backgroundImagePath != null) {
               cubit.clearCanvas();
               CustomSnackbar.showInfo('Canvas cleared');
+            } else if (cubit.state.drawPaths.isNotEmpty) {
+              cubit.clearDrawings();
+              CustomSnackbar.showInfo('Drawings cleared');
             } else {
               CustomSnackbar.showInfo('Canvas is already empty');
             }
