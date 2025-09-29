@@ -220,15 +220,7 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<CanvasCubit, CanvasState>(
-        listener: (context, state) {
-          // Show snackbar when there's a message from save/load operations
-          if (state.message != null) {
-            CustomSnackbar.showInfo(state.message!);
-            // Clear the message after showing
-            context.read<CanvasCubit>().clearMessage();
-          }
-        },
+      body: BlocBuilder<CanvasCubit, CanvasState>(
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
