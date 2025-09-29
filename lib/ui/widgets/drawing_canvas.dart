@@ -9,11 +9,13 @@ class DrawingCanvas extends StatefulWidget {
   final bool isDrawingMode;
   final Color currentDrawColor;
   final double currentStrokeWidth;
+  final BrushType currentBrushType;
   final Function(Offset) onStartDrawing;
   final Function(Offset) onUpdateDrawing;
   final Function() onEndDrawing;
   final Function(Color) onColorChanged;
   final Function(double) onStrokeWidthChanged;
+  final Function(BrushType) onBrushTypeChanged;
   final Function() onUndoDrawing;
   final Function() onClearDrawing;
 
@@ -23,11 +25,13 @@ class DrawingCanvas extends StatefulWidget {
     required this.isDrawingMode,
     required this.currentDrawColor,
     required this.currentStrokeWidth,
+    required this.currentBrushType,
     required this.onStartDrawing,
     required this.onUpdateDrawing,
     required this.onEndDrawing,
     required this.onColorChanged,
     required this.onStrokeWidthChanged,
+    required this.onBrushTypeChanged,
     required this.onUndoDrawing,
     required this.onClearDrawing,
   });
@@ -94,8 +98,10 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
                       child: DrawingToolsPanel(
                         currentColor: widget.currentDrawColor,
                         currentStrokeWidth: widget.currentStrokeWidth,
+                        currentBrushType: widget.currentBrushType,
                         onColorChanged: (_) {}, // No-op in feedback
                         onStrokeWidthChanged: (_) {}, // No-op in feedback
+                        onBrushTypeChanged: (_) {}, // No-op in feedback
                       ),
                     ),
                   ),
@@ -128,8 +134,10 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
                   child: DrawingToolsPanel(
                     currentColor: widget.currentDrawColor,
                     currentStrokeWidth: widget.currentStrokeWidth,
+                    currentBrushType: widget.currentBrushType,
                     onColorChanged: widget.onColorChanged,
                     onStrokeWidthChanged: widget.onStrokeWidthChanged,
+                    onBrushTypeChanged: widget.onBrushTypeChanged,
                   ),
                 ),
               ),

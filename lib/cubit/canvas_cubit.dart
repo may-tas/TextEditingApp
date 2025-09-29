@@ -803,6 +803,34 @@ class CanvasCubit extends Cubit<CanvasState> {
           ..strokeWidth = strokeWidth * 0.8
           ..filterQuality = FilterQuality.low;
         break;
+      case BrushType.watercolor:
+        paint
+          ..color = color.withValues(alpha: 0.6)
+          ..strokeWidth = strokeWidth * 1.2
+          ..filterQuality = FilterQuality.high
+          ..blendMode = BlendMode.colorBurn;
+        break;
+      case BrushType.oilPaint:
+        paint
+          ..color = color
+          ..strokeWidth = strokeWidth * 1.8
+          ..filterQuality = FilterQuality.high
+          ..strokeCap = StrokeCap.square;
+        break;
+      case BrushType.charcoal:
+        paint
+          ..color = color.withValues(alpha: 0.8)
+          ..strokeWidth = strokeWidth * 2.5
+          ..filterQuality = FilterQuality.low
+          ..blendMode = BlendMode.multiply;
+        break;
+      case BrushType.sprayPaint:
+        paint
+          ..color = color.withValues(alpha: 0.4)
+          ..strokeWidth = strokeWidth * 3.0
+          ..filterQuality = FilterQuality.medium
+          ..blendMode = BlendMode.screen;
+        break;
     }
     return paint;
   }
