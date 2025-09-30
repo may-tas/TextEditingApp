@@ -27,18 +27,6 @@ class DrawingToolsPanel extends StatelessWidget {
         return 'Brush';
       case BrushType.marker:
         return 'Marker';
-      case BrushType.highlighter:
-        return 'Highlighter';
-      case BrushType.pencil:
-        return 'Pencil';
-      case BrushType.watercolor:
-        return 'Watercolor';
-      case BrushType.oilPaint:
-        return 'Oil Paint';
-      case BrushType.charcoal:
-        return 'Charcoal';
-      case BrushType.sprayPaint:
-        return 'Spray Paint';
     }
   }
 
@@ -48,18 +36,6 @@ class DrawingToolsPanel extends StatelessWidget {
         return Icons.brush;
       case BrushType.marker:
         return Icons.edit;
-      case BrushType.highlighter:
-        return Icons.highlight;
-      case BrushType.pencil:
-        return Icons.create;
-      case BrushType.watercolor:
-        return Icons.water_drop;
-      case BrushType.oilPaint:
-        return Icons.palette;
-      case BrushType.charcoal:
-        return Icons.blur_on;
-      case BrushType.sprayPaint:
-        return Icons.grain;
     }
   }
 
@@ -175,9 +151,10 @@ class DrawingToolsPanel extends StatelessWidget {
               mainAxisSpacing: 6,
               childAspectRatio: 1.2,
             ),
-            itemCount: BrushType.values.length,
+            itemCount: 2, // Only brush and marker
             itemBuilder: (context, index) {
-              final brushType = BrushType.values[index];
+              final availableBrushTypes = [BrushType.brush, BrushType.marker];
+              final brushType = availableBrushTypes[index];
               final isSelected = currentBrushType == brushType;
 
               return InkWell(

@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 
-enum BrushType { 
-  brush, 
-  marker, 
-  highlighter, 
-  pencil,
-  watercolor,
-  oilPaint,
-  charcoal,
-  sprayPaint,
+enum BrushType {
+  brush,
+  marker,
 }
 
 class DrawingPoint {
