@@ -32,6 +32,116 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
   }
 
+  // Toggle text shadow on/off
+  void toggleTextShadow(int index) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      hasShadow: !updatedItems[index].hasShadow,
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Change shadow color
+  void changeShadowColor(int index, Color color) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      hasShadow: true, // Automatically enable shadow when changing color
+      shadowColor: color,
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Change shadow blur radius
+  void changeShadowBlur(int index, double blurRadius) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      hasShadow: true,
+      shadowBlurRadius: blurRadius.clamp(0.0, 50.0),
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Change shadow offset
+  void changeShadowOffset(int index, Offset offset) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(
+      hasShadow: true,
+      shadowOffset: offset,
+    );
+    _updateState(textItems: updatedItems);
+  }
+
+// Apply preset shadow styles
+  void applyShadowPreset(int index, ShadowPreset preset) {
+    if (index < 0 || index >= state.textItems.length) return;
+
+    final updatedItems = List<TextItem>.from(state.textItems);
+
+    switch (preset) {
+      case ShadowPreset.soft:
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: Colors.black.withValues(alpha: 0.3),
+          shadowBlurRadius: 8.0,
+          shadowOffset: const Offset(2.0, 2.0),
+        );
+        break;
+      case ShadowPreset.medium:
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: Colors.black.withValues(alpha: 0.5),
+          shadowBlurRadius: 6.0,
+          shadowOffset: const Offset(3.0, 3.0),
+        );
+        break;
+      case ShadowPreset.hard:
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: Colors.black.withValues(alpha: 0.7),
+          shadowBlurRadius: 2.0,
+          shadowOffset: const Offset(4.0, 4.0),
+        );
+        break;
+      case ShadowPreset.glow:
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: Colors.white.withValues(alpha: 0.8),
+          shadowBlurRadius: 15.0,
+          shadowOffset: Offset.zero,
+        );
+        break;
+      case ShadowPreset.coloredGlow:
+        // Use the text color for the glow
+        final textColor = updatedItems[index].color;
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: textColor.withValues(alpha: 0.6),
+          shadowBlurRadius: 12.0,
+          shadowOffset: Offset.zero,
+        );
+        break;
+      case ShadowPreset.outline:
+        updatedItems[index] = updatedItems[index].copyWith(
+          hasShadow: true,
+          shadowColor: Colors.black,
+          shadowBlurRadius: 1.0,
+          shadowOffset: const Offset(1.0, 1.0),
+        );
+        break;
+    }
+
+    _updateState(textItems: updatedItems);
+    CustomSnackbar.showSuccess('${preset.name} shadow applied');
+  }
+
   // Add to your CanvasCubit class
   void fillCanvas(Color fillColor) {
     // Create a special "fill" path that covers the entire canvas
@@ -116,9 +226,13 @@ class CanvasCubit extends Cubit<CanvasState> {
       fontWeight: FontWeight.normal,
       fontFamily: 'Roboto',
       isUnderlined: false,
-      isHighlighted: false, // Add this line
-      highlightColor: null, // Add this line
+      isHighlighted: false,
+      highlightColor: null,
       color: ColorConstants.uiWhite,
+      hasShadow: false, // Reset shadow
+      shadowColor: Colors.black,
+      shadowBlurRadius: 4.0,
+      shadowOffset: const Offset(2.0, 2.0),
     );
     _updateState(textItems: updatedItems);
   }
@@ -908,4 +1022,14 @@ class CanvasCubit extends Cubit<CanvasState> {
 
     CustomSnackbar.showInfo('Last stroke undone');
   }
+}
+
+// Enum for shadow presets
+enum ShadowPreset {
+  soft,
+  medium,
+  hard,
+  glow,
+  coloredGlow,
+  outline,
 }
