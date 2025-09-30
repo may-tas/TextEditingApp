@@ -51,7 +51,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
     } catch (e) {
       // Handle error
       if (mounted) {
-        CustomSnackbar.showError('Error deleting page');
+        CustomSnackbar.showError('Error loading pages');
       }
     } finally {
       if (mounted) {
@@ -295,9 +295,7 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
         Navigator.of(context).pop();
       }
     } catch (e) {
-      if (mounted) {
-        CustomSnackbar.showError('Error deleting page');
-      }
+      // Error is already handled by cubit
     }
   }
 
@@ -358,14 +356,8 @@ class _SavedPagesScreenState extends State<SavedPagesScreen> {
     try {
       await context.read<CanvasCubit>().deletePage(pageName);
       await _loadSavedPages(); // Refresh the list
-
-      if (mounted) {
-        CustomSnackbar.showSuccess('Page "$pageName" deleted successfully');
-      }
     } catch (e) {
-      if (mounted) {
-        CustomSnackbar.showError('Error deleting page');
-      }
+      // Error is already handled by cubit
     }
   }
 }

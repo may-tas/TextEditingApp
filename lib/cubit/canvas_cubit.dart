@@ -307,6 +307,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         history: newHistory,
         future: [state, ...state.future],
       ));
+      CustomSnackbar.showInfo('Action undone');
     }
   }
 
@@ -319,6 +320,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         future: newFuture,
         history: [...state.history, state],
       ));
+      CustomSnackbar.showInfo('Action redone');
     }
   }
 
@@ -342,6 +344,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         clearBackgroundImage: true,
       ),
     );
+    CustomSnackbar.showInfo('Canvas cleared');
   }
 
   void _updateState({
@@ -884,6 +887,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       history: newHistory,
       future: [], // Clear future as we've made a new action
     ));
+    CustomSnackbar.showInfo('Drawings cleared');
   }
 
   // Undo the last drawing stroke
