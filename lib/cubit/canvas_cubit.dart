@@ -307,7 +307,6 @@ class CanvasCubit extends Cubit<CanvasState> {
         history: newHistory,
         future: [state, ...state.future],
       ));
-      CustomSnackbar.showInfo('Action undone');
     }
   }
 
@@ -320,7 +319,6 @@ class CanvasCubit extends Cubit<CanvasState> {
         future: newFuture,
         history: [...state.history, state],
       ));
-      CustomSnackbar.showInfo('Action redone');
     }
   }
 
