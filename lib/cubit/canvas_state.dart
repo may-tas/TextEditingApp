@@ -12,7 +12,6 @@ class CanvasState {
   final String? backgroundImagePath;
   final int? selectedTextItemIndex;
   final bool isTrayShown;
-  final String? message;
   final String? currentPageName;
   final bool isDrawingMode;
   final Color currentDrawColor;
@@ -28,7 +27,6 @@ class CanvasState {
     this.backgroundImagePath,
     this.selectedTextItemIndex,
     this.isTrayShown = false,
-    this.message,
     this.currentPageName,
     this.isDrawingMode = false,
     this.currentDrawColor = ColorConstants.dialogTextBlack,
@@ -46,7 +44,6 @@ class CanvasState {
       backgroundImagePath: null,
       selectedTextItemIndex: null,
       isTrayShown: false,
-      message: null,
       currentPageName: null,
       isDrawingMode: false,
       currentDrawColor: ColorConstants.dialogTextBlack,
@@ -70,7 +67,6 @@ class CanvasState {
     Color? currentDrawColor,
     double? currentStrokeWidth,
     BrushType? currentBrushType,
-    String? message,
     String? currentPageName,
     bool clearCurrentPageName = false,
   }) {
@@ -87,7 +83,6 @@ class CanvasState {
           ? null
           : (selectedTextItemIndex ?? this.selectedTextItemIndex),
       isTrayShown: deselect ? false : (isTrayShown ?? this.isTrayShown),
-      message: message ?? this.message,
       currentPageName: clearCurrentPageName
           ? null
           : (currentPageName ?? this.currentPageName),
@@ -112,7 +107,6 @@ class CanvasState {
           history == other.history &&
           future == other.future &&
           isTrayShown == other.isTrayShown &&
-          message == other.message &&
           currentPageName == other.currentPageName &&
           currentDrawColor == other.currentDrawColor &&
           currentStrokeWidth == other.currentStrokeWidth &&
@@ -132,6 +126,5 @@ class CanvasState {
       currentDrawColor.hashCode ^
       currentStrokeWidth.hashCode ^
       currentBrushType.hashCode ^
-      message.hashCode ^
       currentPageName.hashCode;
 }

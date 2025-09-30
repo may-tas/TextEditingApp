@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:texterra/utils/custom_snackbar.dart';
 
 import '../../cubit/canvas_cubit.dart';
 import '../../constants/color_constants.dart';
@@ -99,17 +98,12 @@ class _SavePageDialogState extends State<SavePageDialog> {
 
       if (mounted) {
         Navigator.of(context).pop();
-
-        // Show success message
-        CustomSnackbar.showSuccess('Page "$pageName" saved successfully!');
       }
     } catch (e) {
       if (mounted) {
         setState(() {
           _isSaving = false;
         });
-
-        CustomSnackbar.showError('Error saving page: $e');
       }
     }
   }

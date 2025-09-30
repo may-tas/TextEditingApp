@@ -150,12 +150,11 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       if (savedPath != null) {
         _updateState(backgroundImagePath: savedPath);
-        emit(
-            state.copyWith(message: 'Background image uploaded successfully!'));
+        CustomSnackbar.showSuccess('Background image uploaded successfully!');
       }
     } catch (e) {
       log('Error uploading background image: $e');
-      emit(state.copyWith(message: 'Error uploading image: $e'));
+      CustomSnackbar.showError('Error uploading image: $e');
     }
   }
 
@@ -174,12 +173,11 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       if (savedPath != null) {
         _updateState(backgroundImagePath: savedPath);
-        emit(
-            state.copyWith(message: 'Background photo captured successfully!'));
+        CustomSnackbar.showSuccess('Background photo captured successfully!');
       }
     } catch (e) {
       log('Error taking photo for background: $e');
-      emit(state.copyWith(message: 'Error taking photo: $e'));
+      CustomSnackbar.showError('Error taking photo: $e');
     }
   }
 
@@ -191,7 +189,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     }
 
     _updateState(clearBackgroundImage: true);
-    emit(state.copyWith(message: 'Background image removed'));
+    CustomSnackbar.showInfo('Background image removed');
   }
 
   // Helper method to save image to app directory
@@ -344,6 +342,7 @@ class CanvasCubit extends Cubit<CanvasState> {
         clearBackgroundImage: true,
       ),
     );
+    CustomSnackbar.showInfo('Canvas cleared');
   }
 
   void _updateState({
@@ -430,14 +429,12 @@ class CanvasCubit extends Cubit<CanvasState> {
       // Set the current page name and emit success message
       emit(state.copyWith(
         currentPageName: pageName,
-        message: 'Page "$pageName" saved successfully!',
       ));
+      CustomSnackbar.showSuccess('Page "$pageName" saved successfully!');
     } catch (e, stackTrace) {
       log('❌ Error saving page: $e');
       log('Stack trace: $stackTrace');
-      emit(state.copyWith(
-        message: 'Error saving page: $e',
-      ));
+      CustomSnackbar.showError('Error saving page: $e');
     }
   }
 
@@ -463,7 +460,7 @@ class CanvasCubit extends Cubit<CanvasState> {
 
       if (pageDataString == null) {
         log('❌ Page not found: $pageName');
-        emit(state.copyWith(message: 'Page "$pageName" not found'));
+        CustomSnackbar.showError('Page "$pageName" not found');
         return;
       }
 
@@ -523,17 +520,15 @@ class CanvasCubit extends Cubit<CanvasState> {
         backgroundColor: Color(pageData['backgroundColor']),
         backgroundImagePath: validImagePath,
         selectedTextItemIndex: null,
-        message: 'Page "$pageName" loaded successfully!',
         history: [],
         future: [],
         currentPageName: pageName,
       ));
+      CustomSnackbar.showSuccess('Page "$pageName" loaded successfully!');
     } catch (e, stackTrace) {
       log('❌ Error loading page: $e');
       log('Stack trace: $stackTrace');
-      emit(state.copyWith(
-        message: 'Error loading page: $e',
-      ));
+      CustomSnackbar.showError('Error loading page: $e');
     }
   }
 
@@ -554,8 +549,8 @@ class CanvasCubit extends Cubit<CanvasState> {
       isDrawingMode: false, // Exit drawing mode when creating new page
       clearCurrentPageName: true,
       clearBackgroundImage: true,
-      message: 'New page created',
     ));
+    CustomSnackbar.showInfo('New page created');
   }
 
   // Get list of saved pages
@@ -621,19 +616,13 @@ class CanvasCubit extends Cubit<CanvasState> {
       if (state.currentPageName == pageName) {
         emit(state.copyWith(
           clearCurrentPageName: true,
-          message: 'Page "$pageName" deleted successfully!',
-        ));
-      } else {
-        emit(state.copyWith(
-          message: 'Page "$pageName" deleted successfully!',
         ));
       }
+      CustomSnackbar.showSuccess('Page "$pageName" deleted successfully!');
     } catch (e, stackTrace) {
       log('❌ Error deleting page: $e');
       log('Stack trace: $stackTrace');
-      emit(state.copyWith(
-        message: 'Error deleting page: $e',
-      ));
+      CustomSnackbar.showError('Error deleting page: $e');
     }
   }
 
@@ -671,11 +660,6 @@ class CanvasCubit extends Cubit<CanvasState> {
       log('Stack trace: $stackTrace');
       return null;
     }
-  }
-
-  // Clear message (useful for dismissing notifications)
-  void clearMessage() {
-    emit(state.copyWith(message: null));
   }
 
   // Debug method to clear all saved data (now also cleans up image files)
@@ -717,12 +701,13 @@ class CanvasCubit extends Cubit<CanvasState> {
       log('🧹 Cleared all saved data: $keysToRemove');
 
       emit(state.copyWith(
-        message: 'All saved data cleared!',
         clearCurrentPageName: true,
         clearBackgroundImage: true,
       ));
+      CustomSnackbar.showSuccess('All saved data cleared!');
     } catch (e) {
       log('❌ Error clearing saved data: $e');
+      CustomSnackbar.showError('Error clearing saved data: $e');
     }
   }
 
@@ -900,6 +885,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       history: newHistory,
       future: [], // Clear future as we've made a new action
     ));
+    CustomSnackbar.showInfo('Drawings cleared');
   }
 
   // Undo the last drawing stroke

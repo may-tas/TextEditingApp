@@ -72,11 +72,10 @@ class CanvasScreen extends StatelessWidget {
             if (cubit.state.textItems.isNotEmpty ||
                 cubit.state.backgroundImagePath != null) {
               cubit.clearCanvas();
-              CustomSnackbar.showInfo('Canvas cleared');
             } else if (cubit.state.drawPaths.isNotEmpty) {
               cubit.clearDrawings();
-              CustomSnackbar.showInfo('Drawings cleared');
             } else {
+              // Show info when canvas is already empty
               CustomSnackbar.showInfo('Canvas is already empty');
             }
           },
@@ -99,7 +98,6 @@ class CanvasScreen extends StatelessWidget {
               final cubit = context.read<CanvasCubit>();
               if (cubit.state.history.isNotEmpty) {
                 cubit.undo();
-                CustomSnackbar.showInfo('Action undone');
               } else {
                 CustomSnackbar.showInfo('Nothing to undo');
               }
@@ -113,7 +111,6 @@ class CanvasScreen extends StatelessWidget {
               final cubit = context.read<CanvasCubit>();
               if (cubit.state.future.isNotEmpty) {
                 cubit.redo();
-                CustomSnackbar.showInfo('Action redone');
               } else {
                 CustomSnackbar.showInfo('Nothing to redo');
               }
@@ -133,7 +130,6 @@ class CanvasScreen extends StatelessWidget {
                   switch (value) {
                     case 'new_page':
                       cubit.createNewPage();
-                      CustomSnackbar.showInfo('New page created');
                       break;
                     case 'load_pages':
                       Navigator.push(
@@ -220,15 +216,7 @@ class CanvasScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<CanvasCubit, CanvasState>(
-        listener: (context, state) {
-          // Show snackbar when there's a message from save/load operations
-          if (state.message != null) {
-            CustomSnackbar.showInfo(state.message!);
-            // Clear the message after showing
-            context.read<CanvasCubit>().clearMessage();
-          }
-        },
+      body: BlocBuilder<CanvasCubit, CanvasState>(
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
