@@ -243,17 +243,17 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/Manar-Elhabbal7">
-                    <img src="https://avatars.githubusercontent.com/u/172148857?v=4" width="100;" alt="Manar-Elhabbal7"/>
-                    <br />
-                    <sub><b>Manar ELhabbal</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/zxnb01">
                     <img src="https://avatars.githubusercontent.com/u/141150925?v=4" width="100;" alt="zxnb01"/>
                     <br />
                     <sub><b>Shaik Zainab</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Manar-Elhabbal7">
+                    <img src="https://avatars.githubusercontent.com/u/172148857?v=4" width="100;" alt="Manar-Elhabbal7"/>
+                    <br />
+                    <sub><b>Manar ELhabbal</b></sub>
                 </a>
             </td>
             <td align="center">
