@@ -32,6 +32,8 @@ class DrawingPainter extends CustomPainter {
     if (points.isEmpty) return;
 
     // All brush types use standard stroke rendering
+    // TODO: Use this method to Add new brush type render methods here (e.g., spray, charcoal, watercolor) instead of modifying paint().
+    
     _renderStandardStroke(canvas, path);
   }
 
