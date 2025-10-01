@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+## Welcome to Our Project! 👋
+
+Thank you for taking the time to suggest a feature! Your ideas help make this project better. 🚀
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is.
 

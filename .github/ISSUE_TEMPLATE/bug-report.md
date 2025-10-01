@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+## Welcome to Our Project! 👋
+
+Thank you for reporting this bug! Your help in identifying issues is greatly appreciated and helps improve the project for everyone. 🐛
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

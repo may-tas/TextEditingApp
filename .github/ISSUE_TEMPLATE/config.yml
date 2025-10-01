@@ -1,0 +1,17 @@
+# Issue Template Configuration
+# This file controls the order and visibility of issue templates
+
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/may-tas/TextEditingApp/blob/main/README.md
+    about: Check our documentation for help and guides
+  - name: 🤝 Contributing Guide
+    url: https://github.com/may-tas/TextEditingApp/blob/main/CONTRIBUTING.md
+    about: Learn how to contribute to the project
+  - name: 💬 Community Discussions
+    url: https://github.com/may-tas/TextEditingApp/discussions
+    about: Start a discussion or ask questions
+  - name: 🎯 Project Board
+    url: https://github.com/may-tas/TextEditingApp/projects
+    about: View our project roadmap and current work

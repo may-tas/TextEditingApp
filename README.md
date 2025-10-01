@@ -3,6 +3,25 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+## Welcome to Our Project! 👋
+
+We're thrilled to have you here and would love to hear your thoughts, ideas, and feedback. This project is a space to:
+
+- **Share Your Ideas**: Have a feature in mind? Let us know what you'd like to see in this project.
+- **Report Bugs**: Encountered an issue while using the project? Open a new issue with details so we can resolve it.
+- **Contribute**: Found an area to improve? Feel free to fork the repo, make changes, and submit a pull request (PR).
+
+### How You Can Help:
+- Check this README.md for project details and guidelines.
+- Read our [WELCOME.md](WELCOME.md) for a comprehensive introduction to contributing.
+- Use our [issue templates](.github/ISSUE_TEMPLATE/) to open discussions, report bugs, or suggest features.
+- Open a new issue to share ideas or report bugs.
+- Follow our [CONTRIBUTING.md](CONTRIBUTING.md) guidelines to submit a PR.
+
+Your contributions make this project better! Let's collaborate and build something amazing together. 💡✨
+
+---
+
 This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience.
 
 ## Features
@@ -34,6 +53,28 @@ This project provides an interactive user interface to control font properties s
 | <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apple/apple-original.svg" alt="iOS" width="20"/> iOS | ✅ Supported | iOS 17+ |
 | <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/chrome/chrome-original.svg" alt="Web" width="20"/> Web | ✅ Supported | Modern Browsers |
 
+
+## Community & Contributing
+
+We believe in the power of community-driven development! Our project welcomes contributors of all skill levels and backgrounds. Whether you're a seasoned developer or just getting started, there's a place for you here.
+
+### Ways to Get Involved:
+- 🐛 **Report Bugs**: Help us improve by reporting issues you encounter
+- 💡 **Suggest Features**: Share your ideas for new functionality
+- 💬 **Start Discussions**: Engage with the community on project direction
+- 🚀 **Contribute Code**: Submit pull requests to add features or fix bugs
+- 📖 **Improve Documentation**: Help make our docs clearer and more comprehensive
+
+### Getting Started:
+1. Read our [WELCOME.md](WELCOME.md) for a comprehensive introduction
+2. Check out our [Contributing Guidelines](CONTRIBUTING.md)
+3. Use our [issue templates](.github/ISSUE_TEMPLATE/) to report bugs or suggest features
+4. Join the conversation in our [GitHub Discussions](https://github.com/may-tas/TextEditingApp/discussions)
+
+### Recognition:
+We use the [All Contributors](https://github.com/all-contributors/all-contributors) specification to recognize all contributors. Every contribution counts! ⭐
+
+---
 
 ## How to Run
 

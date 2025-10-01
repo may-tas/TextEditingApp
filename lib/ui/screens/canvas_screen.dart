@@ -15,6 +15,8 @@ import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
 import '../widgets/drawing_canvas.dart';
 import '../../utils/custom_snackbar.dart';
+import '../../utils/web_utils.dart';
+import '../widgets/web_widgets.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -31,323 +33,429 @@ class CanvasScreen extends StatelessWidget {
     );
   }
 
+  // Handle dropped files
+  void _handleFileDrop(BuildContext context, List<PlatformFile> files) {
+    final cubit = context.read<CanvasCubit>();
+
+    for (final file in files) {
+      if (file.bytes != null) {
+        // Handle image files
+        if (WebUtils.isImageFile(file.name)) {
+          cubit.setBackgroundImageFromBytes(file.bytes!, file.name);
+          CustomSnackbar.showSuccess('Background image set from ${file.name}');
+        }
+        // Handle text files
+        else if (WebUtils.isTextFile(file.name)) {
+          final text = utf8.decode(file.bytes!);
+          cubit.addTextItem(
+            TextItemModel(
+              text: text,
+              x: 50,
+              y: 50,
+              fontSize: 16,
+              fontFamily: 'Arial',
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontStyle: FontStyle.normal,
+              textAlign: TextAlign.left,
+            ),
+          );
+          CustomSnackbar.showSuccess('Text loaded from ${file.name}');
+        }
+        // Handle other file types
+        else {
+          CustomSnackbar.showInfo('File type not supported: ${file.name}');
+        }
+      }
+    }
+  }
+
+  // Handle keyboard shortcuts
+  void _handleKeyboardShortcut(String shortcut, BuildContext context) {
+    final cubit = context.read<CanvasCubit>();
+
+    switch (shortcut) {
+      case 'ctrl+n':
+      case 'cmd+n':
+        cubit.createNewPage();
+        CustomSnackbar.showInfo('New page created');
+        break;
+      case 'ctrl+z':
+      case 'cmd+z':
+        if (cubit.state.history.isNotEmpty) {
+          cubit.undo();
+        } else {
+          CustomSnackbar.showInfo('Nothing to undo');
+        }
+        break;
+      case 'ctrl+y':
+      case 'cmd+y':
+      case 'ctrl+shift+z':
+      case 'cmd+shift+z':
+        if (cubit.state.future.isNotEmpty) {
+          cubit.redo();
+        } else {
+          CustomSnackbar.showInfo('Nothing to redo');
+        }
+        break;
+      case 'ctrl+s':
+      case 'cmd+s':
+        cubit.handleSaveAction();
+        break;
+      case 'delete':
+      case 'backspace':
+        if (cubit.state.textItems.isNotEmpty || cubit.state.backgroundImagePath != null) {
+          cubit.clearCanvas();
+        } else if (cubit.state.drawPaths.isNotEmpty) {
+          cubit.clearDrawings();
+        } else {
+          CustomSnackbar.showInfo('Canvas is already empty');
+        }
+        break;
+      case 'ctrl+t':
+      case 'cmd+t':
+        if (cubit.state.isDrawingMode) {
+          cubit.setDrawingMode(false);
+        }
+        cubit.addText('New Text');
+        break;
+      case 'ctrl+d':
+      case 'cmd+d':
+        cubit.toggleDrawingMode();
+        break;
+      case 'escape':
+        if (cubit.state.isDrawingMode) {
+          cubit.setDrawingMode(false);
+        } else {
+          cubit.deselectText();
+        }
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorConstants.uiWhite,
-      appBar: AppBar(
-        backgroundColor: ColorConstants.uiWhite,
-        elevation: 0.5,
-        title: BlocBuilder<CanvasCubit, CanvasState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                const Text(
-                  'Text Editor',
-                  style: TextStyle(
-                    color: ColorConstants.dialogTextBlack,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                  ),
-                ),
-                if (state.currentPageName != null)
-                  Text(
-                    state.currentPageName!,
-                    style: const TextStyle(
-                      color: ColorConstants.uiGrayMedium,
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          tooltip: "Clear Canvas",
-          icon: const Icon(Icons.delete, color: ColorConstants.uiIconBlack),
-          onPressed: () {
-            final cubit = context.read<CanvasCubit>();
-            if (cubit.state.textItems.isNotEmpty ||
-                cubit.state.backgroundImagePath != null) {
-              cubit.clearCanvas();
-            } else if (cubit.state.drawPaths.isNotEmpty) {
-              cubit.clearDrawings();
-            } else {
-              // Show info when canvas is already empty
-              CustomSnackbar.showInfo('Canvas is already empty');
-            }
-          },
-        ),
-        actions: <Widget>[
-          // Background options button
-          IconButton(
-            tooltip: 'Background options',
-            icon: const Icon(
-              Icons.wallpaper,
-              color: ColorConstants.uiIconBlack,
-            ),
-            onPressed: () => _showBackgroundOptions(context),
-          ),
-          // Undo button
-          IconButton(
-            tooltip: "Undo",
-            icon: const Icon(Icons.undo, color: ColorConstants.uiIconBlack),
-            onPressed: () {
-              final cubit = context.read<CanvasCubit>();
-              if (cubit.state.history.isNotEmpty) {
-                cubit.undo();
-              } else {
-                CustomSnackbar.showInfo('Nothing to undo');
-              }
-            },
-          ),
-          // Redo button
-          IconButton(
-            tooltip: "Redo",
-            icon: const Icon(Icons.redo, color: ColorConstants.uiIconBlack),
-            onPressed: () {
-              final cubit = context.read<CanvasCubit>();
-              if (cubit.state.future.isNotEmpty) {
-                cubit.redo();
-              } else {
-                CustomSnackbar.showInfo('Nothing to redo');
-              }
-            },
-          ),
-          // More options dropdown menu
-          BlocBuilder<CanvasCubit, CanvasState>(
-            builder: (context, state) {
-              return PopupMenuButton<String>(
-                tooltip: "More options",
-                icon: const Icon(Icons.more_vert,
-                    color: ColorConstants.uiIconBlack),
-                color: ColorConstants.uiWhite, // White background for dropdown
-                onSelected: (value) async {
-                  final cubit = context.read<CanvasCubit>();
-
-                  switch (value) {
-                    case 'new_page':
-                      cubit.createNewPage();
-                      break;
-                    case 'load_pages':
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider.value(
-                            value: context.read<CanvasCubit>(),
-                            child: const SavedPagesScreen(),
+    return PWAInstallPrompt(
+      child: NetworkStatusIndicator(
+        child: WebKeyboardShortcuts(
+          onShortcut: (shortcut) => _handleKeyboardShortcut(shortcut, context),
+          child: DragDropOverlay(
+            onFilesDropped: (files) => _handleFileDrop(context, files),
+            child: Scaffold(
+            backgroundColor: ColorConstants.uiWhite,
+            appBar: AppBar(
+              backgroundColor: ColorConstants.uiWhite,
+              elevation: 0.5,
+              title: BlocBuilder<CanvasCubit, CanvasState>(
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      const Text(
+                        'Text Editor',
+                        style: TextStyle(
+                          color: ColorConstants.dialogTextBlack,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                        ),
+                      ),
+                      if (state.currentPageName != null)
+                        Text(
+                          state.currentPageName!,
+                          style: const TextStyle(
+                            color: ColorConstants.uiGrayMedium,
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
-                      );
-                      break;
-                    case 'save_page':
-                      final wasHandled = await cubit.handleSaveAction();
-                      if (!wasHandled) {
-                        if (!context.mounted) return;
-                        showDialog(
-                          context: context,
-                          builder: (context) => BlocProvider.value(
-                            value: cubit,
-                            child: const SavePageDialog(),
-                          ),
-                        );
-                      }
-                      break;
+                    ],
+                  );
+                },
+              ),
+              centerTitle: true,
+              leading: IconButton(
+                tooltip: "Clear Canvas",
+                icon: const Icon(Icons.delete, color: ColorConstants.uiIconBlack),
+                onPressed: () {
+                  final cubit = context.read<CanvasCubit>();
+                  if (cubit.state.textItems.isNotEmpty ||
+                      cubit.state.backgroundImagePath != null) {
+                    cubit.clearCanvas();
+                  } else if (cubit.state.drawPaths.isNotEmpty) {
+                    cubit.clearDrawings();
+                  } else {
+                    // Show info when canvas is already empty
+                    CustomSnackbar.showInfo('Canvas is already empty');
                   }
                 },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'new_page',
-                    child: Row(
-                      children: [
-                        Icon(Icons.add,
-                            color: ColorConstants.uiIconBlack, size: 20),
-                        SizedBox(width: 12),
-                        Text(
-                          'New Page',
-                          style: TextStyle(
-                              color: ColorConstants.dialogTextBlack87),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'load_pages',
-                    child: Row(
-                      children: [
-                        Icon(Icons.folder_open,
-                            color: ColorConstants.uiIconBlack, size: 20),
-                        SizedBox(width: 12),
-                        Text(
-                          'Saved Pages',
-                          style: TextStyle(
-                              color: ColorConstants.dialogTextBlack87),
-                        ),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'save_page',
-                    child: Row(
-                      children: [
-                        Icon(
-                          state.currentPageName != null
-                              ? Icons.save
-                              : Icons.save_as,
-                          color: ColorConstants.uiIconBlack,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          state.currentPageName != null
-                              ? "Save '${state.currentPageName}'"
-                              : "Save Page",
-                          style: const TextStyle(
-                              color: ColorConstants.dialogTextBlack87),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<CanvasCubit, CanvasState>(
-        builder: (context, state) {
-          return GestureDetector(
-            onTap: () {
-              // Only deselect if we're not in drawing mode
-              if (!state.isDrawingMode) {
-                context.read<CanvasCubit>().deselectText();
-              }
-            },
-            behavior: HitTestBehavior.deferToChild,
-            child: Container(
-              decoration: _buildBackgroundDecoration(state),
-              child: Stack(
-                children: [
-                  // Drawing Canvas
-                  DrawingCanvas(
-                    paths: state.drawPaths,
-                    isDrawingMode: state.isDrawingMode,
-                    currentDrawColor: state.currentDrawColor,
-                    currentStrokeWidth: state.currentStrokeWidth,
-                    onStartDrawing: (offset) {
-                      context.read<CanvasCubit>().startNewDrawPath(offset);
-                    },
-                    onUpdateDrawing: (offset) {
-                      context.read<CanvasCubit>().updateDrawPath(offset);
-                    },
-                    onEndDrawing: () {
-                      // Nothing needed here for now
-                    },
-                    onColorChanged: (color) {
-                      context.read<CanvasCubit>().setDrawColor(color);
-                    },
-                    onStrokeWidthChanged: (width) {
-                      context.read<CanvasCubit>().setStrokeWidth(width);
-                    },
-                    onUndoDrawing: () {
-                      context.read<CanvasCubit>().undoLastDrawing();
-                    },
-                    onClearDrawing: () {
-                      context.read<CanvasCubit>().clearDrawings();
-                    },
-                  ),
-
-                  // Text Items
-                  for (int index = 0; index < state.textItems.length; index++)
-                    Positioned(
-                      left: state.textItems[index].x,
-                      top: state.textItems[index].y,
-                      child: IgnorePointer(
-                        ignoring: state.isDrawingMode,
-                        child: _DraggableText(
-                          key: ValueKey('text_item_$index'),
-                          index: index,
-                          textItem: state.textItems[index],
-                          isSelected: !state.isDrawingMode &&
-                              state.selectedTextItemIndex == index,
-                        ),
-                      ),
-                    ),
-
-                  // Drawing Mode Indicator
-                  if (state.isDrawingMode)
-                    Positioned(
-                      top: 16,
-                      right: 16,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: ColorConstants.getBlackWithValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.brush,
-                                color: state.currentDrawColor, size: 16),
-                            const SizedBox(width: 8),
-                            const Text(
-                              'Drawing Mode',
-                              style: TextStyle(
-                                  color: ColorConstants.dialogWhite,
-                                  fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
               ),
-            ),
-          );
-        },
-      ),
-      extendBody: true,
-      bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
-        builder: (context, state) {
-          return Container(
-            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: ColorConstants.getBlackWithAlpha((0.05 * 255).toInt()),
-                  blurRadius: 10,
-                  offset: const Offset(0, -5),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Visibility(
-                  visible: state.isTrayShown,
-                  child: Container(
-                    color: ColorConstants.dialogWhite,
-                    child: const BackgroundColorTray(),
+              actions: <Widget>[
+                // Background options button
+                IconButton(
+                  tooltip: 'Background options',
+                  icon: const Icon(
+                    Icons.wallpaper,
+                    color: ColorConstants.uiIconBlack,
                   ),
+                  onPressed: () => _showBackgroundOptions(context),
                 ),
-                const FontControls(),
+                // Undo button
+                IconButton(
+                  tooltip: "Undo",
+                  icon: const Icon(Icons.undo, color: ColorConstants.uiIconBlack),
+                  onPressed: () {
+                    final cubit = context.read<CanvasCubit>();
+                    if (cubit.state.history.isNotEmpty) {
+                      cubit.undo();
+                    } else {
+                      CustomSnackbar.showInfo('Nothing to undo');
+                    }
+                  },
+                ),
+                // Redo button
+                IconButton(
+                  tooltip: "Redo",
+                  icon: const Icon(Icons.redo, color: ColorConstants.uiIconBlack),
+                  onPressed: () {
+                    final cubit = context.read<CanvasCubit>();
+                    if (cubit.state.future.isNotEmpty) {
+                      cubit.redo();
+                    } else {
+                      CustomSnackbar.showInfo('Nothing to redo');
+                    }
+                  },
+                ),
+                // More options dropdown menu
+                BlocBuilder<CanvasCubit, CanvasState>(
+                  builder: (context, state) {
+                    return PopupMenuButton<String>(
+                      tooltip: "More options",
+                      icon: const Icon(Icons.more_vert,
+                          color: ColorConstants.uiIconBlack),
+                      color: ColorConstants.uiWhite, // White background for dropdown
+                      onSelected: (value) async {
+                        final cubit = context.read<CanvasCubit>();
+
+                        switch (value) {
+                          case 'new_page':
+                            cubit.createNewPage();
+                            break;
+                          case 'load_pages':
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BlocProvider.value(
+                                  value: context.read<CanvasCubit>(),
+                                  child: const SavedPagesScreen(),
+                                ),
+                              ),
+                            );
+                            break;
+                          case 'save_page':
+                            final wasHandled = await cubit.handleSaveAction();
+                            if (!wasHandled) {
+                              if (!context.mounted) return;
+                              showDialog(
+                                context: context,
+                                builder: (context) => BlocProvider.value(
+                                  value: cubit,
+                                  child: const SavePageDialog(),
+                                ),
+                              );
+                            }
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'new_page',
+                          child: Row(
+                            children: [
+                              Icon(Icons.add,
+                                  color: ColorConstants.uiIconBlack, size: 20),
+                              SizedBox(width: 12),
+                              Text(
+                                'New Page',
+                                style: TextStyle(
+                                    color: ColorConstants.dialogTextBlack87),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'load_pages',
+                          child: Row(
+                            children: [
+                              Icon(Icons.folder_open,
+                                  color: ColorConstants.uiIconBlack, size: 20),
+                              SizedBox(width: 12),
+                              Text(
+                                'Saved Pages',
+                                style: TextStyle(
+                                    color: ColorConstants.dialogTextBlack87),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<String>(
+                          value: 'save_page',
+                          child: Row(
+                            children: [
+                              Icon(
+                                state.currentPageName != null
+                                    ? Icons.save
+                                    : Icons.save_as,
+                                color: ColorConstants.uiIconBlack,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                state.currentPageName != null
+                                    ? "Save '${state.currentPageName}'"
+                                    : "Save Page",
+                                style: const TextStyle(
+                                    color: ColorConstants.dialogTextBlack87),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
-          );
-        },
-      ),
-      floatingActionButton: BlocBuilder<CanvasCubit, CanvasState>(
-        builder: (context, state) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+            body: BlocBuilder<CanvasCubit, CanvasState>(
+              builder: (context, state) {
+                return GestureDetector(
+                  onTap: () {
+                    // Only deselect if we're not in drawing mode
+                    if (!state.isDrawingMode) {
+                      context.read<CanvasCubit>().deselectText();
+                    }
+                  },
+                  behavior: HitTestBehavior.deferToChild,
+                  child: Container(
+                    decoration: _buildBackgroundDecoration(state),
+                    child: Stack(
+                      children: [
+                        // Drawing Canvas
+                        DrawingCanvas(
+                          paths: state.drawPaths,
+                          isDrawingMode: state.isDrawingMode,
+                          currentDrawColor: state.currentDrawColor,
+                          currentStrokeWidth: state.currentStrokeWidth,
+                          onStartDrawing: (offset) {
+                            context.read<CanvasCubit>().startNewDrawPath(offset);
+                          },
+                          onUpdateDrawing: (offset) {
+                            context.read<CanvasCubit>().updateDrawPath(offset);
+                          },
+                          onEndDrawing: () {
+                            // Nothing needed here for now
+                          },
+                          onColorChanged: (color) {
+                            context.read<CanvasCubit>().setDrawColor(color);
+                          },
+                          onStrokeWidthChanged: (width) {
+                            context.read<CanvasCubit>().setStrokeWidth(width);
+                          },
+                          onUndoDrawing: () {
+                            context.read<CanvasCubit>().undoLastDrawing();
+                          },
+                          onClearDrawing: () {
+                            context.read<CanvasCubit>().clearDrawings();
+                          },
+                        ),
+
+                        // Text Items
+                        for (int index = 0; index < state.textItems.length; index++)
+                          Positioned(
+                            left: state.textItems[index].x,
+                            top: state.textItems[index].y,
+                            child: IgnorePointer(
+                              ignoring: state.isDrawingMode,
+                              child: _DraggableText(
+                                key: ValueKey('text_item_$index'),
+                                index: index,
+                                textItem: state.textItems[index],
+                                isSelected: !state.isDrawingMode &&
+                                    state.selectedTextItemIndex == index,
+                              ),
+                            ),
+                          ),
+
+                        // Drawing Mode Indicator
+                        if (state.isDrawingMode)
+                          Positioned(
+                            top: 16,
+                            right: 16,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: ColorConstants.getBlackWithValues(alpha: 0.7),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.brush,
+                                      color: state.currentDrawColor, size: 16),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Drawing Mode',
+                                    style: TextStyle(
+                                        color: ColorConstants.dialogWhite,
+                                        fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
+            extendBody: true,
+            bottomNavigationBar: BlocBuilder<CanvasCubit, CanvasState>(
+              builder: (context, state) {
+                return Container(
+                  margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: ColorConstants.getBlackWithAlpha((0.05 * 255).toInt()),
+                        blurRadius: 10,
+                        offset: const Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Visibility(
+                        visible: state.isTrayShown,
+                        child: Container(
+                          color: ColorConstants.dialogWhite,
+                          child: const BackgroundColorTray(),
+                        ),
+                      ),
+                      const FontControls(),
+                    ],
+                  ),
+                );
+              },
+            ),
+            floatingActionButton: BlocBuilder<CanvasCubit, CanvasState>(
+              builder: (context, state) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
             child: FloatingActionButton(
               backgroundColor: ColorConstants.dialogWhite,
               elevation: 0.5,
@@ -474,6 +582,10 @@ class CanvasScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+            ),
+          ),
+        ),
       ),
     );
   }

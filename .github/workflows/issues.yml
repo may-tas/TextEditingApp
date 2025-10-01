@@ -3,7 +3,7 @@
 #
 # NOTE!
 #
-# Please read the README.md file in this directory that defines what should 
+# Please read the README.md file in this directory that defines what should
 # be placed in this file
 #
 ##############################################################################
@@ -17,9 +17,28 @@ on:
 permissions:
   issues: write
   pull-requests: write
-  
+
 jobs:
-  Opened-issue-label:
+  first-issue-greeting:
+    name: First Issue Greeting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            ## 🎉 Congratulations on opening your first issue!
+
+            Welcome to the TextEditingApp community! We're excited to have you here. This is a great first step in contributing to our project.
+
+            ### Getting Started:
+            - Check out our [Contributing Guidelines](https://github.com/may-tas/TextEditingApp/blob/main/CONTRIBUTING.md)
+            - Read our [README](https://github.com/may-tas/TextEditingApp/blob/main/README.md) to understand the project
+            - Join our community discussions
+
+            Don't hesitate to ask questions - we're here to help! 💪
+
+  opened-issue-label:
     name: Adding Issue Label
     runs-on: ubuntu-latest
     steps:
@@ -32,8 +51,8 @@ jobs:
               repo: context.repo.repo,
               labels: ['unapproved']
             })
-  
-  Issue-Greeting:
+
+  issue-greeting:
     name: Greeting Message to User
     runs-on: ubuntu-latest
     steps:
@@ -44,5 +63,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Thank you for opening this issue! 🚀 Our team will review it soon. Please make sure you've included all relevant details and followed our [Contributing Guidelines](https://github.com/may-tas/TextEditingApp/blob/main/CONTRIBUTING.md). For questions about our project, check out our [README](https://github.com/may-tas/TextEditingApp/blob/main/README.md) and [Code of Conduct](https://github.com/may-tas/TextEditingApp/blob/main/CODE_OF_CONDUCT.md)."
+              body: "## Welcome to Our Project! 👋\n\nThank you for opening this issue! We're thrilled to have you here and would love to hear your thoughts, ideas, and feedback. 🚀\n\n### What happens next:\n- Our team will review your issue soon\n- We'll add appropriate labels and assign reviewers\n- For bugs: Please include steps to reproduce, expected vs actual behavior\n- For features: Share your use case and why this would be valuable\n\n### Quick Links:\n- 📖 [README](https://github.com/may-tas/TextEditingApp/blob/main/README.md) - Project overview and setup\n- 🤝 [Contributing Guidelines](https://github.com/may-tas/TextEditingApp/blob/main/CONTRIBUTING.md) - How to contribute\n- 📋 [Code of Conduct](https://github.com/may-tas/TextEditingApp/blob/main/CODE_OF_CONDUCT.md) - Community standards\n\nYour contributions make this project better! Let's collaborate and build something amazing together. 💡✨"
             })

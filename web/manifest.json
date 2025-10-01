@@ -1,23 +1,52 @@
 {
-    "name": "texterra",
-    "short_name": "texterra",
+    "name": "TextEditingApp - Professional Text Editor",
+    "short_name": "TextEditor",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
+    "background_color": "#ffffff",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "description": "Professional text editing app with drawing capabilities. Create, edit, and save text documents with rich formatting options.",
+    "orientation": "any",
     "prefer_related_applications": false,
+    "scope": ".",
+    "lang": "en-US",
+    "categories": ["productivity", "utilities", "text"],
+    "screenshots": [
+        {
+            "src": "screenshots/screenshot1.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "New Document",
+            "short_name": "New",
+            "description": "Create a new text document",
+            "url": "/?action=new",
+            "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Open Recent",
+            "short_name": "Recent",
+            "description": "Open recently edited documents",
+            "url": "/?action=recent",
+            "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+        }
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "icons/Icon-512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "icons/Icon-maskable-192.png",

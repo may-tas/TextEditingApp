@@ -109,5 +109,146 @@
   </picture>
   <script src="flutter_bootstrap.js" async=""></script>
 
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(registration) {
+            console.log('[ServiceWorker] Registered successfully:', registration.scope);
+
+            // Handle updates
+            registration.addEventListener('updatefound', function() {
+              const newWorker = registration.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', function() {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New content is available, show update prompt
+                    showUpdateNotification();
+                  }
+                });
+              }
+            });
+          })
+          .catch(function(error) {
+            console.log('[ServiceWorker] Registration failed:', error);
+          });
+      });
+    }
+
+    // PWA Install Prompt
+    let deferredPrompt;
+    const installButton = document.createElement('button');
+    installButton.textContent = 'Install App';
+    installButton.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #0175C2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: none;
+    `;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      deferredPrompt = e;
+
+      // Show install button
+      document.body.appendChild(installButton);
+      installButton.style.display = 'block';
+
+      installButton.addEventListener('click', () => {
+        // Hide the install button
+        installButton.style.display = 'none';
+
+        // Show the install prompt
+        deferredPrompt.prompt();
+
+        // Wait for the user to respond to the prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('[PWA] User accepted the install prompt');
+          } else {
+            console.log('[PWA] User dismissed the install prompt');
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+
+    // Hide install button when app is installed
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('[PWA] App was installed');
+      installButton.style.display = 'none';
+    });
+
+    // Update notification
+    function showUpdateNotification() {
+      const updateDiv = document.createElement('div');
+      updateDiv.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: #4CAF50;
+          color: white;
+          padding: 16px 24px;
+          border-radius: 8px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          z-index: 1000;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        ">
+          <div style="margin-bottom: 8px; font-weight: bold;">Update Available!</div>
+          <div style="margin-bottom: 12px;">A new version is ready to install.</div>
+          <button onclick="window.location.reload()" style="
+            background: white;
+            color: #4CAF50;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+          ">Update Now</button>
+          <button onclick="this.parentElement.parentElement.remove()" style="
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 8px;
+          ">Later</button>
+        </div>
+      `;
+      document.body.appendChild(updateDiv);
+    }
+
+    // Network status monitoring
+    function updateNetworkStatus() {
+      const isOnline = navigator.onLine;
+      console.log('[Network] Status changed:', isOnline ? 'online' : 'offline');
+
+      // You can dispatch custom events to Flutter if needed
+      if (window.flutter_inappwebview) {
+        window.flutter_inappwebview.callHandler('networkStatusChanged', isOnline);
+      }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    // Initial network status
+    updateNetworkStatus();
+  </script>
+
 
 </body></html>

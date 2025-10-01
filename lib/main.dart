@@ -3,8 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/canvas_cubit.dart';
 import 'ui/screens/splash_screen.dart';
 import 'utils/custom_snackbar.dart';
+import 'utils/web_utils.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize web utilities if running on web
+  if (WebUtils.isWeb) {
+    await WebUtils().initialize();
+  }
+
   runApp(const MyApp());
 }
 

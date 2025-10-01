@@ -42,6 +42,10 @@ dependencies:
   image_picker: ^1.2.0
   path_provider: ^2.1.5
   path: ^1.9.1
+  universal_html: ^2.2.4
+  file_picker: ^8.1.2
+  url_launcher: ^6.3.0
+  connectivity_plus: ^6.0.5
 
 dev_dependencies:
   flutter_test:
