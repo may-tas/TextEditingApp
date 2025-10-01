@@ -791,18 +791,6 @@ class CanvasCubit extends Cubit<CanvasState> {
           ..strokeWidth = strokeWidth * 1.5
           ..filterQuality = FilterQuality.medium;
         break;
-      case BrushType.highlighter:
-        paint
-          ..color = color.withValues(alpha: 0.3)
-          ..strokeWidth = strokeWidth * 2.0
-          ..blendMode = BlendMode.multiply;
-        break;
-      case BrushType.pencil:
-        paint
-          ..color = color
-          ..strokeWidth = strokeWidth * 0.8
-          ..filterQuality = FilterQuality.low;
-        break;
     }
     return paint;
   }

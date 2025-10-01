@@ -236,6 +236,7 @@ class CanvasScreen extends StatelessWidget {
                     isDrawingMode: state.isDrawingMode,
                     currentDrawColor: state.currentDrawColor,
                     currentStrokeWidth: state.currentStrokeWidth,
+                    currentBrushType: state.currentBrushType,
                     onStartDrawing: (offset) {
                       context.read<CanvasCubit>().startNewDrawPath(offset);
                     },
@@ -250,6 +251,9 @@ class CanvasScreen extends StatelessWidget {
                     },
                     onStrokeWidthChanged: (width) {
                       context.read<CanvasCubit>().setStrokeWidth(width);
+                    },
+                    onBrushTypeChanged: (brushType) {
+                      context.read<CanvasCubit>().setBrushType(brushType);
                     },
                     onUndoDrawing: () {
                       context.read<CanvasCubit>().undoLastDrawing();

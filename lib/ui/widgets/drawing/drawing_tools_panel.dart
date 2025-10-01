@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import '../../../constants/color_constants.dart';
+import '../../../models/draw_model.dart';
 
 class DrawingToolsPanel extends StatelessWidget {
   final Color currentColor;
   final double currentStrokeWidth;
+  final BrushType currentBrushType;
   final Function(Color) onColorChanged;
   final Function(double) onStrokeWidthChanged;
+  final Function(BrushType) onBrushTypeChanged;
 
   const DrawingToolsPanel({
     super.key,
     required this.currentColor,
     required this.currentStrokeWidth,
+    required this.currentBrushType,
     required this.onColorChanged,
     required this.onStrokeWidthChanged,
+    required this.onBrushTypeChanged,
   });
+
+  String _getBrushTypeName(BrushType brushType) {
+    switch (brushType) {
+      case BrushType.brush:
+        return 'Brush';
+      case BrushType.marker:
+        return 'Marker';
+    }
+  }
+
+  IconData _getBrushTypeIcon(BrushType brushType) {
+    switch (brushType) {
+      case BrushType.brush:
+        return Icons.brush;
+      case BrushType.marker:
+        return Icons.edit;
+    }
+  }
 
   void _showColorPicker(BuildContext context) {
     showDialog(
@@ -107,6 +130,79 @@ class DrawingToolsPanel extends StatelessWidget {
             ),
           ),
 
+          // Brush Type section
+          Text(
+            'Brush Type',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 2),
+
+          // Brush type grid
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 6,
+              mainAxisSpacing: 6,
+              childAspectRatio: 1.2,
+            ),
+            itemCount: 2, // Only brush and marker
+            itemBuilder: (context, index) {
+              final availableBrushTypes = [BrushType.brush, BrushType.marker];
+              final brushType = availableBrushTypes[index];
+              final isSelected = currentBrushType == brushType;
+
+              return InkWell(
+                onTap: () => onBrushTypeChanged(brushType),
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? ColorConstants.dialogButtonBlue.withValues(alpha: 0.1)
+                        : ColorConstants.gray50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isSelected
+                          ? ColorConstants.dialogButtonBlue
+                          : ColorConstants.gray200,
+                      width: isSelected ? 2 : 1,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _getBrushTypeIcon(brushType),
+                        size: 18,
+                        color: isSelected
+                            ? ColorConstants.dialogButtonBlue
+                            : ColorConstants.gray600,
+                      ),
+                      Text(
+                        _getBrushTypeName(brushType),
+                        style: TextStyle(
+                          fontSize: 8,
+                          fontWeight:
+                              isSelected ? FontWeight.w600 : FontWeight.w400,
+                          color: isSelected
+                              ? ColorConstants.dialogButtonBlue
+                              : ColorConstants.gray600,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+
           // Color picker section
           Text(
             'Color',
@@ -115,7 +211,7 @@ class DrawingToolsPanel extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 2),
 
           // Color display box with color code
           GestureDetector(
@@ -211,8 +307,6 @@ class DrawingToolsPanel extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
-
           // Brush size section
           Text(
             'Size',
@@ -221,7 +315,6 @@ class DrawingToolsPanel extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          const SizedBox(height: 8),
 
           // Size preview circle
           Container(
@@ -253,8 +346,6 @@ class DrawingToolsPanel extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 8),
-
           // Size slider
           SizedBox(
             width: 100,
@@ -279,8 +370,6 @@ class DrawingToolsPanel extends StatelessWidget {
               ),
             ),
           ),
-
-          const SizedBox(height: 4),
 
           // Size value display
           Text(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-enum BrushType { brush, marker, highlighter, pencil }
+enum BrushType {
+  brush,
+  marker,
+}
 
 class DrawingPoint {
   final Offset offset;
