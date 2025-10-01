@@ -246,25 +246,26 @@ class _SavePageDialogState extends State<SavePageDialog> {
                   ColorConstants.dialogPurple,
                   ColorConstants.dialogButtonBlue,
                 ].map((color) => GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedColor = color;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _selectedColor == color ? ColorConstants.dialogTextBlack : ColorConstants.dialogGray,
-                            width: 2,
-                          ),
+                    onTap: () {
+                      setState(() {
+                        _selectedColor = color;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: _selectedColor == color ? ColorConstants.dialogTextBlack : ColorConstants.dialogGray,
+                          width: 2,
                         ),
                       ),
-                    ))
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
