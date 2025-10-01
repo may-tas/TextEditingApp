@@ -91,9 +91,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
 
     try {
       if (mounted) {
-        await context
-            .read<CanvasCubit>()
-            .savePage(pageName, label: label, color: color.toARGB32());
+        await context.read<CanvasCubit>().savePage(pageName, label: label, color: color.toARGB32());
       }
 
       if (mounted) {
@@ -134,8 +132,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                     text: '"$pageName"',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const TextSpan(
-                      text: ' already exists. Do you want to overwrite it?'),
+                  const TextSpan(text: ' already exists. Do you want to overwrite it?'),
                 ],
               ),
             ),
@@ -203,8 +200,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                      color: ColorConstants.dialogButtonBlue, width: 2),
+                  borderSide: const BorderSide(color: ColorConstants.dialogButtonBlue, width: 2),
                 ),
                 prefixIcon: const Icon(Icons.description),
                 counterText: '', // Hide character counter
@@ -239,7 +235,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 16),
-            Row(
+            Wrap(
               children: [
                 const Text('Choose a color: ', style: TextStyle(fontSize: 14)),
                 ...[
@@ -263,9 +259,7 @@ class _SavePageDialogState extends State<SavePageDialog> {
                           color: color,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: _selectedColor == color
-                                ? ColorConstants.dialogTextBlack
-                                : ColorConstants.dialogGray,
+                            color: _selectedColor == color ? ColorConstants.dialogTextBlack : ColorConstants.dialogGray,
                             width: 2,
                           ),
                         ),
@@ -273,16 +267,6 @@ class _SavePageDialogState extends State<SavePageDialog> {
                     ))
               ],
             ),
-            if (_existingPages.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                'Existing pages: ${_existingPages.length}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: ColorConstants.gray600,
-                ),
-              ),
-            ],
           ],
         ),
       ),
