@@ -183,7 +183,6 @@ class DrawingToolsPanel extends StatelessWidget {
                             ? ColorConstants.dialogButtonBlue
                             : ColorConstants.gray600,
                       ),
-                      // const SizedBox(height: 4),
                       Text(
                         _getBrushTypeName(brushType),
                         style: TextStyle(
@@ -308,8 +307,6 @@ class DrawingToolsPanel extends StatelessWidget {
             ),
           ),
 
-          // const SizedBox(height: 16),
-
           // Brush size section
           Text(
             'Size',
@@ -318,7 +315,6 @@ class DrawingToolsPanel extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-          // const SizedBox(height: 8),
 
           // Size preview circle
           Container(
@@ -350,8 +346,6 @@ class DrawingToolsPanel extends StatelessWidget {
             ),
           ),
 
-          // const SizedBox(height: 8),
-
           // Size slider
           SizedBox(
             width: 100,
@@ -376,8 +370,6 @@ class DrawingToolsPanel extends StatelessWidget {
               ),
             ),
           ),
-
-          // const SizedBox(height: 4),
 
           // Size value display
           Text(
