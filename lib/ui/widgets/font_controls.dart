@@ -38,6 +38,7 @@ class FontControls extends StatelessWidget {
             _buildAlignmentControls(context),
             const SizedBox(width: 25),
             _buildHighlightControls(context),
+            const SizedBox(width: 25),
             const ShadowControls(),
             const SizedBox(width: 25),
             _buildFontFamilyControls(context),
