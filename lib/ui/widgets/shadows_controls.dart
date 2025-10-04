@@ -330,7 +330,6 @@ class ShadowControls extends StatelessWidget {
                 ? state.textItems[state.selectedTextItemIndex!]
                 : null;
 
-            final shadowColor = textItem?.shadowColor ?? currentColor;
             final shadowBlur = textItem?.shadowBlurRadius ?? currentBlur;
             final shadowOffset = textItem?.shadowOffset ?? currentOffset;
 
@@ -358,50 +357,6 @@ class ShadowControls extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.close),
                         onPressed: () => Navigator.pop(sheetContext),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Shadow color picker
-                  const Text('Shadow Color',
-                      style: TextStyle(fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: shadowColor,
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(color: ColorConstants.gray300, width: 2),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final pickedColor = await showColorPickerDialog(
-                              sheetContext,
-                              shadowColor,
-                              title: const Text('Pick shadow color'),
-                              showColorCode: true,
-                              showRecentColors: false,
-                            );
-                            if (builderContext.mounted) {
-                              builderContext
-                                  .read<CanvasCubit>()
-                                  .changeShadowColor(selectedIndex, pickedColor);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorConstants.gray800,
-                            foregroundColor: ColorConstants.uiWhite,
-                          ),
-                          child: const Text('Choose Color'),
-                        ),
                       ),
                     ],
                   ),
