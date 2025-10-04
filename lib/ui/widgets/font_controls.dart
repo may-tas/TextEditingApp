@@ -7,6 +7,7 @@ import '../../constants/font_family_list.dart';
 import '../../constants/color_constants.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
+import '../widgets/shadows_controls.dart';
 
 class FontControls extends StatelessWidget {
   const FontControls({super.key});
@@ -36,7 +37,9 @@ class FontControls extends StatelessWidget {
             const SizedBox(width: 25),
             _buildAlignmentControls(context),
             const SizedBox(width: 25),
-            _buildHighlightControls(context), 
+            _buildHighlightControls(context),
+            const SizedBox(width: 25),
+            const ShadowControls(),
             const SizedBox(width: 25),
             _buildFontFamilyControls(context),
             const SizedBox(width: 25),
@@ -75,8 +78,7 @@ class FontControls extends StatelessWidget {
               ),
               child: _buildStyleButton(
                 icon: Icons.copy,
-                isSelected:
-                    false, // This button is never in a "selected" state.
+                isSelected: false,
                 onPressed: isDisabled
                     ? null
                     : () {
@@ -114,7 +116,8 @@ class FontControls extends StatelessWidget {
             selectedIndex == null || selectedIndex >= state.textItems.length;
         final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
         final isHighlighted = textItem?.isHighlighted ?? false;
-        final currentHighlightColor = textItem?.highlightColor ?? ColorConstants.highlightYellow;
+        final currentHighlightColor =
+            textItem?.highlightColor ?? ColorConstants.highlightYellow;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
@@ -324,98 +327,95 @@ class FontControls extends StatelessWidget {
       },
     );
   }
-  
-Widget _buildAlignmentControls(BuildContext context) {
-  return BlocBuilder<CanvasCubit, CanvasState>(
-    buildWhen: (previous, current) {
-      // Only rebuild if selection changed or textAlign changed
-      final prevIndex = previous.selectedTextItemIndex;
-      final currIndex = current.selectedTextItemIndex;
 
-      if (prevIndex != currIndex) return true;
+  Widget _buildAlignmentControls(BuildContext context) {
+    return BlocBuilder<CanvasCubit, CanvasState>(
+      buildWhen: (previous, current) {
+        // Only rebuild if selection changed or textAlign changed
+        final prevIndex = previous.selectedTextItemIndex;
+        final currIndex = current.selectedTextItemIndex;
 
-      if (currIndex != null &&
-          currIndex < previous.textItems.length &&
-          currIndex < current.textItems.length) {
-        final prevItem = previous.textItems[currIndex];
-        final currItem = current.textItems[currIndex];
-        return prevItem.textAlign != currItem.textAlign;
-      }
+        if (prevIndex != currIndex) return true;
 
-      return false;
-    },
-    builder: (context, state) {
-      final selectedIndex = state.selectedTextItemIndex;
-      final isDisabled =
-          selectedIndex == null || selectedIndex >= state.textItems.length;
+        if (currIndex != null &&
+            currIndex < previous.textItems.length &&
+            currIndex < current.textItems.length) {
+          final prevItem = previous.textItems[currIndex];
+          final currItem = current.textItems[currIndex];
+          return prevItem.textAlign != currItem.textAlign;
+        }
 
-      final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
-      final currentAlign = textItem?.textAlign ?? TextAlign.left;
+        return false;
+      },
+      builder: (context, state) {
+        final selectedIndex = state.selectedTextItemIndex;
+        final isDisabled =
+            selectedIndex == null || selectedIndex >= state.textItems.length;
 
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            'Align',
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: ColorConstants.gray100,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: ColorConstants.gray300),
+        final textItem = !isDisabled ? state.textItems[selectedIndex] : null;
+        final currentAlign = textItem?.textAlign ?? TextAlign.left;
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Align',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
-            child: Row(
-              children: [
-                _buildStyleButton(
-                  icon: Icons.format_align_left,
-                  isSelected: currentAlign == TextAlign.left,
-                  onPressed: isDisabled
-                      ? null
-                      : () => context
-                          .read<CanvasCubit>()
-                          .changeTextAlignment(selectedIndex, TextAlign.left),
-                ),
-                const SizedBox(width: 8),
-                _buildStyleButton(
-                  icon: Icons.format_align_center,
-                  isSelected: currentAlign == TextAlign.center,
-                  onPressed: isDisabled
-                      ? null
-                      : () => context
-                          .read<CanvasCubit>()
-                          .changeTextAlignment(selectedIndex, TextAlign.center),
-                ),
-                const SizedBox(width: 8),
-                _buildStyleButton(
-                  icon: Icons.format_align_right,
-                  isSelected: currentAlign == TextAlign.right,
-                  onPressed: isDisabled
-                      ? null
-                      : () => context
-                          .read<CanvasCubit>()
-                          .changeTextAlignment(selectedIndex, TextAlign.right),
-                ),
-                const SizedBox(width: 8),
-                _buildStyleButton(
-                  icon: Icons.format_align_justify,
-                  isSelected: currentAlign == TextAlign.justify,
-                  onPressed: isDisabled
-                      ? null
-                      : () => context
-                          .read<CanvasCubit>()
-                          .changeTextAlignment(selectedIndex, TextAlign.justify),
-                ),
-              ],
+            const SizedBox(width: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                color: ColorConstants.gray100,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: ColorConstants.gray300),
+              ),
+              child: Row(
+                children: [
+                  _buildStyleButton(
+                    icon: Icons.format_align_left,
+                    isSelected: currentAlign == TextAlign.left,
+                    onPressed: isDisabled
+                        ? null
+                        : () => context
+                            .read<CanvasCubit>()
+                            .changeTextAlignment(selectedIndex, TextAlign.left),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
+                    icon: Icons.format_align_center,
+                    isSelected: currentAlign == TextAlign.center,
+                    onPressed: isDisabled
+                        ? null
+                        : () => context.read<CanvasCubit>().changeTextAlignment(
+                            selectedIndex, TextAlign.center),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
+                    icon: Icons.format_align_right,
+                    isSelected: currentAlign == TextAlign.right,
+                    onPressed: isDisabled
+                        ? null
+                        : () => context.read<CanvasCubit>().changeTextAlignment(
+                            selectedIndex, TextAlign.right),
+                  ),
+                  const SizedBox(width: 8),
+                  _buildStyleButton(
+                    icon: Icons.format_align_justify,
+                    isSelected: currentAlign == TextAlign.justify,
+                    onPressed: isDisabled
+                        ? null
+                        : () => context.read<CanvasCubit>().changeTextAlignment(
+                            selectedIndex, TextAlign.justify),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      );
-    },
-  );
-}
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildFontFamilyControls(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
@@ -556,7 +556,8 @@ Widget _buildAlignmentControls(BuildContext context) {
                   }),
                   //More Colors Button ^_^
                   IconButton(
-                    icon: const Icon(Icons.more_horiz, color: ColorConstants.gray600),
+                    icon: const Icon(Icons.more_horiz,
+                        color: ColorConstants.gray600),
                     tooltip: 'More colors',
                     onPressed: isDisabled
                         ? null
@@ -731,7 +732,7 @@ Widget _buildAlignmentControls(BuildContext context) {
   }) {
     return Material(
       color: isSelected
-          ? ColorConstants.uiBlueAccent.withAlpha((0.2 * 255).toInt())
+          ? ColorConstants.uiBlueAccent.withValues(alpha: 0.2)
           : ColorConstants.transparent,
       borderRadius: BorderRadius.circular(4),
       child: InkWell(
@@ -742,7 +743,9 @@ Widget _buildAlignmentControls(BuildContext context) {
           child: Icon(
             icon,
             size: 20,
-            color: isSelected ? ColorConstants.uiBlueAccent : ColorConstants.gray700,
+            color: isSelected
+                ? ColorConstants.uiBlueAccent
+                : ColorConstants.gray700,
           ),
         ),
       ),
@@ -823,7 +826,8 @@ class _FontPickerContentState extends State<_FontPickerContent> {
                   style: GoogleFonts.getFont(font, fontSize: 16),
                 ),
                 trailing: isSelected
-                    ? const Icon(Icons.check, color: ColorConstants.dialogButtonBlue)
+                    ? const Icon(Icons.check,
+                        color: ColorConstants.dialogButtonBlue)
                     : null,
                 onTap: () {
                   context
