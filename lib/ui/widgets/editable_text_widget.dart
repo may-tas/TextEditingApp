@@ -39,29 +39,39 @@ class EditableTextWidget extends StatelessWidget {
           context.read<CanvasCubit>().editText(index, result);
         }
       },
-      // 4. onDoubleTap handler is now gone
-      child:SizedBox(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         child: Text(
-        textItem.text,
-        textAlign: textItem.textAlign,
-        style: GoogleFonts.getFont(
-          textItem.fontFamily,
-          fontStyle: textItem.fontStyle,
-          fontWeight: textItem.fontWeight,
-          fontSize: textItem.fontSize,
-          decoration: textItem.isUnderlined
-              ? TextDecoration.underline
-              : TextDecoration.none,
-          color: textItem.color,
-          backgroundColor:
-              textItem.isHighlighted && textItem.highlightColor != null
-                  ? textItem.highlightColor
-                  : (isSelected
-                      ? ColorConstants.highlightYellow.withAlpha((0.3 * 255).toInt())
-                      : null),
+          textItem.text,
+          textAlign: textItem.textAlign,
+          style: GoogleFonts.getFont(
+            textItem.fontFamily,
+            fontStyle: textItem.fontStyle,
+            fontWeight: textItem.fontWeight,
+            fontSize: textItem.fontSize,
+            decoration: textItem.isUnderlined
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            color: textItem.color,
+            backgroundColor:
+                textItem.isHighlighted && textItem.highlightColor != null
+                    ? textItem.highlightColor
+                    : (isSelected
+                        ? ColorConstants.highlightYellow
+                            .withValues(alpha: 0.3)
+                        : null),
+            shadows: textItem.hasShadow
+                ? [
+                    Shadow(
+                      color: textItem.shadowColor,
+                      offset: textItem.shadowOffset,
+                      blurRadius: textItem.shadowBlurRadius,
+                    ),
+                  ]
+                : null,
+          ),
         ),
-      ),)
+      ),
     );
   }
 }
@@ -108,8 +118,8 @@ class EditTextDialog extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide:
-                        const BorderSide(color: ColorConstants.dialogPurple, width: 2),
+                    borderSide: const BorderSide(
+                        color: ColorConstants.dialogPurple, width: 2),
                   ),
                 ),
               ),
@@ -120,7 +130,7 @@ class EditTextDialog extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context, '_delete_'),
-                  child: Text(
+                  child: const Text(
                     'Remove',
                     style: TextStyle(color: ColorConstants.gray600),
                   ),
@@ -137,7 +147,8 @@ class EditTextDialog extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorConstants.dialogPurple.withAlpha((0.2 * 255).toInt()),
+                    backgroundColor:
+                        ColorConstants.dialogPurple.withValues(alpha: 0.2),
                     foregroundColor: ColorConstants.dialogPurple,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(
