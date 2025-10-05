@@ -257,14 +257,21 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/preetidas60">
+                    <img src="https://avatars.githubusercontent.com/u/112088836?v=4" width="100;" alt="preetidas60"/>
+                    <br />
+                    <sub><b>Preeti Das</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
                 <a href="https://github.com/sandy4242">
                     <img src="https://avatars.githubusercontent.com/u/152861071?v=4" width="100;" alt="sandy4242"/>
                     <br />
                     <sub><b>Sandeep Sarkar</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/Atomic-Shadow7002">
                     <img src="https://avatars.githubusercontent.com/u/191123414?v=4" width="100;" alt="Atomic-Shadow7002"/>
@@ -277,13 +284,6 @@ Special thanks to:
                     <img src="https://avatars.githubusercontent.com/u/150349344?v=4" width="100;" alt="Elwin-p"/>
                     <br />
                     <sub><b>Elwin</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/preetidas60">
-                    <img src="https://avatars.githubusercontent.com/u/112088836?v=4" width="100;" alt="preetidas60"/>
-                    <br />
-                    <sub><b>Preeti Das</b></sub>
                 </a>
             </td>
             <td align="center">
