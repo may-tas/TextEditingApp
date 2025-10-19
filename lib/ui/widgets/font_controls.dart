@@ -1,4 +1,5 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,14 +10,66 @@ import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
 import '../widgets/shadows_controls.dart';
 
-class FontControls extends StatelessWidget {
+class FontControls extends StatefulWidget {
   const FontControls({super.key});
 
   @override
+  State<FontControls> createState() => _FontControlsState();
+}
+
+class _FontControlsState extends State<FontControls> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showLeftArrow = false;
+  bool _showRightArrow = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updateArrows);
+    // Check initial state after frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateArrows());
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateArrows);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateArrows() {
+    if (!_scrollController.hasClients) return;
+
+    setState(() {
+      _showLeftArrow = _scrollController.offset > 10;
+      _showRightArrow = _scrollController.offset <
+          _scrollController.position.maxScrollExtent - 10;
+    });
+  }
+
+  void _scrollLeft() {
+    _scrollController.animateTo(
+      _scrollController.offset - 200,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _scrollRight() {
+    _scrollController.animateTo(
+      _scrollController.offset + 200,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Adjust height based on platform
+    final controlsHeight = kIsWeb ? 90.0 : 80.0;
+
     return Container(
-      height: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      height: controlsHeight,
       decoration: BoxDecoration(
         color: ColorConstants.uiWhite,
         boxShadow: [
@@ -27,29 +80,122 @@ class FontControls extends StatelessWidget {
           ),
         ],
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _buildFontSizeWheel(context),
-            const SizedBox(width: 25),
-            _buildFontStyleControls(context),
-            const SizedBox(width: 25),
-            _buildAlignmentControls(context),
-            const SizedBox(width: 25),
-            _buildHighlightControls(context),
-            const SizedBox(width: 25),
-            const ShadowControls(),
-            const SizedBox(width: 25),
-            _buildFontFamilyControls(context),
-            const SizedBox(width: 25),
-            _buildColorControls(context),
-            const SizedBox(width: 25), // Add spacing for the new button
-            _buildCopyButton(context),
-            const SizedBox(width: 25),
-            _buildClearFormatButton(context), // Call your new function here
-          ],
-        ),
+      child: Stack(
+        children: [
+          // Main scrollable content
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal:
+                  kIsWeb ? 48.0 : 16.0, // Extra padding for arrows on web
+              vertical: 8.0,
+            ),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildFontSizeWheel(context),
+                  const SizedBox(width: 25),
+                  _buildFontStyleControls(context),
+                  const SizedBox(width: 25),
+                  _buildAlignmentControls(context),
+                  const SizedBox(width: 25),
+                  _buildHighlightControls(context),
+                  const SizedBox(width: 25),
+                  const ShadowControls(),
+                  const SizedBox(width: 25),
+                  _buildFontFamilyControls(context),
+                  const SizedBox(width: 25),
+                  _buildColorControls(context),
+                  const SizedBox(width: 25),
+                  _buildCopyButton(context),
+                  const SizedBox(width: 25),
+                  _buildClearFormatButton(context),
+                  const SizedBox(width: 16), // End padding
+                ],
+              ),
+            ),
+          ),
+
+          // Left scroll arrow (web only)
+          if (kIsWeb && _showLeftArrow)
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 40,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      ColorConstants.uiWhite,
+                      ColorConstants.uiWhite.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: IconButton(
+                    icon: const Icon(Icons.chevron_left, size: 28),
+                    color: ColorConstants.gray700,
+                    onPressed: _scrollLeft,
+                    tooltip: 'Scroll left',
+                  ),
+                ),
+              ),
+            ),
+
+          // Right scroll arrow (web only)
+          if (kIsWeb && _showRightArrow)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 40,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [
+                      ColorConstants.uiWhite,
+                      ColorConstants.uiWhite.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: IconButton(
+                    icon: const Icon(Icons.chevron_right, size: 28),
+                    color: ColorConstants.gray700,
+                    onPressed: _scrollRight,
+                    tooltip: 'Scroll right',
+                  ),
+                ),
+              ),
+            ),
+
+          if (!kIsWeb && _showRightArrow)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(
+                width: 20,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [
+                      ColorConstants.uiWhite.withValues(alpha: 0.8),
+                      ColorConstants.uiWhite.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -195,7 +341,7 @@ class FontControls extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Restore Default',
+            const Text('Reset',
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             const SizedBox(width: 12),
             Container(
@@ -204,11 +350,9 @@ class FontControls extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: ColorConstants.gray300),
               ),
-              // re-using Button-style for consistent UI
               child: _buildStyleButton(
                 icon: Icons.layers_clear,
-                isSelected:
-                    false, // This button is never in a "selected" state.
+                isSelected: false,
                 onPressed: isDisabled
                     ? null
                     : () {
@@ -331,7 +475,6 @@ class FontControls extends StatelessWidget {
   Widget _buildAlignmentControls(BuildContext context) {
     return BlocBuilder<CanvasCubit, CanvasState>(
       buildWhen: (previous, current) {
-        // Only rebuild if selection changed or textAlign changed
         final prevIndex = previous.selectedTextItemIndex;
         final currIndex = current.selectedTextItemIndex;
 
@@ -450,6 +593,7 @@ class FontControls extends StatelessWidget {
                   ? null
                   : () =>
                       _showFontPickerModal(context, selectedIndex, currentFont),
+              icon: const Icon(Icons.font_download, size: 18),
               label: Text(
                 currentFont,
                 style: GoogleFonts.getFont(currentFont, fontSize: 14),
@@ -458,6 +602,8 @@ class FontControls extends StatelessWidget {
                 backgroundColor: ColorConstants.gray100,
                 foregroundColor: ColorConstants.gray800,
                 elevation: 0,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: const BorderSide(color: ColorConstants.gray300),
@@ -479,20 +625,16 @@ class FontControls extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return DraggableScrollableSheet(
-              expand: false,
-              initialChildSize: 0.8,
-              maxChildSize: 0.95,
-              minChildSize: 0.5,
-              builder: (context, scrollController) {
-                return _FontPickerContent(
-                  currentFont: currentFont,
-                  selectedIndex: selectedIndex,
-                  scrollController: scrollController,
-                );
-              },
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.8,
+          maxChildSize: 0.95,
+          minChildSize: 0.5,
+          builder: (context, scrollController) {
+            return _FontPickerContent(
+              currentFont: currentFont,
+              selectedIndex: selectedIndex,
+              scrollController: scrollController,
             );
           },
         );
@@ -514,7 +656,7 @@ class FontControls extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Text Color',
+            const Text('Color',
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             const SizedBox(width: 12),
             Container(
@@ -554,7 +696,6 @@ class FontControls extends StatelessWidget {
                       ),
                     );
                   }),
-                  //More Colors Button ^_^
                   IconButton(
                     icon: const Icon(Icons.more_horiz,
                         color: ColorConstants.gray600),

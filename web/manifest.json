@@ -1,23 +1,41 @@
 {
-    "name": "texterra",
-    "short_name": "texterra",
+    "name": "Texterra - Text & Drawing Editor",
+    "short_name": "Texterra",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FFFFFF",
+    "theme_color": "#6366F1",
+    "description": "A powerful text and drawing editor with rich formatting, background customization, and cloud save capabilities. Create, edit, and save your creative work seamlessly.",
+    "orientation": "any",
+    "scope": "/",
     "prefer_related_applications": false,
+    "categories": ["productivity", "graphics", "utilities"],
+    "screenshots": [
+        {
+            "src": "icons/screenshot-wide.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "icons/screenshot-narrow.png",
+            "sizes": "720x1280",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ],
     "icons": [
         {
             "src": "icons/Icon-192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "icons/Icon-512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "icons/Icon-maskable-192.png",
@@ -31,5 +49,47 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ]
+    ],
+    "shortcuts": [
+        {
+            "name": "New Page",
+            "short_name": "New",
+            "description": "Create a new blank page",
+            "url": "/?action=new",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Saved Pages",
+            "short_name": "Pages",
+            "description": "View your saved pages",
+            "url": "/?action=saved",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "share_target": {
+        "action": "/share",
+        "method": "POST",
+        "enctype": "multipart/form-data",
+        "params": {
+            "title": "title",
+            "text": "text",
+            "url": "url",
+            "files": [
+                {
+                    "name": "image",
+                    "accept": ["image/*"]
+                }
+            ]
+        }
+    }
 }

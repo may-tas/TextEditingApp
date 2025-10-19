@@ -1,49 +1,62 @@
-<!DOCTYPE html><html><head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
+<!DOCTYPE html>
+<html>
+<head>
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Texterra - A powerful text and drawing editor with rich formatting, background customization, and cloud save capabilities.">
+  <meta name="keywords" content="text editor, drawing app, note taking, creative writing, canvas editor">
+  <meta name="author" content="Texterra">
+
+  <!-- Enhanced viewport for better mobile experience -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" name="viewport">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="texterra">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Texterra">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png">
 
-  <title>texterra</title>
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json">
-  
-  
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-  
-  
+
+  <!-- Theme color for browser UI -->
+  <meta name="theme-color" content="#6366F1">
+  <meta name="msapplication-TileColor" content="#6366F1">
+
+  <!-- Open Graph tags for social sharing -->
+  <meta property="og:title" content="Texterra - Text & Drawing Editor">
+  <meta property="og:description" content="Create, edit, and save your creative work with powerful formatting and drawing tools.">
+  <meta property="og:image" content="icons/Icon-512.png">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Texterra - Text & Drawing Editor">
+  <meta name="twitter:description" content="Create, edit, and save your creative work with powerful formatting and drawing tools.">
+  <meta name="twitter:image" content="icons/Icon-512.png">
+
+  <title>Texterra - Text & Drawing Editor</title>
+
   <style id="splash-screen-style">
     html {
-      height: 100%
+      height: 100%;
+      /* Prevent pull-to-refresh on mobile browsers */
+      overscroll-behavior-y: contain;
     }
 
     body {
       margin: 0;
       min-height: 100%;
       background-color: #ffffff;
-          background-size: 100% 100%;
+      background-size: 100% 100%;
+      /* Improve text rendering */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .center {
@@ -56,19 +69,22 @@
     }
 
     .contain {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
     }
 
     .stretch {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .cover {
-      display:block;
-      width:100%; height:100%;
+      display: block;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
 
@@ -91,23 +107,179 @@
       bottom: 0;
       right: 0;
     }
+
+    /* Loading spinner */
+    .loader {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #6366F1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Install prompt banner */
+    .install-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #6366F1;
+      color: white;
+      padding: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+    }
+
+    .install-banner.show {
+      display: flex;
+    }
+
+    .install-banner button {
+      background: white;
+      color: #6366F1;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .install-banner button:hover {
+      background: #f0f0f0;
+    }
+
+    /* Offline indicator */
+    .offline-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f59e0b;
+      color: white;
+      padding: 8px;
+      text-align: center;
+      display: none;
+      z-index: 9999;
+      font-size: 14px;
+    }
+
+    .offline-indicator.show {
+      display: block;
+    }
   </style>
+
   <script id="splash-screen-script">
     function removeSplashFromWeb() {
-      document.getElementById("splash")?.remove();
-      document.getElementById("splash-branding")?.remove();
+      const splash = document.getElementById("splash");
+      const branding = document.getElementById("splash-branding");
+      if (splash) splash.remove();
+      if (branding) branding.remove();
       document.body.style.background = "transparent";
+    }
+
+    // PWA Install Prompt
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      
+      // Show install banner after a delay
+      setTimeout(() => {
+        const banner = document.getElementById('install-banner');
+        if (banner) banner.classList.add('show');
+      }, 3000);
+    });
+
+    function installPWA() {
+      const banner = document.getElementById('install-banner');
+      if (banner) banner.classList.remove('show');
+      
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('PWA installed');
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    function dismissInstallBanner() {
+      const banner = document.getElementById('install-banner');
+      if (banner) banner.classList.remove('show');
+      localStorage.setItem('installBannerDismissed', 'true');
+    }
+
+    // Online/Offline detection
+    window.addEventListener('online', () => {
+      const indicator = document.getElementById('offline-indicator');
+      if (indicator) indicator.classList.remove('show');
+    });
+
+    window.addEventListener('offline', () => {
+      const indicator = document.getElementById('offline-indicator');
+      if (indicator) indicator.classList.add('show');
+    });
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('flutter_service_worker.js')
+          .then((registration) => {
+            console.log('ServiceWorker registered:', registration);
+          })
+          .catch((error) => {
+            console.log('ServiceWorker registration failed:', error);
+          });
+      });
     }
   </script>
 </head>
 
 <body>
+  <!-- Offline Indicator -->
+  <div id="offline-indicator" class="offline-indicator">
+    📡 You're offline. Changes will sync when you reconnect.
+  </div>
+
+  <!-- Install Banner -->
+  <div id="install-banner" class="install-banner">
+    <div>
+      <strong>Install Texterra</strong>
+      <p style="margin: 4px 0 0 0; font-size: 14px;">Get quick access from your home screen</p>
+    </div>
+    <div>
+      <button onclick="installPWA()" style="margin-right: 8px;">Install</button>
+      <button onclick="dismissInstallBanner()" style="background: transparent; color: white; border: 1px solid white;">Maybe Later</button>
+    </div>
+  </div>
+
+  <!-- Splash Screen -->
   <picture id="splash">
-      <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
-      <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
-      <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="">
+    <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x, splash/img/light-4x.png 4x" media="(prefers-color-scheme: light)">
+    <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x, splash/img/dark-4x.png 4x" media="(prefers-color-scheme: dark)">
+    <img class="center" aria-hidden="true" src="splash/img/light-1x.png" alt="Texterra">
   </picture>
-  <script src="flutter_bootstrap.js" async=""></script>
 
+  <!-- Loading Spinner -->
+  <div class="loader"></div>
 
-</body></html>
+  <!-- Flutter Bootstrap -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
