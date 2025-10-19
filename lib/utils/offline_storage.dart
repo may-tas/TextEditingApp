@@ -15,8 +15,6 @@ class OfflineStorageManager {
   Future<bool> isOnline() async {
     if (!kIsWeb) return true;
 
-    // On web, we can check navigator.onLine
-    // This is a simplified check - in production, you might want to ping a server
     return true; // Assume online for now
   }
 
@@ -31,7 +29,6 @@ class OfflineStorageManager {
       final saved = await prefs.setString(key, data);
 
       if (requiresSync && !await isOnline()) {
-        // Add to pending operations queue
         _pendingOperations.add({
           'type': 'save',
           'key': key,
@@ -107,7 +104,7 @@ class OfflineStorageManager {
         }
       } catch (e) {
         log('❌ Error syncing operation: $e');
-        // Re-add to queue if failed
+
         _pendingOperations.add(operation);
       }
     }
@@ -135,8 +132,6 @@ class OfflineStorageManager {
   }
 }
 
-/// Extension to add offline support to CanvasCubit
-/// This would be integrated into the existing CanvasCubit
 class OfflineCanvasSupport {
   /// Save page with offline support
   static Future<void> savePageOffline(
@@ -146,8 +141,7 @@ class OfflineCanvasSupport {
     final manager = OfflineStorageManager.instance;
 
     // Convert page data to JSON string
-    final dataString =
-        pageData.toString(); // Use proper JSON encoding in production
+    final dataString = pageData.toString();
 
     // Save with offline support
     await manager.saveWithOfflineSupport(

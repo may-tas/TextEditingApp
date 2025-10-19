@@ -6,15 +6,11 @@ import 'package:flutter/material.dart';
 class WebUtils {
   WebUtils._();
 
-  /// Check if running on web platform
   static bool get isWeb => kIsWeb;
 
-  /// Register PWA service worker (call this in main.dart)
+  /// Register PWA service worker
   static Future<void> registerServiceWorker() async {
     if (!kIsWeb) return;
-
-    // Service worker registration happens automatically via flutter_bootstrap.js
-    // This is a placeholder for any additional web-specific initialization
     debugPrint('✅ Running on Web - PWA features enabled');
   }
 
@@ -22,8 +18,6 @@ class WebUtils {
   static Future<void> promptInstall() async {
     if (!kIsWeb) return;
 
-    // The install prompt is handled by the browser's native UI
-    // This method can be used to trigger custom install flows if needed
     debugPrint('💡 PWA install prompt triggered');
   }
 }

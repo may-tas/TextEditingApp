@@ -1,6 +1,4 @@
 // Service Worker for Texterra PWA
-// Place this file as flutter_service_worker.js in web folder
-
 const CACHE_NAME = 'texterra-cache-v1';
 const RUNTIME_CACHE = 'texterra-runtime-v1';
 

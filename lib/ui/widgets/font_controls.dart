@@ -176,7 +176,6 @@ class _FontControlsState extends State<FontControls> {
               ),
             ),
 
-          // Scroll indicator on mobile (shows you can scroll)
           if (!kIsWeb && _showRightArrow)
             Positioned(
               right: 0,
