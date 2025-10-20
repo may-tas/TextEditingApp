@@ -1,29 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:texterra/main.dart';
+import 'package:texterra/ui/screens/splash_screen.dart';
+import 'package:texterra/cubit/canvas_cubit.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App initializes and shows splash screen',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the app builds successfully
+    expect(find.byType(MaterialApp), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that SplashScreen is shown initially
+    expect(find.byType(SplashScreen), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Wait for all timers and animations to complete
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('App has correct title', (WidgetTester tester) async {
+    // Build our app
+    await tester.pumpWidget(const MyApp());
+
+    // Get the MaterialApp widget
+    final MaterialApp app = tester.widget(find.byType(MaterialApp));
+
+    // Verify the title
+    expect(app.title, 'Text Editor');
+
+    // Wait for all timers and animations to complete
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('App has BlocProvider for CanvasCubit',
+      (WidgetTester tester) async {
+    // Build our app
+    await tester.pumpWidget(const MyApp());
+
+    // Verify that BlocProvider is present in the widget tree
+    expect(find.byType(BlocProvider<CanvasCubit>), findsOneWidget);
+
+    // Wait for all timers and animations to complete
+    await tester.pumpAndSettle();
   });
 }
