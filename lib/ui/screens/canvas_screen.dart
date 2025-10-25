@@ -9,7 +9,7 @@ import 'package:texterra/ui/screens/saved_pages.dart';
 import '../../constants/color_constants.dart';
 import '../../cubit/canvas_cubit.dart';
 import '../../cubit/canvas_state.dart';
-import '../widgets/editable_text_widget.dart';
+import '../widgets/text_box_widget.dart';
 import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
@@ -270,7 +270,7 @@ class CanvasScreen extends StatelessWidget {
                       top: state.textItems[index].y,
                       child: IgnorePointer(
                         ignoring: state.isDrawingMode,
-                        child: _DraggableText(
+                        child: _DraggableTextBox(
                           key: ValueKey('text_item_$index'),
                           index: index,
                           textItem: state.textItems[index],
@@ -529,12 +529,12 @@ class CanvasScreen extends StatelessWidget {
   }
 }
 
-class _DraggableText extends StatefulWidget {
+class _DraggableTextBox extends StatefulWidget {
   final int index;
   final TextItem textItem;
   final bool isSelected;
 
-  const _DraggableText({
+  const _DraggableTextBox({
     super.key,
     required this.index,
     required this.textItem,
@@ -542,37 +542,30 @@ class _DraggableText extends StatefulWidget {
   });
 
   @override
-  State<_DraggableText> createState() => _DraggableTextState();
+  State<_DraggableTextBox> createState() => _DraggableTextBoxState();
 }
 
-class _DraggableTextState extends State<_DraggableText>
-    with AutomaticKeepAliveClientMixin {
+class _DraggableTextBoxState extends State<_DraggableTextBox> {
   Offset? _startPosition;
   Offset? _dragStartPosition;
-
-  @override
-  bool get wantKeepAlive => true;
+  bool _isRotating = false;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return GestureDetector(
-      onTap: () {
-        // Select this text item when tapped
-        context.read<CanvasCubit>().selectText(widget.index);
-      },
       onPanStart: (details) {
-        // Select this text item when starting to drag
-        context.read<CanvasCubit>().selectText(widget.index);
-        _startPosition = Offset(widget.textItem.x, widget.textItem.y);
-        _dragStartPosition = details.localPosition;
+        if (!_isRotating) {
+          context.read<CanvasCubit>().selectText(widget.index);
+          _startPosition = Offset(widget.textItem.x, widget.textItem.y);
+          _dragStartPosition = details.localPosition;
+        }
       },
       onPanUpdate: (details) {
-        if (_startPosition != null && _dragStartPosition != null) {
+        if (!_isRotating &&
+            _startPosition != null &&
+            _dragStartPosition != null) {
           final delta = details.localPosition - _dragStartPosition!;
           final newPosition = _startPosition! + delta;
-
-          // Update position in real-time during drag
           context.read<CanvasCubit>().moveText(
                 widget.index,
                 newPosition.dx,
@@ -580,15 +573,30 @@ class _DraggableTextState extends State<_DraggableText>
               );
         }
       },
-      onPanEnd: (_) {
-        _startPosition = null;
-        _dragStartPosition = null;
+      onPanEnd: (details) {
+        if (!_isRotating &&
+            _startPosition != null &&
+            _dragStartPosition != null) {
+          final delta = details.localPosition - _dragStartPosition!;
+          final newPosition = _startPosition! + delta;
+          context.read<CanvasCubit>().moveTextWithHistory(
+                widget.index,
+                newPosition.dx,
+                newPosition.dy,
+              );
+          _startPosition = null;
+          _dragStartPosition = null;
+        }
       },
-      behavior: HitTestBehavior.opaque,
-      child: EditableTextWidget(
+      child: TextBoxWidget(
         index: widget.index,
         textItem: widget.textItem,
         isSelected: widget.isSelected,
+        onRotationStateChanged: (isRotating) {
+          setState(() {
+            _isRotating = isRotating;
+          });
+        },
       ),
     );
   }
