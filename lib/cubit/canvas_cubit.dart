@@ -360,10 +360,33 @@ class CanvasCubit extends Cubit<CanvasState> {
     _updateState(textItems: updatedItems);
   }
 
-  // method to moveText and emit changes
+  // method to moveText and emit changes (without history)
   void moveText(int index, double x, double y) {
     final updatedItems = List<TextItem>.from(state.textItems);
     updatedItems[index] = updatedItems[index].copyWith(x: x, y: y);
+    emit(state.copyWith(textItems: updatedItems));
+  }
+
+  // method to moveText and add to history (called when drag ends)
+  void moveTextWithHistory(int index, double x, double y) {
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(x: x, y: y);
+    _updateState(textItems: updatedItems);
+  }
+
+  // method to rotate text and emit changes (without history)
+  void rotateText(int index, double rotation) {
+    if (index < 0 || index >= state.textItems.length) return;
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(rotation: rotation);
+    emit(state.copyWith(textItems: updatedItems));
+  }
+
+  // method to rotate text and add to history (called when rotation ends)
+  void rotateTextWithHistory(int index, double rotation) {
+    if (index < 0 || index >= state.textItems.length) return;
+    final updatedItems = List<TextItem>.from(state.textItems);
+    updatedItems[index] = updatedItems[index].copyWith(rotation: rotation);
     _updateState(textItems: updatedItems);
   }
 
