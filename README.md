@@ -273,17 +273,17 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/Elwin-p">
-                    <img src="https://avatars.githubusercontent.com/u/150349344?v=4" width="100;" alt="Elwin-p"/>
-                    <br />
-                    <sub><b>Elwin</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/Atomic-Shadow7002">
                     <img src="https://avatars.githubusercontent.com/u/191123414?v=4" width="100;" alt="Atomic-Shadow7002"/>
                     <br />
                     <sub><b>Abhishek Kumar Ray</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/Elwin-p">
+                    <img src="https://avatars.githubusercontent.com/u/150349344?v=4" width="100;" alt="Elwin-p"/>
+                    <br />
+                    <sub><b>Elwin</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -317,6 +317,13 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/ayn-aval">
+                    <img src="https://avatars.githubusercontent.com/u/201901928?v=4" width="100;" alt="ayn-aval"/>
+                    <br />
+                    <sub><b>Lavanya L Nair</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/Rishi-1512">
                     <img src="https://avatars.githubusercontent.com/u/122536214?v=4" width="100;" alt="Rishi-1512"/>
                     <br />
@@ -344,6 +351,8 @@ Special thanks to:
                     <sub><b>Ishita Srivastava | Contributor</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/pranayshl">
                     <img src="https://avatars.githubusercontent.com/u/163889726?v=4" width="100;" alt="pranayshl"/>
