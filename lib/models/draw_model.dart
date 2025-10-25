@@ -15,6 +15,35 @@ class DrawingPoint {
     required this.paint,
     this.pressure = 1.0,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'offsetX': offset.dx,
+      'offsetY': offset.dy,
+      'color': paint.color.value,
+      'strokeWidth': paint.strokeWidth,
+      'strokeCap': paint.strokeCap.index,
+      'strokeJoin': paint.strokeJoin.index,
+      'pressure': pressure,
+    };
+  }
+
+  factory DrawingPoint.fromJson(Map<String, dynamic> json) {
+    final paint = Paint()
+      ..color = Color(json['color'] as int)
+      ..strokeWidth = (json['strokeWidth'] as num).toDouble()
+      ..strokeCap = StrokeCap.values[json['strokeCap'] as int]
+      ..strokeJoin = StrokeJoin.values[json['strokeJoin'] as int];
+
+    return DrawingPoint(
+      offset: Offset(
+        (json['offsetX'] as num).toDouble(),
+        (json['offsetY'] as num).toDouble(),
+      ),
+      paint: paint,
+      pressure: (json['pressure'] as num?)?.toDouble() ?? 1.0,
+    );
+  }
 }
 
 class DrawPath {
@@ -52,17 +81,8 @@ class DrawPath {
 
   Map<String, dynamic> toJson() {
     return {
-      'points': points
-          .map((point) => {
-                'x': point.offset.dx,
-                'y': point.offset.dy,
-                'color': point.paint.color.toARGB32(),
-                'strokeWidth': point.paint.strokeWidth,
-                'pressure': point.pressure,
-                'style': point.paint.style.index, // Save paint style
-              })
-          .toList(),
-      'color': color.toARGB32(),
+      'points': points.map((point) => point.toJson()).toList(),
+      'color': color.value,
       'strokeWidth': strokeWidth,
       'strokeCap': strokeCap.index,
       'isFill': isFill,
@@ -74,24 +94,18 @@ class DrawPath {
     final List<dynamic> pointsList = json['points'];
 
     return DrawPath(
-      points: pointsList.map((pointJson) {
-        return DrawingPoint(
-          offset: Offset(pointJson['x'], pointJson['y']),
-          paint: Paint()
-            ..color = Color(pointJson['color'])
-            ..strokeWidth = pointJson['strokeWidth']
-            ..strokeCap = StrokeCap.round
-            ..style = pointJson['style'] != null
-                ? PaintingStyle.values[pointJson['style']]
-                : PaintingStyle.stroke, // Default to stroke for compatibility
-          pressure: pointJson['pressure'] ?? 1.0,
-        );
-      }).toList(),
-      color: Color(json['color']),
-      strokeWidth: json['strokeWidth'],
-      strokeCap: StrokeCap.values[json['strokeCap']],
+      points: pointsList
+          .map((pointJson) => DrawingPoint.fromJson(pointJson))
+          .toList(),
+      color: Color(json['color'] as int),
+      strokeWidth: (json['strokeWidth'] as num).toDouble(),
+      strokeCap: json['strokeCap'] != null
+          ? StrokeCap.values[json['strokeCap'] as int]
+          : StrokeCap.round,
       isFill: json['isFill'] ?? false,
-      brushType: BrushType.values[json['brushType'] ?? 0],
+      brushType: json['brushType'] != null
+          ? BrushType.values[json['brushType'] as int]
+          : BrushType.brush,
     );
   }
 }
