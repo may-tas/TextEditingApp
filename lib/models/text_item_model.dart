@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class TextItem {
@@ -14,12 +13,15 @@ class TextItem {
   final bool isHighlighted;
   final Color? highlightColor;
   final TextAlign textAlign;
-  
+
   // Shadow properties
   final bool hasShadow;
   final Color shadowColor;
   final double shadowBlurRadius;
   final Offset shadowOffset;
+
+  // Rotation in radians
+  final double rotation;
 
   TextItem({
     required this.text,
@@ -38,6 +40,7 @@ class TextItem {
     this.shadowColor = Colors.black,
     this.shadowBlurRadius = 4.0,
     this.shadowOffset = const Offset(2.0, 2.0),
+    this.rotation = 0.0,
   });
 
   TextItem copyWith({
@@ -57,6 +60,7 @@ class TextItem {
     Color? shadowColor,
     double? shadowBlurRadius,
     Offset? shadowOffset,
+    double? rotation,
   }) {
     return TextItem(
       text: text ?? this.text,
@@ -75,6 +79,7 @@ class TextItem {
       shadowColor: shadowColor ?? this.shadowColor,
       shadowBlurRadius: shadowBlurRadius ?? this.shadowBlurRadius,
       shadowOffset: shadowOffset ?? this.shadowOffset,
+      rotation: rotation ?? this.rotation,
     );
   }
 
@@ -87,7 +92,7 @@ class TextItem {
     final backgroundColor = isHighlighted && highlightColor != null
         ? 'background-color: #${highlightColor!.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}; '
         : '';
-    
+
     final textShadow = hasShadow
         ? 'text-shadow: ${shadowOffset.dx}px ${shadowOffset.dy}px ${shadowBlurRadius}px #${shadowColor.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}; '
         : '';
@@ -117,6 +122,7 @@ class TextItem {
       'shadowBlurRadius': shadowBlurRadius,
       'shadowOffsetDx': shadowOffset.dx,
       'shadowOffsetDy': shadowOffset.dy,
+      'rotation': rotation,
     };
   }
 
@@ -134,17 +140,19 @@ class TextItem {
       isUnderlined: json['isUnderlined'] ?? false,
       textAlign: TextAlign.values[json['textAlign'] ?? 0],
       isHighlighted: json['isHighlighted'] ?? false,
-      highlightColor: json['highlightColor'] != null 
-          ? Color(json['highlightColor']) 
-          : null,
+      highlightColor:
+          json['highlightColor'] != null ? Color(json['highlightColor']) : null,
       hasShadow: json['hasShadow'] ?? false,
-      shadowColor: json['shadowColor'] != null 
-          ? Color(json['shadowColor']) 
+      shadowColor: json['shadowColor'] != null
+          ? Color(json['shadowColor'])
           : Colors.black,
       shadowBlurRadius: json['shadowBlurRadius']?.toDouble() ?? 4.0,
-      shadowOffset: json['shadowOffsetDx'] != null && json['shadowOffsetDy'] != null
-          ? Offset(json['shadowOffsetDx'].toDouble(), json['shadowOffsetDy'].toDouble())
-          : const Offset(2.0, 2.0),
+      shadowOffset:
+          json['shadowOffsetDx'] != null && json['shadowOffsetDy'] != null
+              ? Offset(json['shadowOffsetDx'].toDouble(),
+                  json['shadowOffsetDy'].toDouble())
+              : const Offset(2.0, 2.0),
+      rotation: json['rotation']?.toDouble() ?? 0.0,
     );
   }
 }
