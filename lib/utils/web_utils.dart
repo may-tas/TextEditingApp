@@ -13,13 +13,6 @@ class WebUtils {
     if (!kIsWeb) return;
     debugPrint('✅ Running on Web - PWA features enabled');
   }
-
-  /// Install PWA prompt (for supported browsers)
-  static Future<void> promptInstall() async {
-    if (!kIsWeb) return;
-
-    debugPrint('💡 PWA install prompt triggered');
-  }
 }
 
 /// Keyboard shortcut handler for web platform
