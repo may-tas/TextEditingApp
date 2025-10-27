@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/text_item_model.dart';
 import '../constants/color_constants.dart';
 import '../models/draw_model.dart';
+import '../models/history_entry.dart';
 
 class CanvasState {
   final List<TextItem> textItems;
   final List<DrawPath> drawPaths;
-  final List<CanvasState> history;
-  final List<CanvasState> future;
+  final List<HistoryEntry> history;
+  final int currentHistoryIndex;
   final Color backgroundColor;
   final String? backgroundImagePath;
   final int? selectedTextItemIndex;
@@ -22,7 +23,7 @@ class CanvasState {
     required this.textItems,
     required this.drawPaths,
     required this.history,
-    required this.future,
+    required this.currentHistoryIndex,
     this.backgroundColor = ColorConstants.backgroundDarkGray,
     this.backgroundImagePath,
     this.selectedTextItemIndex,
@@ -35,11 +36,11 @@ class CanvasState {
   });
 
   factory CanvasState.initial() {
-    return const CanvasState(
+    final initialState = const CanvasState(
       textItems: [],
       drawPaths: [],
       history: [],
-      future: [],
+      currentHistoryIndex: 0,
       backgroundColor: ColorConstants.backgroundDarkGray,
       backgroundImagePath: null,
       selectedTextItemIndex: null,
@@ -50,13 +51,25 @@ class CanvasState {
       currentStrokeWidth: 5.0,
       currentBrushType: BrushType.brush,
     );
+
+    // Add initial state to history
+    final initialEntry = HistoryEntry(
+      state: initialState,
+      timestamp: DateTime.now(),
+      actionDescription: 'Initial state',
+    );
+
+    return initialState.copyWith(
+      history: [initialEntry],
+      currentHistoryIndex: 0,
+    );
   }
 
   CanvasState copyWith({
     List<TextItem>? textItems,
     List<DrawPath>? drawPaths,
-    List<CanvasState>? history,
-    List<CanvasState>? future,
+    List<HistoryEntry>? history,
+    int? currentHistoryIndex,
     Color? backgroundColor,
     String? backgroundImagePath,
     bool clearBackgroundImage = false,
@@ -74,7 +87,7 @@ class CanvasState {
       textItems: textItems ?? this.textItems,
       drawPaths: drawPaths ?? this.drawPaths,
       history: history ?? this.history,
-      future: future ?? this.future,
+      currentHistoryIndex: currentHistoryIndex ?? this.currentHistoryIndex,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       backgroundImagePath: clearBackgroundImage
           ? null
@@ -104,8 +117,6 @@ class CanvasState {
           backgroundImagePath == other.backgroundImagePath &&
           selectedTextItemIndex == other.selectedTextItemIndex &&
           isDrawingMode == other.isDrawingMode &&
-          history == other.history &&
-          future == other.future &&
           isTrayShown == other.isTrayShown &&
           currentPageName == other.currentPageName &&
           currentDrawColor == other.currentDrawColor &&
@@ -119,8 +130,6 @@ class CanvasState {
       backgroundColor.hashCode ^
       backgroundImagePath.hashCode ^
       selectedTextItemIndex.hashCode ^
-      history.hashCode ^
-      future.hashCode ^
       isTrayShown.hashCode ^
       isDrawingMode.hashCode ^
       currentDrawColor.hashCode ^

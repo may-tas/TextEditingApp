@@ -14,6 +14,7 @@ import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
 import '../widgets/drawing_canvas.dart';
+import '../widgets/history_timeline.dart';
 import '../../utils/custom_snackbar.dart';
 import '../../utils/web_utils.dart';
 
@@ -28,6 +29,16 @@ class CanvasScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) => const BackgroundOptionsSheet(),
+    );
+  }
+
+  void _showHistoryTimeline(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const Dialog(
+        backgroundColor: Colors.transparent,
+        child: HistoryTimeline(),
+      ),
     );
   }
 
@@ -49,7 +60,7 @@ class CanvasScreen extends StatelessWidget {
 
   void _handleUndo(BuildContext context) {
     final cubit = context.read<CanvasCubit>();
-    if (cubit.state.history.isNotEmpty) {
+    if (cubit.state.currentHistoryIndex > 0) {
       cubit.undo();
     } else {
       CustomSnackbar.showInfo('Nothing to undo');
@@ -58,7 +69,7 @@ class CanvasScreen extends StatelessWidget {
 
   void _handleRedo(BuildContext context) {
     final cubit = context.read<CanvasCubit>();
-    if (cubit.state.future.isNotEmpty) {
+    if (cubit.state.currentHistoryIndex < cubit.state.history.length - 1) {
       cubit.redo();
     } else {
       CustomSnackbar.showInfo('Nothing to redo');
@@ -146,6 +157,11 @@ class CanvasScreen extends StatelessWidget {
               tooltip: kIsWeb ? "Redo (Ctrl+Shift+Z)" : "Redo",
               icon: const Icon(Icons.redo, color: ColorConstants.uiIconBlack),
               onPressed: () => _handleRedo(context),
+            ),
+            IconButton(
+              tooltip: "History Timeline",
+              icon: const Icon(Icons.timeline, color: ColorConstants.uiIconBlack),
+              onPressed: () => _showHistoryTimeline(context),
             ),
             BlocBuilder<CanvasCubit, CanvasState>(
               builder: (context, state) {
