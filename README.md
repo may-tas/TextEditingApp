@@ -257,14 +257,21 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/ayn-aval">
+                    <img src="https://avatars.githubusercontent.com/u/201901928?v=4" width="100;" alt="ayn-aval"/>
+                    <br />
+                    <sub><b>Lavanya L Nair</b></sub>
+                </a>
+            </td>
+		</tr>
+		<tr>
+            <td align="center">
                 <a href="https://github.com/Manar-Elhabbal7">
                     <img src="https://avatars.githubusercontent.com/u/172148857?v=4" width="100;" alt="Manar-Elhabbal7"/>
                     <br />
                     <sub><b>Manar ELhabbal</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/sandy4242">
                     <img src="https://avatars.githubusercontent.com/u/152861071?v=4" width="100;" alt="sandy4242"/>
@@ -284,13 +291,6 @@ Special thanks to:
                     <img src="https://avatars.githubusercontent.com/u/150349344?v=4" width="100;" alt="Elwin-p"/>
                     <br />
                     <sub><b>Elwin</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/ayn-aval">
-                    <img src="https://avatars.githubusercontent.com/u/201901928?v=4" width="100;" alt="ayn-aval"/>
-                    <br />
-                    <sub><b>Lavanya L Nair</b></sub>
                 </a>
             </td>
             <td align="center">
