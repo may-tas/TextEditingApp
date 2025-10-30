@@ -250,17 +250,17 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/zxnb01">
-                    <img src="https://avatars.githubusercontent.com/u/141150925?v=4" width="100;" alt="zxnb01"/>
-                    <br />
-                    <sub><b>Shaik Zainab</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/ayn-aval">
                     <img src="https://avatars.githubusercontent.com/u/201901928?v=4" width="100;" alt="ayn-aval"/>
                     <br />
                     <sub><b>Lavanya L Nair</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/zxnb01">
+                    <img src="https://avatars.githubusercontent.com/u/141150925?v=4" width="100;" alt="zxnb01"/>
+                    <br />
+                    <sub><b>Shaik Zainab</b></sub>
                 </a>
             </td>
 		</tr>
