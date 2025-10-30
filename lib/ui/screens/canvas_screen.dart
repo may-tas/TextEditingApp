@@ -85,6 +85,10 @@ class CanvasScreen extends StatelessWidget {
     context.read<CanvasCubit>().toggleDrawingMode();
   }
 
+  void _handleAddText(BuildContext context) {
+    context.read<CanvasCubit>().addText('New Text');
+  }
+
   @override
   Widget build(BuildContext context) {
     return KeyboardShortcuts(
@@ -94,6 +98,7 @@ class CanvasScreen extends StatelessWidget {
       onNew: () => _handleNew(context),
       onClear: () => _handleClear(context),
       onToggleDrawing: () => _handleToggleDrawing(context),
+      onAddText: () => _handleAddText(context),
       child: Scaffold(
         backgroundColor: ColorConstants.uiWhite,
         appBar: AppBar(
@@ -418,7 +423,8 @@ class CanvasScreen extends StatelessWidget {
                                 child: const Icon(Icons.text_fields,
                                     color: ColorConstants.dialogButtonBlue),
                               ),
-                              title: const Text('Add Text'),
+                              title: const Text(
+                                  kIsWeb ? 'Add Text (Ctrl+T)' : 'Add Text'),
                               subtitle:
                                   const Text('Add and format text on canvas'),
                               onTap: () {
@@ -548,12 +554,15 @@ class CanvasScreen extends StatelessWidget {
     }
   }
 
+  // Helper method to get appropriate image provider for web and mobile
   ImageProvider _getImageProvider(String imagePath) {
     if (kIsWeb && imagePath.startsWith('data:')) {
+      // On web, if it's a data URL, decode it and use MemoryImage
       final String base64String = imagePath.split(',')[1];
       final Uint8List bytes = base64Decode(base64String);
       return MemoryImage(bytes);
     } else {
+      // On mobile or if it's a file path, use FileImage
       return FileImage(File(imagePath));
     }
   }
@@ -570,6 +579,7 @@ class CanvasScreen extends StatelessWidget {
             children: [
               _shortcutItem('Ctrl + S', 'Save page'),
               _shortcutItem('Ctrl + N', 'New page'),
+              _shortcutItem('Ctrl + T', 'Add text'),
               _shortcutItem('Ctrl + Z', 'Undo'),
               _shortcutItem('Ctrl + Shift + Z', 'Redo'),
               _shortcutItem('Ctrl + Y', 'Redo (alternative)'),
