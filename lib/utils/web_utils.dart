@@ -24,6 +24,7 @@ class KeyboardShortcuts extends StatelessWidget {
   final VoidCallback? onNew;
   final VoidCallback? onClear;
   final VoidCallback? onToggleDrawing;
+  final VoidCallback? onAddText;
 
   const KeyboardShortcuts({
     super.key,
@@ -34,6 +35,7 @@ class KeyboardShortcuts extends StatelessWidget {
     this.onNew,
     this.onClear,
     this.onToggleDrawing,
+    this.onAddText,
   });
 
   @override
@@ -97,6 +99,14 @@ class KeyboardShortcuts extends StatelessWidget {
         },
         const SingleActivator(LogicalKeyboardKey.keyD, meta: true): () {
           onToggleDrawing?.call();
+        },
+
+        // Add Text: Ctrl/Cmd + T
+        const SingleActivator(LogicalKeyboardKey.keyT, control: true): () {
+          onAddText?.call();
+        },
+        const SingleActivator(LogicalKeyboardKey.keyT, meta: true): () {
+          onAddText?.call();
         },
       },
       child: Focus(
