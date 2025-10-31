@@ -2,7 +2,7 @@ name: texterra
 description: "This project provides an interactive user interface to control font properties such as font size, font family, font color, and font style. Built using Flutter and Bloc for state management, it ensures a modern, responsive, and smooth user experience."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -42,11 +42,13 @@ dependencies:
   image_picker: ^1.2.0
   path_provider: ^2.1.5
   path: ^1.9.1
-  bloc_test: ^10.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.5.0
+  bloc_test: ^10.0.0
+  build_runner: ^2.7.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -61,7 +63,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -111,6 +112,6 @@ flutter_native_splash:
   fullscreen: true
   image: assets/icons/whitebg.png
 
-  android_12: 
+  android_12:
     color: "#ffffff"
     image: assets/icons/whitebg.png
