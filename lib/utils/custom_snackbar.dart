@@ -16,33 +16,38 @@ class CustomSnackbar {
     required SnackbarType type,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final context = _navigatorKey.currentContext;
-    if (context == null) return;
+    try {
+      final context = _navigatorKey.currentContext;
+      if (context == null) return;
 
-    // Using a more reliable way to access overlay
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final overlayState = Navigator.of(context).overlay;
-      if (overlayState == null) return;
+      // Using a more reliable way to access overlay
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final overlayState = Navigator.of(context).overlay;
+        if (overlayState == null) return;
 
-      late OverlayEntry overlayEntry;
+        late OverlayEntry overlayEntry;
 
-      overlayEntry = OverlayEntry(
-        builder: (context) => _SnackbarWidget(
-          message: message,
-          type: type,
-          onDismiss: () => overlayEntry.remove(),
-        ),
-      );
+        overlayEntry = OverlayEntry(
+          builder: (context) => _SnackbarWidget(
+            message: message,
+            type: type,
+            onDismiss: () => overlayEntry.remove(),
+          ),
+        );
 
-      overlayState.insert(overlayEntry);
+        overlayState.insert(overlayEntry);
 
-      // Auto-dismiss after duration
-      Future.delayed(duration, () {
-        if (overlayEntry.mounted) {
-          overlayEntry.remove();
-        }
+        // Auto-dismiss after duration
+        Future.delayed(duration, () {
+          if (overlayEntry.mounted) {
+            overlayEntry.remove();
+          }
+        });
       });
-    });
+    } catch (e) {
+      // Silently fail in test environment or when context is not available
+      log('CustomSnackbar error: $e');
+    }
   }
 
   static void showSuccess(String message, {Duration? duration}) {
