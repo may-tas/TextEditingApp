@@ -294,21 +294,12 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/GitMasterJatin">
-                    <img src="https://avatars.githubusercontent.com/u/138237525?v=4" width="100;" alt="GitMasterJatin"/>
-                    <br />
-                    <sub><b>Jatin Sharma</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/AnanyaSingh456">
                     <img src="https://avatars.githubusercontent.com/u/184369984?v=4" width="100;" alt="AnanyaSingh456"/>
                     <br />
                     <sub><b>Ananya Singh</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/DMounas">
                     <img src="https://avatars.githubusercontent.com/u/212203186?v=4" width="100;" alt="DMounas"/>
@@ -316,6 +307,8 @@ Special thanks to:
                     <sub><b>DMounas</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/debasmitaas">
                     <img src="https://avatars.githubusercontent.com/u/189460298?v=4" width="100;" alt="debasmitaas"/>
@@ -328,6 +321,13 @@ Special thanks to:
                     <img src="https://avatars.githubusercontent.com/u/178488305?v=4" width="100;" alt="GauriRocksies"/>
                     <br />
                     <sub><b>GAURI</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/GitMasterJatin">
+                    <img src="https://avatars.githubusercontent.com/u/138237525?v=4" width="100;" alt="GitMasterJatin"/>
+                    <br />
+                    <sub><b>Jatin Sharma</b></sub>
                 </a>
             </td>
             <td align="center">
