@@ -236,17 +236,17 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/MannemSumanaSri">
-                    <img src="https://avatars.githubusercontent.com/u/204357939?v=4" width="100;" alt="MannemSumanaSri"/>
-                    <br />
-                    <sub><b>Mannem Sumana Sri</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/ayn-aval">
                     <img src="https://avatars.githubusercontent.com/u/201901928?v=4" width="100;" alt="ayn-aval"/>
                     <br />
                     <sub><b>Lavanya L Nair</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/MannemSumanaSri">
+                    <img src="https://avatars.githubusercontent.com/u/204357939?v=4" width="100;" alt="MannemSumanaSri"/>
+                    <br />
+                    <sub><b>Mannem Sumana Sri</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -298,13 +298,6 @@ Special thanks to:
                     <img src="https://avatars.githubusercontent.com/u/150349344?v=4" width="100;" alt="Elwin-p"/>
                     <br />
                     <sub><b>Elwin</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/GitMasterJatin">
-                    <img src="https://avatars.githubusercontent.com/u/138237525?v=4" width="100;" alt="GitMasterJatin"/>
-                    <br />
-                    <sub><b>Jatin Sharma</b></sub>
                 </a>
             </td>
             <td align="center">
