@@ -35,7 +35,10 @@ void main() {
 
       expect(json['offsetX'], 15.5);
       expect(json['offsetY'], 25.5);
-      expect(json['color'], Colors.red.value);
+      expect(
+        json['color'],
+        Colors.red.toARGB32(),
+      );
       expect(json['strokeWidth'], 3.0);
       expect(json['strokeCap'], StrokeCap.round.index);
       expect(json['strokeJoin'], StrokeJoin.round.index);
@@ -45,7 +48,7 @@ void main() {
       final json = {
         'offsetX': 30.5,
         'offsetY': 40.5,
-        'color': Colors.blue.value,
+        'color': Colors.blue.toARGB32(),
         'strokeWidth': 7.0,
         'strokeCap': StrokeCap.square.index,
         'strokeJoin': StrokeJoin.miter.index,
@@ -55,7 +58,7 @@ void main() {
 
       expect(point.offset.dx, 30.5);
       expect(point.offset.dy, 40.5);
-      expect(point.paint.color.value, Colors.blue.value);
+      expect(point.paint.color.toARGB32(), Colors.blue.toARGB32());
       expect(point.paint.strokeWidth, 7.0);
       expect(point.paint.strokeCap, StrokeCap.square);
       expect(point.paint.strokeJoin, StrokeJoin.miter);
@@ -77,7 +80,8 @@ void main() {
       final deserialized = DrawingPoint.fromJson(json);
 
       expect(deserialized.offset, original.offset);
-      expect(deserialized.paint.color.value, original.paint.color.value);
+      expect(
+          deserialized.paint.color.toARGB32(), original.paint.color.toARGB32());
       expect(deserialized.paint.strokeWidth, original.paint.strokeWidth);
       expect(deserialized.paint.strokeCap, original.paint.strokeCap);
       expect(deserialized.paint.strokeJoin, original.paint.strokeJoin);
@@ -152,7 +156,10 @@ void main() {
 
       expect(json['points'], isA<List>());
       expect(json['points'].length, 3);
-      expect(json['color'], Colors.green.value);
+      expect(
+        json['color'],
+        Colors.green.toARGB32(),
+      );
       expect(json['strokeWidth'], 4.0);
       expect(json['brushType'], BrushType.marker.index);
       expect(json['isFill'], false);
@@ -163,7 +170,7 @@ void main() {
         {
           'offsetX': 10.0,
           'offsetY': 10.0,
-          'color': Colors.blue.value,
+          'color': Colors.blue.toARGB32(),
           'strokeWidth': 6.0,
           'strokeCap': StrokeCap.round.index,
           'strokeJoin': StrokeJoin.round.index,
@@ -171,7 +178,7 @@ void main() {
         {
           'offsetX': 20.0,
           'offsetY': 20.0,
-          'color': Colors.blue.value,
+          'color': Colors.blue.toARGB32(),
           'strokeWidth': 6.0,
           'strokeCap': StrokeCap.round.index,
           'strokeJoin': StrokeJoin.round.index,
@@ -180,7 +187,7 @@ void main() {
 
       final json = {
         'points': pointsJson,
-        'color': Colors.blue.value,
+        'color': Colors.blue.toARGB32(),
         'strokeWidth': 6.0,
         'strokeCap': StrokeCap.round.index,
         'brushType': BrushType.brush.index,
@@ -190,7 +197,7 @@ void main() {
       final path = DrawPath.fromJson(json);
 
       expect(path.points.length, 2);
-      expect(path.color.value, Colors.blue.value);
+      expect(path.color.toARGB32(), Colors.blue.toARGB32());
       expect(path.strokeWidth, 6.0);
       expect(path.brushType, BrushType.brush);
       expect(path.isFill, false);
@@ -201,7 +208,7 @@ void main() {
         {
           'offsetX': 10.0,
           'offsetY': 10.0,
-          'color': Colors.red.value,
+          'color': Colors.red.toARGB32(),
           'strokeWidth': 5.0,
           'strokeCap': StrokeCap.round.index,
           'strokeJoin': StrokeJoin.round.index,
@@ -210,7 +217,7 @@ void main() {
 
       final json = {
         'points': pointsJson,
-        'color': Colors.red.value,
+        'color': Colors.red.toARGB32(),
         'strokeWidth': 5.0,
       };
 
@@ -244,15 +251,15 @@ void main() {
       final deserialized = DrawPath.fromJson(json);
 
       expect(deserialized.points.length, original.points.length);
-      expect(deserialized.color.value, original.color.value);
+      expect(deserialized.color.toARGB32(), original.color.toARGB32());
       expect(deserialized.strokeWidth, original.strokeWidth);
       expect(deserialized.brushType, original.brushType);
       expect(deserialized.isFill, original.isFill);
 
       // Check first point
       expect(deserialized.points[0].offset, original.points[0].offset);
-      expect(deserialized.points[0].paint.color.value,
-          original.points[0].paint.color.value);
+      expect(deserialized.points[0].paint.color.toARGB32(),
+          original.points[0].paint.color.toARGB32());
       expect(deserialized.points[0].paint.strokeWidth,
           original.points[0].paint.strokeWidth);
     });

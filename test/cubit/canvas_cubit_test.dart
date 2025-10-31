@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:texterra/cubit/canvas_cubit.dart';
 import 'package:texterra/cubit/canvas_state.dart';
-import 'package:texterra/models/text_item_model.dart';
 import 'package:texterra/models/draw_model.dart';
 import 'package:texterra/constants/color_constants.dart';
 

@@ -217,7 +217,7 @@ void main() {
       expect(json['highlightColor'], 0xFFFFEB3B);
       expect(json['textAlign'], TextAlign.center.index);
       expect(json['hasShadow'], true);
-      expect(json['shadowColor'], Colors.black.value);
+      expect(json['shadowColor'], Colors.black.toARGB32());
       expect(json['shadowBlurRadius'], 5.0);
       expect(json['shadowOffsetDx'], 3.0);
       expect(json['shadowOffsetDy'], 3.0);
@@ -273,7 +273,7 @@ void main() {
         'fontStyle': FontStyle.normal.index,
         'fontWeight': FontWeight.normal.index,
         'fontFamily': 'Roboto',
-        'color': Colors.black.value,
+        'color': Colors.black.toARGB32(),
       };
 
       final textItem = TextItem.fromJson(json);
