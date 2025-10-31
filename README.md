@@ -294,12 +294,21 @@ Special thanks to:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/GitMasterJatin">
+                    <img src="https://avatars.githubusercontent.com/u/138237525?v=4" width="100;" alt="GitMasterJatin"/>
+                    <br />
+                    <sub><b>Jatin Sharma</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/AnanyaSingh456">
                     <img src="https://avatars.githubusercontent.com/u/184369984?v=4" width="100;" alt="AnanyaSingh456"/>
                     <br />
                     <sub><b>Ananya Singh</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/DMounas">
                     <img src="https://avatars.githubusercontent.com/u/212203186?v=4" width="100;" alt="DMounas"/>
@@ -307,8 +316,6 @@ Special thanks to:
                     <sub><b>DMounas</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/debasmitaas">
                     <img src="https://avatars.githubusercontent.com/u/189460298?v=4" width="100;" alt="debasmitaas"/>
@@ -344,6 +351,8 @@ Special thanks to:
                     <sub><b>Seera charmi</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/ishita051">
                     <img src="https://avatars.githubusercontent.com/u/183702036?v=4" width="100;" alt="ishita051"/>
@@ -351,8 +360,6 @@ Special thanks to:
                     <sub><b>Ishita Srivastava | Contributor</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/pranayshl">
                     <img src="https://avatars.githubusercontent.com/u/163889726?v=4" width="100;" alt="pranayshl"/>
