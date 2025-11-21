@@ -13,12 +13,34 @@ import 'package:path/path.dart' as path;
 import 'package:texterra/utils/custom_snackbar.dart';
 import '../models/text_item_model.dart';
 import '../models/draw_model.dart';
+import '../models/history_entry.dart';
 import 'canvas_state.dart';
 
 class CanvasCubit extends Cubit<CanvasState> {
   final ImagePicker _imagePicker = ImagePicker();
 
   CanvasCubit() : super(CanvasState.initial());
+
+  // Helper method to add a new state to history
+  void _addToHistory(CanvasState newState, {String? actionDescription}) {
+    final newEntry = HistoryEntry(
+      state: newState,
+      timestamp: DateTime.now(),
+      actionDescription: actionDescription,
+    );
+
+    // If we're not at the end of history, truncate history after current index
+    final baseHistory = state.currentHistoryIndex < state.history.length - 1
+        ? state.history.sublist(0, state.currentHistoryIndex + 1)
+        : state.history;
+
+    final newHistory = [...baseHistory, newEntry];
+
+    emit(newState.copyWith(
+      history: newHistory,
+      currentHistoryIndex: newHistory.length - 1,
+    ));
+  }
 
   //method to toggle the color tray
   void toggleTray() {
@@ -40,7 +62,7 @@ class CanvasCubit extends Cubit<CanvasState> {
     updatedItems[index] = updatedItems[index].copyWith(
       hasShadow: !updatedItems[index].hasShadow,
     );
-    _updateState(textItems: updatedItems);
+    _updateState(textItems: updatedItems, actionDescription: 'Toggled text shadow');
   }
 
 // Change shadow color
@@ -52,7 +74,7 @@ class CanvasCubit extends Cubit<CanvasState> {
       hasShadow: true, // Automatically enable shadow when changing color
       shadowColor: color,
     );
-    _updateState(textItems: updatedItems);
+    _updateState(textItems: updatedItems, actionDescription: 'Changed shadow color');
   }
 
 // Change shadow blur radius
@@ -185,14 +207,11 @@ class CanvasCubit extends Cubit<CanvasState> {
       color: ColorConstants.uiWhite, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
-    emit(
-      state.copyWith(
-        textItems: updatedItems,
-        selectedTextItemIndex: updatedItems.length - 1,
-        history: [...state.history, state],
-        future: [],
-      ),
+    final newState = state.copyWith(
+      textItems: updatedItems,
+      selectedTextItemIndex: updatedItems.length - 1,
     );
+    _addToHistory(newState, actionDescription: 'Added text: "${text.length > 20 ? '${text.substring(0, 20)}...' : text}"');
   }
 
   // Method to toggle text highlighting
@@ -246,7 +265,7 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to change background color
   void changeBackgroundColor(Color color) {
-    _updateState(backgroundColor: color);
+    _updateState(backgroundColor: color, actionDescription: 'Changed background color');
   }
 
   // Method to upload background image from gallery
@@ -437,24 +456,24 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to undo changes and emit it
   void undo() {
-    if (state.history.isNotEmpty) {
-      final previousState = state.history.last;
-      final newHistory = List<CanvasState>.from(state.history)..removeLast();
-      emit(previousState.copyWith(
-        history: newHistory,
-        future: [state, ...state.future],
+    if (state.currentHistoryIndex > 0) {
+      final newIndex = state.currentHistoryIndex - 1;
+      final targetState = state.history[newIndex].state;
+      emit(targetState.copyWith(
+        history: state.history,
+        currentHistoryIndex: newIndex,
       ));
     }
   }
 
   // method to redo changes and emit it
   void redo() {
-    if (state.future.isNotEmpty) {
-      final nextState = state.future.first;
-      final newFuture = List<CanvasState>.from(state.future)..removeAt(0);
-      emit(nextState.copyWith(
-        future: newFuture,
-        history: [...state.history, state],
+    if (state.currentHistoryIndex < state.history.length - 1) {
+      final newIndex = state.currentHistoryIndex + 1;
+      final targetState = state.history[newIndex].state;
+      emit(targetState.copyWith(
+        history: state.history,
+        currentHistoryIndex: newIndex,
       ));
     }
   }
@@ -466,19 +485,16 @@ class CanvasCubit extends Cubit<CanvasState> {
       _deleteImageFile(state.backgroundImagePath!);
     }
 
-    emit(
-      state.copyWith(
-        textItems: [],
-        drawPaths: [],
-        history: [...state.history, state],
-        future: [],
-        selectedTextItemIndex: null,
-        deselect: true,
-        isDrawingMode: false, // Exit drawing mode when clearing
-        clearCurrentPageName: true,
-        clearBackgroundImage: true,
-      ),
+    final newState = state.copyWith(
+      textItems: [],
+      drawPaths: [],
+      selectedTextItemIndex: null,
+      deselect: true,
+      isDrawingMode: false, // Exit drawing mode when clearing
+      clearCurrentPageName: true,
+      clearBackgroundImage: true,
     );
+    _addToHistory(newState, actionDescription: 'Cleared canvas');
     CustomSnackbar.showInfo('Canvas cleared');
   }
 
@@ -487,26 +503,26 @@ class CanvasCubit extends Cubit<CanvasState> {
     Color? backgroundColor,
     String? backgroundImagePath,
     bool clearBackgroundImage = false,
+    String? actionDescription,
   }) {
     final newState = state.copyWith(
       textItems: textItems ?? state.textItems,
       backgroundColor: backgroundColor,
       backgroundImagePath: backgroundImagePath,
       clearBackgroundImage: clearBackgroundImage,
-      history: [...state.history, state],
-      future: [],
     );
-    emit(newState);
+    _addToHistory(newState, actionDescription: actionDescription);
   }
 
   void deleteText(int index) {
+    final deletedItem = state.textItems[index];
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    emit(state.copyWith(
-        textItems: updatedList,
-        selectedTextItemIndex: null,
-        history: [...state.history, state],
-        future: [],
-        deselect: true));
+    final newState = state.copyWith(
+      textItems: updatedList,
+      selectedTextItemIndex: null,
+      deselect: true,
+    );
+    _addToHistory(newState, actionDescription: 'Deleted text: "${deletedItem.text.length > 20 ? '${deletedItem.text.substring(0, 20)}...' : deletedItem.text}"');
   }
 
   Future<void> savePage(String pageName, {String? label, int? color}) async {
@@ -955,16 +971,8 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
 
     final newPaths = List<DrawPath>.from(state.drawPaths)..add(newPath);
-
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
-
-    emit(state.copyWith(
-      drawPaths: newPaths,
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    final newState = state.copyWith(drawPaths: newPaths);
+    _addToHistory(newState, actionDescription: 'Started drawing');
   }
 
   // Update the current drawing path with a new point
@@ -1001,15 +1009,8 @@ class CanvasCubit extends Cubit<CanvasState> {
   void clearDrawings() {
     if (state.drawPaths.isEmpty) return;
 
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
-
-    emit(state.copyWith(
-      drawPaths: [],
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    final newState = state.copyWith(drawPaths: []);
+    _addToHistory(newState, actionDescription: 'Cleared all drawings');
     CustomSnackbar.showInfo('Drawings cleared');
   }
 
@@ -1017,19 +1018,12 @@ class CanvasCubit extends Cubit<CanvasState> {
   void undoLastDrawing() {
     if (state.drawPaths.isEmpty) return;
 
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
-
     // Remove the last path
     final newPaths = List<DrawPath>.from(state.drawPaths);
     newPaths.removeLast();
 
-    emit(state.copyWith(
-      drawPaths: newPaths,
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    final newState = state.copyWith(drawPaths: newPaths);
+    _addToHistory(newState, actionDescription: 'Undid last drawing stroke');
 
     CustomSnackbar.showInfo('Last stroke undone');
   }
