@@ -14,11 +14,16 @@ import 'package:texterra/utils/custom_snackbar.dart';
 import '../models/text_item_model.dart';
 import '../models/draw_model.dart';
 import 'canvas_state.dart';
+import '../utils/history_manager.dart';
+import 'dart:ui' as ui;
 
 class CanvasCubit extends Cubit<CanvasState> {
   final ImagePicker _imagePicker = ImagePicker();
+  final GlobalKey _canvasKey = GlobalKey(); // For thumbnail generation
 
   CanvasCubit() : super(CanvasState.initial());
+
+  GlobalKey get canvasKey => _canvasKey;
 
   //method to toggle the color tray
   void toggleTray() {
@@ -169,7 +174,7 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // method to add the text
-  void addText(String text) {
+  void addText(String text) async {
     // Calculate offset based on the number of existing text items
     final offset = state.textItems.length * 20.0; // 20px offset for each item
 
@@ -185,14 +190,29 @@ class CanvasCubit extends Cubit<CanvasState> {
       color: ColorConstants.uiWhite, // My Default color for the text
     );
     final updatedItems = List<TextItem>.from(state.textItems)..add(newTextItem);
-    emit(
-      state.copyWith(
-        textItems: updatedItems,
-        selectedTextItemIndex: updatedItems.length - 1,
-        history: [...state.history, state],
-        future: [],
-      ),
+    final oldState = state;
+    final newState = state.copyWith(
+      textItems: updatedItems,
+      selectedTextItemIndex: updatedItems.length - 1,
     );
+
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
+
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
   }
 
   // Method to toggle text highlighting
@@ -437,48 +457,69 @@ class CanvasCubit extends Cubit<CanvasState> {
 
   // method to undo changes and emit it
   void undo() {
-    if (state.history.isNotEmpty) {
-      final previousState = state.history.last;
-      final newHistory = List<CanvasState>.from(state.history)..removeLast();
-      emit(previousState.copyWith(
-        history: newHistory,
-        future: [state, ...state.future],
-      ));
+    if (state.historyTree.canUndo) {
+      final currentNode = state.historyTree.currentNode;
+      if (currentNode?.parentId != null) {
+        final parentNode = state.historyTree.nodes[currentNode!.parentId];
+        if (parentNode != null) {
+          final newState = HistoryManager.jumpToNode(state, parentNode);
+          emit(newState);
+        }
+      }
     }
   }
 
   // method to redo changes and emit it
   void redo() {
-    if (state.future.isNotEmpty) {
-      final nextState = state.future.first;
-      final newFuture = List<CanvasState>.from(state.future)..removeAt(0);
-      emit(nextState.copyWith(
-        future: newFuture,
-        history: [...state.history, state],
-      ));
+    if (state.historyTree.canRedo) {
+      final currentNode = state.historyTree.currentNode;
+      if (currentNode != null && currentNode.childIds.isNotEmpty) {
+        // For simplicity, redo to the first child
+        // In a more advanced implementation, you might want to track the "redo path"
+        final childNode = state.historyTree.nodes[currentNode.childIds.first];
+        if (childNode != null) {
+          final newState = HistoryManager.jumpToNode(state, childNode);
+          emit(newState);
+        }
+      }
     }
   }
 
   // method to empty the canvas
-  void clearCanvas() {
+  void clearCanvas() async {
     // Delete the background image if it exists
     if (state.backgroundImagePath != null) {
       _deleteImageFile(state.backgroundImagePath!);
     }
 
-    emit(
-      state.copyWith(
-        textItems: [],
-        drawPaths: [],
-        history: [...state.history, state],
-        future: [],
-        selectedTextItemIndex: null,
-        deselect: true,
-        isDrawingMode: false, // Exit drawing mode when clearing
-        clearCurrentPageName: true,
-        clearBackgroundImage: true,
-      ),
+    final oldState = state;
+    final newState = state.copyWith(
+      textItems: [],
+      drawPaths: [],
+      selectedTextItemIndex: null,
+      deselect: true,
+      isDrawingMode: false, // Exit drawing mode when clearing
+      clearCurrentPageName: true,
+      clearBackgroundImage: true,
     );
+
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
+
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
     CustomSnackbar.showInfo('Canvas cleared');
   }
 
@@ -487,26 +528,59 @@ class CanvasCubit extends Cubit<CanvasState> {
     Color? backgroundColor,
     String? backgroundImagePath,
     bool clearBackgroundImage = false,
-  }) {
+  }) async {
+    final oldState = state;
     final newState = state.copyWith(
       textItems: textItems ?? state.textItems,
       backgroundColor: backgroundColor,
       backgroundImagePath: backgroundImagePath,
       clearBackgroundImage: clearBackgroundImage,
-      history: [...state.history, state],
-      future: [],
     );
-    emit(newState);
+
+    // Generate thumbnail for the new state
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
+
+    // Create new history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add node to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
   }
 
-  void deleteText(int index) {
+  void deleteText(int index) async {
     final updatedList = List<TextItem>.from(state.textItems)..removeAt(index);
-    emit(state.copyWith(
+    final oldState = state;
+    final newState = state.copyWith(
         textItems: updatedList,
         selectedTextItemIndex: null,
-        history: [...state.history, state],
-        future: [],
-        deselect: true));
+        deselect: true);
+
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
+
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
   }
 
   Future<void> savePage(String pageName, {String? label, int? color}) async {
@@ -933,7 +1007,7 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // Add a new drawing path
-  void startNewDrawPath(Offset point) {
+  void startNewDrawPath(Offset point) async {
     if (!state.isDrawingMode) return;
 
     final paint = _createPaintForBrush(
@@ -955,16 +1029,26 @@ class CanvasCubit extends Cubit<CanvasState> {
     );
 
     final newPaths = List<DrawPath>.from(state.drawPaths)..add(newPath);
+    final oldState = state;
+    final newState = state.copyWith(drawPaths: newPaths);
 
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
 
-    emit(state.copyWith(
-      drawPaths: newPaths,
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
   }
 
   // Update the current drawing path with a new point
@@ -998,40 +1082,65 @@ class CanvasCubit extends Cubit<CanvasState> {
   }
 
   // Clear all drawing paths
-  void clearDrawings() {
+  void clearDrawings() async {
     if (state.drawPaths.isEmpty) return;
 
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
+    final oldState = state;
+    final newState = state.copyWith(drawPaths: []);
 
-    emit(state.copyWith(
-      drawPaths: [],
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
+
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history tree
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
     CustomSnackbar.showInfo('Drawings cleared');
   }
 
   // Undo the last drawing stroke
-  void undoLastDrawing() {
+  void undoLastDrawing() async {
     if (state.drawPaths.isEmpty) return;
 
-    // Save current state to history
-    final historyState = state.copyWith();
-    final newHistory = List<CanvasState>.from(state.history)..add(historyState);
-
-    // Remove the last path
+    final oldState = state;
     final newPaths = List<DrawPath>.from(state.drawPaths);
     newPaths.removeLast();
+    final newState = state.copyWith(drawPaths: newPaths);
 
-    emit(state.copyWith(
-      drawPaths: newPaths,
-      history: newHistory,
-      future: [], // Clear future as we've made a new action
-    ));
+    // Generate thumbnail
+    final thumbnail = await HistoryManager.generateThumbnail(_canvasKey, 200, 150);
 
+    // Create history node
+    final nodeId = 'node_${DateTime.now().millisecondsSinceEpoch}';
+    final historyNode = HistoryManager.createNode(
+      id: nodeId,
+      oldState: oldState,
+      newState: newState,
+      parentId: state.historyTree.currentNodeId,
+      thumbnail: thumbnail,
+    );
+
+    // Add to history node
+    final updatedTree = HistoryManager.addNodeToTree(state.historyTree, historyNode);
+
+    emit(newState.copyWith(historyTree: updatedTree));
     CustomSnackbar.showInfo('Last stroke undone');
+  }
+
+  /// Jump to a specific history node
+  void jumpToHistoryNode(HistoryNode node) {
+    final newState = HistoryManager.jumpToNode(state, node);
+    emit(newState);
   }
 }
 

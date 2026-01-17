@@ -13,9 +13,7 @@ import '../widgets/text_box_widget.dart';
 import '../widgets/font_controls.dart';
 import '../widgets/background_color_tray.dart';
 import '../widgets/background_options_sheet.dart';
-import '../widgets/drawing_canvas.dart';
-import '../../utils/custom_snackbar.dart';
-import '../../utils/web_utils.dart';
+import '../widgets/history_timeline.dart';
 
 class CanvasScreen extends StatelessWidget {
   const CanvasScreen({super.key});
@@ -49,7 +47,7 @@ class CanvasScreen extends StatelessWidget {
 
   void _handleUndo(BuildContext context) {
     final cubit = context.read<CanvasCubit>();
-    if (cubit.state.history.isNotEmpty) {
+    if (cubit.state.historyTree.canUndo) {
       cubit.undo();
     } else {
       CustomSnackbar.showInfo('Nothing to undo');
@@ -58,7 +56,7 @@ class CanvasScreen extends StatelessWidget {
 
   void _handleRedo(BuildContext context) {
     final cubit = context.read<CanvasCubit>();
-    if (cubit.state.future.isNotEmpty) {
+    if (cubit.state.historyTree.canRedo) {
       cubit.redo();
     } else {
       CustomSnackbar.showInfo('Nothing to redo');
@@ -277,6 +275,7 @@ class CanvasScreen extends StatelessWidget {
                 child: Stack(
                   children: [
                     DrawingCanvas(
+                      key: context.read<CanvasCubit>().canvasKey,
                       paths: state.drawPaths,
                       isDrawingMode: state.isDrawingMode,
                       currentDrawColor: state.currentDrawColor,
@@ -350,6 +349,12 @@ class CanvasScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                    // History Timeline
+                    Positioned(
+                      top: 80,
+                      right: 16,
+                      child: const HistoryTimeline(),
+                    ),
                   ],
                 ),
               ),
