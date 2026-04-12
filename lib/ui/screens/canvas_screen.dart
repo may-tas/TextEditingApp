@@ -666,6 +666,8 @@ class _DraggableTextBoxState extends State<_DraggableTextBox> {
             _dragStartPosition != null) {
           final delta = details.localPosition - _dragStartPosition!;
           final newPosition = _startPosition! + delta;
+          final screenSize = MediaQuery.of(context).size;
+          if (details.localPosition.dx == screenSize.width) return;
           context.read<CanvasCubit>().moveText(
                 widget.index,
                 newPosition.dx,
