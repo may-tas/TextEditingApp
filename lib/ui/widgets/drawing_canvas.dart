@@ -18,6 +18,7 @@ class DrawingCanvas extends StatefulWidget {
   final Function(BrushType) onBrushTypeChanged;
   final Function() onUndoDrawing;
   final Function() onClearDrawing;
+  final GlobalKey? canvasKey;
 
   const DrawingCanvas({
     super.key,
@@ -34,6 +35,7 @@ class DrawingCanvas extends StatefulWidget {
     required this.onBrushTypeChanged,
     required this.onUndoDrawing,
     required this.onClearDrawing,
+    this.canvasKey,
   });
 
   @override
@@ -68,6 +70,7 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
               }
             },
             child: RepaintBoundary(
+              key: widget.canvasKey,
               child: CustomPaint(
                 painter: DrawingPainter(paths: widget.paths),
                 size: Size.infinite,

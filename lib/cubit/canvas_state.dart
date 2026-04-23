@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../models/text_item_model.dart';
 import '../constants/color_constants.dart';
 import '../models/draw_model.dart';
+import '../models/history_model.dart';
 
 class CanvasState {
   final List<TextItem> textItems;
   final List<DrawPath> drawPaths;
-  final List<CanvasState> history;
-  final List<CanvasState> future;
+  final HistoryTree historyTree;
   final Color backgroundColor;
   final String? backgroundImagePath;
   final int? selectedTextItemIndex;
@@ -21,8 +21,7 @@ class CanvasState {
   const CanvasState({
     required this.textItems,
     required this.drawPaths,
-    required this.history,
-    required this.future,
+    required this.historyTree,
     this.backgroundColor = ColorConstants.backgroundDarkGray,
     this.backgroundImagePath,
     this.selectedTextItemIndex,
@@ -38,8 +37,7 @@ class CanvasState {
     return const CanvasState(
       textItems: [],
       drawPaths: [],
-      history: [],
-      future: [],
+      historyTree: HistoryTree.initial(),
       backgroundColor: ColorConstants.backgroundDarkGray,
       backgroundImagePath: null,
       selectedTextItemIndex: null,
@@ -55,8 +53,7 @@ class CanvasState {
   CanvasState copyWith({
     List<TextItem>? textItems,
     List<DrawPath>? drawPaths,
-    List<CanvasState>? history,
-    List<CanvasState>? future,
+    HistoryTree? historyTree,
     Color? backgroundColor,
     String? backgroundImagePath,
     bool clearBackgroundImage = false,
@@ -73,8 +70,7 @@ class CanvasState {
     return CanvasState(
       textItems: textItems ?? this.textItems,
       drawPaths: drawPaths ?? this.drawPaths,
-      history: history ?? this.history,
-      future: future ?? this.future,
+      historyTree: historyTree ?? this.historyTree,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       backgroundImagePath: clearBackgroundImage
           ? null
@@ -104,8 +100,7 @@ class CanvasState {
           backgroundImagePath == other.backgroundImagePath &&
           selectedTextItemIndex == other.selectedTextItemIndex &&
           isDrawingMode == other.isDrawingMode &&
-          history == other.history &&
-          future == other.future &&
+          historyTree == other.historyTree &&
           isTrayShown == other.isTrayShown &&
           currentPageName == other.currentPageName &&
           currentDrawColor == other.currentDrawColor &&
@@ -119,8 +114,7 @@ class CanvasState {
       backgroundColor.hashCode ^
       backgroundImagePath.hashCode ^
       selectedTextItemIndex.hashCode ^
-      history.hashCode ^
-      future.hashCode ^
+      historyTree.hashCode ^
       isTrayShown.hashCode ^
       isDrawingMode.hashCode ^
       currentDrawColor.hashCode ^
